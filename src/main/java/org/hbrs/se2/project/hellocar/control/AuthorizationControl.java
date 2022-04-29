@@ -22,6 +22,8 @@ public class AuthorizationControl {
             if ( rolle.getBezeichhnung().equals(role) ) return true;
         }
         return false;
+
+
     }
 
     /**
