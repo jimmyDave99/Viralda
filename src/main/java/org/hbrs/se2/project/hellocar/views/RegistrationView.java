@@ -24,7 +24,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.hbrs.se2.project.hellocar.util.Globals;
 
-@Route(value = Globals.Pages.ENTER_CAR, layout = AppView.class)
+@Route(value = Globals.Pages.REGISTRATION_VIEW)
 @PageTitle("Registration")
 @CssImport("./styles/views/entercar/enter-car-view.css")
 public class RegistrationView extends Div {
@@ -41,7 +41,6 @@ public class RegistrationView extends Div {
 
     private Binder<CarDTOImpl> binder = new Binder(CarDTOImpl.class);
 
-    // TODO: RegistrationControl erstellen
     public RegistrationView(ManageCarControl carService) {
         addClassName("enter-car-view");
 
@@ -83,7 +82,7 @@ public class RegistrationView extends Div {
     }
 
     private Component createTitle() {
-        return new H3("Registration");
+        return new H3("Car information");
     }
 
     private Component createFormLayout() {
@@ -146,5 +145,3 @@ public class RegistrationView extends Div {
     }
 
 }
-
-
