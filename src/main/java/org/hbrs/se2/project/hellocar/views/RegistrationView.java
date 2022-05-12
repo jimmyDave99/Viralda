@@ -3,7 +3,9 @@ package org.hbrs.se2.project.hellocar.views;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import org.hbrs.se2.project.hellocar.control.ManageCarControl;
+import org.hbrs.se2.project.hellocar.control.RegistrationControl;
 import org.hbrs.se2.project.hellocar.dtos.impl.CarDTOImpl;
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 import com.vaadin.flow.component.Component;
@@ -22,33 +24,34 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import org.hbrs.se2.project.hellocar.dtos.impl.UserDTOImpl;
 import org.hbrs.se2.project.hellocar.util.Globals;
 
 @Route(value = Globals.Pages.REGISTRATION_VIEW)
 @PageTitle("Registration")
 @CssImport("./styles/views/entercar/enter-car-view.css")
-public class RegistrationView extends Div {
+public class RegistrationView extends HorizontalLayout {
 
-    private TextField brand = new TextField("Brand of car");
-    private TextField model = new TextField("Model");
-    private TextField description = new TextField("Description");
-    private DatePicker date = new DatePicker("Date of Admission");
-    private PhoneNumberField phone = new PhoneNumberField("Phone number of Owner");
-    private TextField price = new TextField("Price");
+    private TextField email = new TextField("E-Mail");
+    private TextField password = new TextField("Passwort");
+    private TextField firstname = new TextField( "Vorname");
+    private TextField lastname = new TextField( "Name");
+    //private TextField description = new TextField("Description");
+    private DatePicker dateofBirth = new DatePicker("Geburtsdatum");
 
-    private Button cancel = new Button("Cancel");
-    private Button save = new Button("Save");
+    private Button cancel = new Button("Abbrechen");
+    private Button register = new Button("Registrieren");
 
-    private Binder<CarDTOImpl> binder = new Binder(CarDTOImpl.class);
+    private Binder<UserDTOImpl> binder = new Binder(UserDTOImpl.class);
 
-    public RegistrationView(ManageCarControl carService) {
-        addClassName("enter-car-view");
+    public RegistrationView(RegistrationControl registrationService) {
+        addClassName("register-user");
 
         add(createTitle());
         add(createFormLayout());
         add(createButtonLayout());
 
-        // Default Mapping of Cars attributes and the names of this View based on names
+        // Default Mapping of User attributes and the names of this View based on names
         // Source: https://vaadin.com/docs/flow/binding-data/tutorial-flow-components-binder-beans.html
         binder.bindInstanceFields(this);
         clearForm();
@@ -65,83 +68,46 @@ public class RegistrationView extends Div {
             }
         } );
 
-        save.addClickListener(e -> {
+        register.addClickListener(e -> {
             // Speicherung der Daten über das zuhörige Control-Object.
             // Daten des Autos werden aus Formular erfasst und als DTO übergeben.
             // Zusätzlich wird das aktuelle UserDTO übergeben.
-            UserDTO userDTO = (UserDTO) UI.getCurrent().getSession().getAttribute(Globals.CURRENT_USER);
-            carService.createCar(binder.getBean() ,  userDTO );
+            RegistrationControl userService = null;
+            userService.createUser( binder.getBean() );
 
-            Notification.show("Car details stored.");
+            Notification.show("Sie haben sich erfolgreich registriert.");
             clearForm();
+            navigateToLoginPage();
         });
     }
 
     private void clearForm() {
-        binder.setBean(new CarDTOImpl());
+        binder.setBean(new UserDTOImpl());
     }
 
     private Component createTitle() {
-        return new H3("Car information");
+        return new H3("Registration");
     }
 
     private Component createFormLayout() {
         FormLayout formLayout = new FormLayout();
-        formLayout.add(brand, model, date, phone, description, price);
+        formLayout.add(email, firstname, lastname, password, dateofBirth);
         return formLayout;
     }
 
     private Component createButtonLayout() {
         HorizontalLayout buttonLayout = new HorizontalLayout();
         buttonLayout.addClassName("button-layout");
-        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        buttonLayout.add(save);
+        register.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        buttonLayout.add(register);
         buttonLayout.add(cancel);
         return buttonLayout;
     }
 
-    private static class PhoneNumberField extends CustomField<String> {
-        private ComboBox<String> countryCode = new ComboBox<>();
-        private TextField number = new TextField();
+    private void navigateToLoginPage() {
+        // Navigation zur Login-Seite.
+        UI.getCurrent().navigate(Globals.Pages.LOGIN_VIEW);
 
-        public PhoneNumberField(String label) {
-            setLabel(label);
-            countryCode.setWidth("120px");
-            countryCode.setPlaceholder("Country");
-            countryCode.setPattern("\\+\\d*");
-            countryCode.setPreventInvalidInput(true);
-            countryCode.setItems("+354", "+91", "+62", "+98", "+964", "+353", "+44", "+972", "+39", "+225");
-            countryCode.addCustomValueSetListener(e -> countryCode.setValue(e.getDetail()));
-            number.setPattern("\\d*");
-            number.setPreventInvalidInput(true);
-            HorizontalLayout layout = new HorizontalLayout(countryCode, number);
-            layout.setFlexGrow(1.0, number);
-            add(layout);
-        }
-
-        @Override
-        protected String generateModelValue() {
-            if (countryCode.getValue() != null && number.getValue() != null) {
-                String s = countryCode.getValue() + " " + number.getValue();
-                return s;
-            }
-            return "";
-        }
-
-        @Override
-        protected void setPresentationValue(String phoneNumber) {
-            String[] parts = phoneNumber != null ? phoneNumber.split(" ", 2) : new String[0];
-            if (parts.length == 1) {
-                countryCode.clear();
-                number.setValue(parts[0]);
-            } else if (parts.length == 2) {
-                countryCode.setValue(parts[0]);
-                number.setValue(parts[1]);
-            } else {
-                countryCode.clear();
-                number.clear();
-            }
-        }
     }
 
 }
