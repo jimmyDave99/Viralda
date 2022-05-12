@@ -9,11 +9,11 @@ import java.util.List;
 public class UserDTOImpl implements UserDTO {
 
     private int id;
-    private String firstname;
-    private String lastname;
+    private String firstName;
+    private String lastName;
     private String email;
     private String password; // TODO: make this more secure
-    private String dateofBirth;
+    private String dateOfBirth;
     private List<RolleDTO> roles;
 
     public void setId(int id) {
@@ -25,14 +25,14 @@ public class UserDTOImpl implements UserDTO {
     public void setPassword(String password) { this.password = password; }
 
     public void setFirstname(String firstname) {
-        this.firstname = firstname;
+        this.firstName = firstname;
     }
 
     public void setLastname(String lastname) {
-        this.lastname = lastname;
+        this.lastName = lastname;
     }
 
-    public void setDateofBirth(String dateofBirth) { this.dateofBirth = dateofBirth; }
+    public void setDateOfBirth(String dateOfBirth) { this.dateOfBirth = dateOfBirth; }
 
     public void setRoles(List<RolleDTO> roles) {
         this.roles = roles;
@@ -46,12 +46,12 @@ public class UserDTOImpl implements UserDTO {
 
     @Override
     public String getFirstName() {
-        return this.firstname;
+        return this.firstName;
     }
 
     @Override
     public String getLastName() {
-        return this.lastname;
+        return this.lastName;
     }
 
     @Override
@@ -66,14 +66,14 @@ public class UserDTOImpl implements UserDTO {
     public String getPassword() { return this.password; }
 
     @Override
-    public LocalDate getDateofBirth() { return null; }
+    public LocalDate getDateOfBirth() { return null; }
 
     @Override
     public String toString() {
         return "UserDTOImpl{" +
                 "id=" + id +
-                ", firstname='" + firstname + '\'' +
-                ", lastname='" + lastname + '\'' +
+                ", firstname='" + firstName + '\'' +
+                ", lastname='" + lastName + '\'' +
                 ", roles=" + roles +
                 '}';
     }
