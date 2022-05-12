@@ -16,6 +16,7 @@ public class UserFactory {
         user.setFirstName( userDTO.getFirstName() );
         user.setLastName( userDTO.getLastName() );
         user.setPassword( userDTO.getPassword() );
+        user.setDateOfBirth( userDTO.getDateOfBirth() );
 
         // und zurück das gute Stück:
         return user;

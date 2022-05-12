@@ -12,5 +12,5 @@ public interface UserDTO {
     public List<RolleDTO> getRoles();
     public String getEmail();
     public String getPassword();
-    public LocalDate getDateofBirth();
+    public LocalDate getDateOfBirth();
 }

@@ -30,12 +30,12 @@ import org.hbrs.se2.project.hellocar.util.Globals;
 @Route(value = Globals.Pages.REGISTRATION_VIEW)
 @PageTitle("Registration")
 @CssImport("./styles/views/entercar/enter-car-view.css")
-public class RegistrationView extends HorizontalLayout {
+public class RegistrationView extends VerticalLayout {
 
     private TextField email = new TextField("E-Mail");
     private TextField password = new TextField("Passwort");
-    private TextField firstname = new TextField( "Vorname");
-    private TextField lastname = new TextField( "Name");
+    private TextField firstName = new TextField( "Vorname");
+    private TextField lastName = new TextField( "Name");
     //private TextField description = new TextField("Description");
     private DatePicker dateofBirth = new DatePicker("Geburtsdatum");
 
@@ -91,7 +91,7 @@ public class RegistrationView extends HorizontalLayout {
 
     private Component createFormLayout() {
         FormLayout formLayout = new FormLayout();
-        formLayout.add(email, firstname, lastname, password, dateofBirth);
+        formLayout.add(email, firstName, lastName, password, dateofBirth);
         return formLayout;
     }
 
