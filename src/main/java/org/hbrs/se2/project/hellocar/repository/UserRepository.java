@@ -26,8 +26,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     // SELECT firstname, lastname, id
     // FROM User p
-    // WHERE p.userid = [StringValueOf( userid )] AND p.password = [StringValueOf( password )]
-    UserDTO findUserByUseridAndPassword ( String userid , String password);
+    // WHERE p.email = [StringValueOf( email )] AND p.password = [StringValueOf( password )]
+    UserDTO findUserByEmailAndPassword ( String email , String password);
 
 
 

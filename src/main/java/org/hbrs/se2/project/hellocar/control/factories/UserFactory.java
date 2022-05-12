@@ -1,8 +1,6 @@
 package org.hbrs.se2.project.hellocar.control.factories;
 
-import org.hbrs.se2.project.hellocar.dtos.CarDTO;
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
-import org.hbrs.se2.project.hellocar.entities.Car;
 import org.hbrs.se2.project.hellocar.entities.User;
 
 public class UserFactory {

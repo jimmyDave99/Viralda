@@ -20,10 +20,10 @@ public class LoginControl {
 
     public boolean authentificate(String username, String password ) throws DatabaseUserException {
         // Standard: User wird mit Spring JPA ausgelesen (Was sind die Vorteile?)
-        UserDTO tmpUser = this.getUserWithJPA( username , password );
+        //UserDTO tmpUser = this.getUserWithJPA( username , password );
 
         // Alternative: Auslesen des Users mit JDBC (Was sind die Vorteile bzw. Nachteile?)
-        // UserDTO tmpUser = this.getUserWithJDBC( username , password );
+        UserDTO tmpUser = this.getUserWithJDBC( username , password );
 
         if ( tmpUser == null ) {
             // ggf. hier ein Loggin einfügen
@@ -38,11 +38,11 @@ public class LoginControl {
 
     }
 
-    private UserDTO getUserWithJDBC( String username , String password ) throws DatabaseUserException {
+    private UserDTO getUserWithJDBC( String email , String password ) throws DatabaseUserException {
         UserDTO userTmp = null;
         UserDAO dao = new UserDAO();
         try {
-            userDTO = dao.findUserByUseridAndPassword( username , password );
+            userDTO = dao.findUserByUserEmailAndPassword( email , password );
         }
         catch ( DatabaseLayerException e) {
 
@@ -69,10 +69,10 @@ public class LoginControl {
         return userDTO;
     }
 
-    private UserDTO getUserWithJPA( String username , String password ) throws DatabaseUserException {
+    private UserDTO getUserWithJPA( String email , String password ) throws DatabaseUserException {
         UserDTO userTmp;
         try {
-            userTmp = repository.findUserByUseridAndPassword(username, password);
+            userTmp = repository.findUserByEmailAndPassword(email, password);
         } catch ( org.springframework.dao.DataAccessResourceFailureException e ) {
             // Analyse und Umwandlung der technischen Errors in 'lesbaren' Darstellungen (ToDo!)
            throw new DatabaseUserException("A failure occured while trying to connect to database with JPA");

@@ -20,7 +20,7 @@ import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.tabs.TabsVariant;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.PWA;
-import org.hbrs.se2.project.hellocar.control.AuthorizationControl;
+//import org.hbrs.se2.project.hellocar.control.AuthorizationControl;
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 import org.hbrs.se2.project.hellocar.util.Globals;
 import org.hbrs.se2.project.hellocar.util.Utils;
@@ -42,7 +42,7 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
     private H1 viewTitle;
     private H1 helloUser;
 
-    private AuthorizationControl authorizationControl;
+    //private AuthorizationControl authorizationControl;
 
     public AppView() {
         if (getCurrentUser() == null) {
@@ -139,8 +139,8 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
         // Hinzufügen des Logos
         logoLayout.setId("logo");
         logoLayout.setAlignItems(FlexComponent.Alignment.CENTER);
-        logoLayout.add(new Image("images/logo.png", "HelloCar logo"));
-        logoLayout.add(new H1("HelloCar"));
+        logoLayout.add(new Image("images/logo.png", "CollatH-BRS"));
+        logoLayout.add(new H1("CollatH-Brs"));
 
         // Hinzufügen des Menus inklusive der Tabs
         layout.add(logoLayout, menu);
@@ -160,30 +160,32 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
         tabs.setId("tabs");
 
         // Anlegen der einzelnen Menuitems
-        tabs.add(createMenuItems());
+        //tabs.add(createMenuItems());
         return tabs;
     }
 
     private Component[] createMenuItems() {
        // Abholung der Referenz auf den Authorisierungs-Service
-       authorizationControl = new AuthorizationControl();
+       //authorizationControl = new AuthorizationControl();
 
        // Jeder User sollte Autos sehen können, von daher wird dieser schon mal erzeugt und
        // und dem Tabs-Array hinzugefügt. In der Methode createTab wird ein (Key, Value)-Pair übergeben:
         // Key: der sichtbare String des Menu-Items
         // Value: Die UI-Component, die nach dem Klick auf das Menuitem angezeigt wird.
-       Tab[] tabs = new Tab[]{ createTab( "Show Cars", ShowCarsView.class) };
+       //Tab[] tabs = new Tab[]{ createTab( "Profil", Profil.class) };
 
        // Falls er Admin-Rechte hat, sollte der User auch Autos hinzufügen können
        // (Alternative: Verwendung der Methode 'isUserisAllowedToAccessThisFeature')
-       if ( this.authorizationControl.isUserInRole( this.getCurrentUser() , Globals.Roles.ADMIN ) ) {
+      /* if ( this.authorizationControl.isUserInRole( this.getCurrentUser() , Globals.Roles.ADMIN ) ) {
            System.out.println("User is Admin!");
            tabs = Utils.append( tabs , createTab("Enter Car", EnterCarView.class)  );
-       }
+       } */
 
        // ToDo für die Teams: Weitere Tabs aus ihrem Projekt hier einfügen!
+       // tabs = Utils.append( tabs , createTab("Enter Car", EnterCarView.class)  );
 
-       return tabs;
+        //retrun tabs;
+       return null;
     }
 
     private static Tab createTab(String text, Class<? extends Component> navigationTarget) {
