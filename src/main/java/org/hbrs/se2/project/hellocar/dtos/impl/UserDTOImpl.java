@@ -1,6 +1,5 @@
 package org.hbrs.se2.project.hellocar.dtos.impl;
 
-import org.hbrs.se2.project.hellocar.dtos.RolleDTO;
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 
 import java.time.LocalDate;
@@ -14,7 +13,7 @@ public class UserDTOImpl implements UserDTO {
     private String email;
     private String password; // TODO: make this more secure
     private String dateOfBirth;
-    private List<RolleDTO> roles;
+
 
     public void setId(int id) {
         this.id = id;
@@ -34,9 +33,6 @@ public class UserDTOImpl implements UserDTO {
 
     public void setDateOfBirth(String dateOfBirth) { this.dateOfBirth = dateOfBirth; }
 
-    public void setRoles(List<RolleDTO> roles) {
-        this.roles = roles;
-    }
 
 
     @Override
@@ -55,11 +51,6 @@ public class UserDTOImpl implements UserDTO {
     }
 
     @Override
-    public List<RolleDTO> getRoles() {
-        return this.roles;
-    }
-
-    @Override
     public String getEmail() { return this.email; }
 
     @Override
@@ -74,7 +65,6 @@ public class UserDTOImpl implements UserDTO {
                 "id=" + id +
                 ", firstname='" + firstName + '\'' +
                 ", lastname='" + lastName + '\'' +
-                ", roles=" + roles +
                 '}';
     }
 }

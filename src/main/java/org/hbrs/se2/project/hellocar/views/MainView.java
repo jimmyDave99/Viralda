@@ -62,10 +62,8 @@ public class MainView extends VerticalLayout {
 
 
     private void navigateToMainPage() {
-        // Navigation zur Startseite, hier auf die Teil-Komponente Show-Cars.
-        // Die anzuzeigende Teil-Komponente kann man noch individualisieren, je nach Rolle,
-        // die ein Benutzer besitzt
-        UI.getCurrent().navigate(Globals.Pages.SHOW_CARS);
+        // Navigation zur Startseite.
+        UI.getCurrent().navigate("main");
 
     }
 }

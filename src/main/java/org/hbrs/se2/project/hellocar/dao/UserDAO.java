@@ -1,6 +1,5 @@
 package org.hbrs.se2.project.hellocar.dao;
 
-import org.hbrs.se2.project.hellocar.dtos.RolleDTO;
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 import org.hbrs.se2.project.hellocar.dtos.impl.UserDTOImpl;
 import org.hbrs.se2.project.hellocar.services.db.JDBCConnection;
@@ -16,12 +15,12 @@ public class UserDAO {
 
     /**
      * Method for finding Users
-     * @param id
+     * @param email
      * @param password
      * @return
      * @throws DatabaseLayerException
      */
-    public UserDTO findUserByUseridAndPassword(String id, String password) throws DatabaseLayerException {
+    public UserDTO findUserByUserEmailAndPassword(String email, String password) throws DatabaseLayerException {
         // Set ResultSet to null;
         ResultSet set = null;
 
@@ -36,9 +35,9 @@ public class UserDAO {
 
             set = statement.executeQuery(
                     "SELECT * "
-                       + "FROM carlook.user "
-                       + "WHERE carlook.user.userid = \'" + id + "\'"
-                         + " AND carlook.user.password = \'" + password + "\'");
+                       + "FROM collathbrs.user "
+                       + "WHERE collathbrs.user.email = \'" + email + "\'"
+                         + "AND collathbrs.user.passwort = \'" + password + "\'");
 
             // JDBCConnection.getInstance().closeConnection();
 
@@ -61,15 +60,7 @@ public class UserDAO {
 
                 user = new UserDTOImpl();
                 user.setId( set.getInt(1));
-                user.setFirstname( set.getString(4) );
-                user.setLastname(set.getString(5));
-
-                // Beziehe die Rollen eines Users:
-                RolleDAO rolleDAO = new RolleDAO();
-                List<RolleDTO> rollen = rolleDAO.getRolesOfUser(user);
-
-                // Einsetzen der Rollen in ein User-Object
-                user.setRoles(rollen);
+                user.setEmail(set.getString(2));
 
                 return user;
 
@@ -87,6 +78,7 @@ public class UserDAO {
         } finally {
             JDBCConnection.getInstance().closeConnection();
         }
+
     }
 
 

@@ -4,19 +4,13 @@ import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import org.hbrs.se2.project.hellocar.control.ManageCarControl;
 import org.hbrs.se2.project.hellocar.control.RegistrationControl;
-import org.hbrs.se2.project.hellocar.dtos.impl.CarDTOImpl;
-import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.customfield.CustomField;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -29,15 +23,14 @@ import org.hbrs.se2.project.hellocar.util.Globals;
 
 @Route(value = Globals.Pages.REGISTRATION_VIEW)
 @PageTitle("Registration")
-@CssImport("./styles/views/entercar/enter-car-view.css")
+@CssImport("./styles/views/register/register-user.css")
 public class RegistrationView extends VerticalLayout {
 
     private TextField email = new TextField("E-Mail");
     private TextField password = new TextField("Passwort");
     private TextField firstName = new TextField( "Vorname");
     private TextField lastName = new TextField( "Name");
-    //private TextField description = new TextField("Description");
-    private DatePicker dateofBirth = new DatePicker("Geburtsdatum");
+    private DatePicker dateOfBirth = new DatePicker("Geburtsdatum");
 
     private Button cancel = new Button("Abbrechen");
     private Button register = new Button("Registrieren");
@@ -64,7 +57,6 @@ public class RegistrationView extends VerticalLayout {
             @Override
             public void onComponentEvent(ComponentEvent event) {
                 clearForm();
-
             }
         } );
 
@@ -72,9 +64,7 @@ public class RegistrationView extends VerticalLayout {
             // Speicherung der Daten über das zuhörige Control-Object.
             // Daten des Autos werden aus Formular erfasst und als DTO übergeben.
             // Zusätzlich wird das aktuelle UserDTO übergeben.
-            RegistrationControl userService = null;
-            userService.createUser( binder.getBean() );
-
+            registrationService.createUser( binder.getBean() );
             Notification.show("Sie haben sich erfolgreich registriert.");
             clearForm();
             navigateToLoginPage();
@@ -91,7 +81,7 @@ public class RegistrationView extends VerticalLayout {
 
     private Component createFormLayout() {
         FormLayout formLayout = new FormLayout();
-        formLayout.add(email, firstName, lastName, password, dateofBirth);
+        formLayout.add(email, firstName, lastName, password, dateOfBirth);
         return formLayout;
     }
 
