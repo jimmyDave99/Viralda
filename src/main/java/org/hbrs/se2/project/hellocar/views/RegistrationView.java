@@ -50,15 +50,7 @@ public class RegistrationView extends VerticalLayout {
         clearForm();
 
         // Registrierung eines Listeners Nr. 1 (moderne Variante mit Lambda-Expression)
-        cancel.addClickListener(event -> clearForm());
-
-        // Registrierung eines Listeners Nr. 2 (traditionelle Variante mit anonymen Objekt)
-        cancel.addAttachListener( new ComponentEventListener() {
-            @Override
-            public void onComponentEvent(ComponentEvent event) {
-                clearForm();
-            }
-        } );
+        cancel.addClickListener(event -> navigateToLoginPage() );
 
         register.addClickListener(e -> {
             // Speicherung der Daten über das zuhörige Control-Object.
