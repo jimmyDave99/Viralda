@@ -33,5 +33,7 @@ import java.util.Optional;
  * The LandingPageStundent is the home page for users with the role = "stundent".
  */
 
+@Route(value = Globals.Pages.LANDING_PAGE_STUDENT_VIEW, layout = AppView.class)
+@PageTitle("Startseite")
 public class LandingPageStudentView extends VerticalLayout {
 }

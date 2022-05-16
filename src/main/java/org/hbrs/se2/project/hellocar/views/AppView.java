@@ -147,8 +147,8 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
         // Hinzufügen des Logos
         logoLayout.setId("logo");
         logoLayout.setAlignItems(FlexComponent.Alignment.CENTER);
-        logoLayout.add(new Image("images/logo.png", "CollatH-BRS"));
-        logoLayout.add(new H1("CollatH-Brs"));
+        logoLayout.add(new Image("images/logo.png", "Coll@H-BRS"));
+        logoLayout.add(new H1("Coll@H-Brs"));
 
         // Hinzufügen des Menus inklusive der Tabs
         layout.add(logoLayout, menu);
@@ -200,12 +200,14 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
         /*
         if ()
             tabs = Utils.append( tabs, createTab("Landing Page Stundent", LandingPageStudentView.class) );
+            System.out.println("User is a Company!");
          */
 
         //Falls User ein Arbeitgeber ist soll die LandingPageCompanyView angezeigt werden
         /*
         if ()
             tabs = Utils.append( tabs, createTab("Landing Page Company", LandingPageCompanyView.class));
+            System.out.println("User is Student!");
          */
 
         //retrun tabs;
@@ -232,8 +234,13 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
         // Setzen des aktuellen Names des Tabs
         viewTitle.setText(getCurrentPageTitle());
 
-        // Setzen des Vornamens von dem aktuell eingeloggten Benutzer
-        helloUser.setText("Hello my dear old friend!! "  + this.getCurrentNameOfUser() );
+        // Setzen des Vornamens von dem aktuell eingeloggten Benutzer, wenn der User einen Vornamen hat
+        if (this.getCurrentNameOfUser() != null) {
+            helloUser.setText("Willkommen "  + this.getCurrentNameOfUser() + " auf der HBRS@Collab Seite!");
+        } else {
+            helloUser.setText("Willkommen auf der HBRS@Collab Seite!");
+        }
+
     }
 
     private Optional<Tab> getTabForComponent(Component component) {
