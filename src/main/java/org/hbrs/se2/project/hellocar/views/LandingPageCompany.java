@@ -9,6 +9,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.menubar.MenuBar;
@@ -30,8 +31,8 @@ import java.util.Arrays;
 import java.util.Optional;
 
 /**
- * The LandingPageEmployer is the home page for user with the role 'employer'.
+ * The LandingPageCompany is the home page for user with the role 'employer'.
  */
 
-public class LandingPageEmployer extends VerticalLayout {
+public class LandingPageCompany extends VerticalLayout {
 }

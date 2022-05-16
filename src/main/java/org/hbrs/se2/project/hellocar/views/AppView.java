@@ -194,10 +194,10 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
             tabs = Utils.append( tabs, createTab("Landing Page Stundent", LandingPageStudent.class) );
          */
 
-        //Falls User ein Arbeitgeber ist soll die LandingPageEmployer angezeigt werden
+        //Falls User ein Arbeitgeber ist soll die LandingPageCompany angezeigt werden
         /*
         if ()
-            tabs = Utils.append( tabs, createTab("Landing Page Employer", LandingPageEmployer.class));
+            tabs = Utils.append( tabs, createTab("Landing Page Company", LandingPageCompany.class));
          */
 
         //retrun tabs;
