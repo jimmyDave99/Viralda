@@ -33,5 +33,5 @@ import java.util.Optional;
  * The LandingPageEmployer is the home page for user with the role 'employer'.
  */
 
-public class LandingPageEmployer {
+public class LandingPageEmployer extends VerticalLayout {
 }

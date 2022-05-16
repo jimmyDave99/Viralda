@@ -33,5 +33,5 @@ import java.util.Optional;
  * The LandingPageStundent is the home page for users with the role = "stundent".
  */
 
-public class LandingPageStudent {
+public class LandingPageStudent extends VerticalLayout {
 }

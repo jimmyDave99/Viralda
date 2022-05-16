@@ -184,6 +184,22 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
        // ToDo für die Teams: Weitere Tabs aus ihrem Projekt hier einfügen!
        // tabs = Utils.append( tabs , createTab("Enter Car", EnterCarView.class)  );
 
+        // ToDo: sobald alles bereit ist folgendes auskommentieren
+
+        Tab[] tabs = new Tab[]{};
+
+        //Falls User ein Stundent ist soll die LandingPageStundent angezeigt werden
+        /*
+        if ()
+            tabs = Utils.append( tabs, createTab("Landing Page Stundent", LandingPageStudent.class) );
+         */
+
+        //Falls User ein Arbeitgeber ist soll die LandingPageEmployer angezeigt werden
+        /*
+        if ()
+            tabs = Utils.append( tabs, createTab("Landing Page Employer", LandingPageEmployer.class));
+         */
+
         //retrun tabs;
        return null;
     }
