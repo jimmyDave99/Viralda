@@ -7,6 +7,9 @@ public class Globals {
 
     public static class Pages {
         public static final String REGISTRATION_VIEW = "registration";
+        public static final String LANDING_PAGE_COMPANY_VIEW = "landing-page-company";
+        public static final String LANDING_PAGE_STUDENT_VIEW = "landing-page-student";
+        public static final String PROFIL_VIEW = "profil";
 
         public static final String LOGIN_VIEW = "login";
         public static final String MAIN_VIEW = "";

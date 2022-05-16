@@ -106,7 +106,7 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
 
         // Profil-Button am rechten oberen Rand.
         MenuBar bar = new MenuBar();
-        MenuItem item_profil = bar.addItem("Profil");
+        MenuItem item_profil = bar.addItem("Profil", e -> goToProfil() );
 
         // Logout-Button am rechts-oberen Rand.
         MenuItem item_logout = bar.addItem("Logout" , e -> logoutUser());
@@ -121,6 +121,10 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
         UI ui = this.getUI().get();
         ui.getSession().close();
         ui.getPage().setLocation("/");
+    }
+
+    private void goToProfil() {
+        UI.getCurrent().navigate(Globals.Pages.PROFIL_VIEW);
     }
 
     /**
@@ -192,16 +196,16 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
 
         Tab[] tabs = new Tab[]{};
 
-        //Falls User ein Stundent ist soll die LandingPageStundent angezeigt werden
+        //Falls User ein Stundent ist soll die LandingPageStundentView angezeigt werden
         /*
         if ()
-            tabs = Utils.append( tabs, createTab("Landing Page Stundent", LandingPageStudent.class) );
+            tabs = Utils.append( tabs, createTab("Landing Page Stundent", LandingPageStudentView.class) );
          */
 
-        //Falls User ein Arbeitgeber ist soll die LandingPageCompany angezeigt werden
+        //Falls User ein Arbeitgeber ist soll die LandingPageCompanyView angezeigt werden
         /*
         if ()
-            tabs = Utils.append( tabs, createTab("Landing Page Company", LandingPageCompany.class));
+            tabs = Utils.append( tabs, createTab("Landing Page Company", LandingPageCompanyView.class));
          */
 
         //retrun tabs;
