@@ -3,7 +3,11 @@ package org.hbrs.se2.project.hellocar.views;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
+import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
+import com.vaadin.flow.component.textfield.EmailField;
 import org.hbrs.se2.project.hellocar.control.RegistrationControl;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
@@ -26,11 +30,14 @@ import org.hbrs.se2.project.hellocar.util.Globals;
 @CssImport("./styles/views/register/register-user.css")
 public class RegistrationView extends VerticalLayout {
 
-    private TextField email = new TextField("E-Mail");
+    private RadioButtonGroup<String> userGroup = new RadioButtonGroup<>();
+
+    private EmailField email = new EmailField("E-Mail");
     private TextField password = new TextField("Passwort");
     private TextField firstName = new TextField( "Vorname");
     private TextField lastName = new TextField( "Name");
     private DatePicker dateOfBirth = new DatePicker("Geburtsdatum");
+    private Checkbox termsOfService = new Checkbox("Hiermit bestätige ich die Endnutzervereinbarung.");
 
     private Button cancel = new Button("Abbrechen");
     private Button register = new Button("Registrieren");
@@ -68,12 +75,18 @@ public class RegistrationView extends VerticalLayout {
     }
 
     private Component createTitle() {
-        return new H3("Registration");
+        return new H3("Registrierung");
     }
 
     private Component createFormLayout() {
+        userGroup.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
+        userGroup.setLabel("Benutzer");
+        userGroup.setItems("Student", "Unternehmen");
+        email.getElement().setAttribute("name", "email");
+        email.setValue("julia.scheider@email.com");
+        email.setErrorMessage("Please enter a valid email address");
         FormLayout formLayout = new FormLayout();
-        formLayout.add(email, firstName, lastName, password, dateOfBirth);
+        formLayout.add(userGroup, email, firstName, lastName, password, dateOfBirth, termsOfService);
         return formLayout;
     }
 
