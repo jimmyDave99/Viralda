@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table( name ="user" , schema = "carlook" )
+@Table( name ="user" , schema = "collathbrs" )
 public class User {
     private int id;
     private LocalDate dateOfBirth;
@@ -18,7 +18,7 @@ public class User {
     private String password;
     private String phone;
     private String userid;
-    private List<Rolle> roles;
+    //private List<Rolle> roles;
 
     @Id
     @GeneratedValue
@@ -131,9 +131,9 @@ public class User {
     public int hashCode() {
         return Objects.hash(id, dateOfBirth, email, firstName, lastName, occupation, password, phone, userid);
     }
-
+/*
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_to_rolle", catalog = "demouser",
+    @JoinTable(name = "user_to_rolle", catalog = "sdzeut2s",
             schema = "carlook",
             joinColumns = @JoinColumn(name = "userid", referencedColumnName = "id", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "bezeichnung", referencedColumnName = "bezeichhnung", nullable = false))
@@ -144,4 +144,6 @@ public class User {
     public void setRoles(List<Rolle> roles) {
         this.roles = roles;
     }
+
+ */
 }

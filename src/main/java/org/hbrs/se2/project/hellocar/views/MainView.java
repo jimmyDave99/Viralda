@@ -2,8 +2,11 @@ package org.hbrs.se2.project.hellocar.views;
 
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.login.LoginForm;
+import com.vaadin.flow.component.login.LoginOverlay;
+import com.vaadin.flow.component.login.LoginI18n;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
@@ -12,6 +15,7 @@ import org.hbrs.se2.project.hellocar.control.exception.DatabaseUserException;
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 import org.hbrs.se2.project.hellocar.util.Globals;
 import org.springframework.beans.factory.annotation.Autowired;
+
 
 /**
  * View zur Darstellung der Startseite. Diese zeigt dem Benutzer ein Login-Formular an.
@@ -26,9 +30,38 @@ public class MainView extends VerticalLayout {
 
     public MainView() {
         setSizeFull();
-        LoginForm component = new LoginForm();
 
-        component.addLoginListener(e -> {
+        //Login with internationalization -> German
+        LoginI18n i18n = LoginI18n.createDefault();
+
+        /*
+        LoginI18n.Header i18nHeader = i18n.getHeader();
+        i18nHeader.setTitle("Coll@H-BRS");
+        i18nHeader.setDescription("Ihre Plattform für regionales Networking");
+         */
+
+        LoginI18n.Form i18nForm = i18n.getForm();
+        i18nForm.setTitle("Anmeldung");
+        i18nForm.setUsername("Emailadresse");
+        i18nForm.setPassword("Passwort");
+        i18nForm.setSubmit("Anmelden");
+        i18nForm.setForgotPassword("Passwort vergessen?");
+        i18n.setForm(i18nForm);
+
+        LoginI18n.ErrorMessage i18nErrorMessage = i18n.getErrorMessage();
+        i18nErrorMessage.setTitle("Überprüfen Sie ihre Emailadresse oder ihr Passwort!");
+        i18nErrorMessage.setMessage("Versuchen Sie Ihre Anmeldedaten nochmals einzugeben.");
+        i18n.setErrorMessage(i18nErrorMessage);
+
+        i18n.setAdditionalInformation("Sie haben noch keinen Account? Hier geht's zur Registrierung.");
+
+        //LoginOverlay loginOverlay = new LoginOverlay();
+        //loginOverlay.setI18n(i18n);
+
+        LoginForm loginForm =  new LoginForm();
+        loginForm.setI18n(i18n);
+
+        loginForm.addLoginListener(e -> {
 
             boolean isAuthenticated = false;
             try {
@@ -47,11 +80,14 @@ public class MainView extends VerticalLayout {
 
             } else {
                 // Kann noch optimiert werden
-                component.setError(true);
+                loginForm.setError(true);
             }
         });
 
-        add(component);
+        Button registration = new Button("Registrieren");
+        registration.addClickListener( event -> navigateToRegistrationPage());
+        add(loginForm, registration);
+        //loginOverlay.setOpened(true);
         this.setAlignItems( Alignment.CENTER );
     }
 
@@ -62,10 +98,14 @@ public class MainView extends VerticalLayout {
 
 
     private void navigateToMainPage() {
-        // Navigation zur Startseite, hier auf die Teil-Komponente Show-Cars.
-        // Die anzuzeigende Teil-Komponente kann man noch individualisieren, je nach Rolle,
-        // die ein Benutzer besitzt
-        UI.getCurrent().navigate(Globals.Pages.SHOW_CARS);
+        // Navigation zur Startseite.
+        UI.getCurrent().navigate("main");
+
+    }
+
+    private void navigateToRegistrationPage() {
+        // Navigation zur Registrierung.
+        UI.getCurrent().navigate(Globals.Pages.REGISTRATION_VIEW);
 
     }
 }
