@@ -4,10 +4,12 @@ import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import com.vaadin.flow.component.textfield.EmailField;
+import com.vaadin.flow.component.textfield.PasswordField;
 import org.hbrs.se2.project.hellocar.control.RegistrationControl;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
@@ -33,9 +35,11 @@ public class RegistrationView extends VerticalLayout {
     private RadioButtonGroup<String> userGroup = new RadioButtonGroup<>();
 
     private EmailField email = new EmailField("E-Mail");
-    private TextField password = new TextField("Passwort");
+    private PasswordField password = new PasswordField("Passwort");
+    private PasswordField comfirmPassword = new PasswordField("Passwort bestätigen");
     private TextField firstName = new TextField( "Vorname");
     private TextField lastName = new TextField( "Name");
+    private TextField companyName = new TextField( "Unternehmensname");
     private DatePicker dateOfBirth = new DatePicker("Geburtsdatum");
     private Checkbox termsOfService = new Checkbox("Hiermit bestätige ich die Endnutzervereinbarung.");
 
@@ -50,6 +54,23 @@ public class RegistrationView extends VerticalLayout {
         add(createTitle());
         add(createFormLayout());
         add(createButtonLayout());
+        userGroup.addValueChangeListener( event -> {
+            if(userGroup.getValue().equals(new String("Student"))) {
+                removeAll();
+                add(createTitle());
+                add(createStudentFormLayout());
+                add(createButtonLayout());
+
+            } else {
+                removeAll();
+                add(createTitle());
+                add(createCompanyFormLayout());
+                add(createButtonLayout());
+                remove(firstName, lastName);
+            }
+        });
+
+
 
         // Default Mapping of User attributes and the names of this View based on names
         // Source: https://vaadin.com/docs/flow/binding-data/tutorial-flow-components-binder-beans.html
@@ -75,7 +96,7 @@ public class RegistrationView extends VerticalLayout {
     }
 
     private Component createTitle() {
-        return new H3("Registrierung");
+        return new H2("Registrierung");
     }
 
     private Component createFormLayout() {
@@ -86,7 +107,39 @@ public class RegistrationView extends VerticalLayout {
         email.setValue("julia.scheider@email.com");
         email.setErrorMessage("Please enter a valid email address");
         FormLayout formLayout = new FormLayout();
-        formLayout.add(userGroup, email, firstName, lastName, password, dateOfBirth, termsOfService);
+        formLayout.add(
+                userGroup,
+                email,
+                password,
+                comfirmPassword,
+                termsOfService);
+        formLayout.setResponsiveSteps( new FormLayout.ResponsiveStep("0",1));
+        return formLayout;
+    }
+
+    private Component createStudentFormLayout() {
+        FormLayout formLayout = new FormLayout();
+        formLayout.add(
+                userGroup,
+                email,
+                password,
+                comfirmPassword,
+                firstName,
+                lastName,
+                termsOfService);
+        formLayout.setResponsiveSteps( new FormLayout.ResponsiveStep("0",1));
+        return formLayout;
+    }
+    private Component createCompanyFormLayout() {
+        FormLayout formLayout = new FormLayout();
+        formLayout.add(
+                userGroup,
+                email,
+                password,
+                comfirmPassword,
+                companyName,
+                termsOfService);
+        formLayout.setResponsiveSteps( new FormLayout.ResponsiveStep("0",1));
         return formLayout;
     }
 
