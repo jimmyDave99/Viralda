@@ -21,7 +21,4 @@
     height: var(--lumo-size-m);
     width: var(--lumo-size-m);
 }
-.register-user .name {
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+
