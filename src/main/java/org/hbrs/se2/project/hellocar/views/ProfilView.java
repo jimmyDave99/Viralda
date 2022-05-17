@@ -29,18 +29,24 @@ public class ProfilView extends Div {
     private final Tab settings;
     private final Tab notifications;
 
+    private Label emailShow = new Label("E-Mail-Adresse: ");
+    private Label firstNameShow = new Label("Vorname: ");
+    private Label lastNameShow = new Label("Name: ");
+    private Label dateOfBirthShow = new Label("Geburtstag: ");
+    private Label roleShow = new Label("Rolle: ");
+
     private final VerticalLayout content;
 
     private Button cancel = new Button("Abbrechen");
     private Button save = new Button("Speichern");
     private Button editProfil = new Button("Profil bearbeiten");
 
-    private EmailField email = new EmailField("E-Mail");
-    private TextField password = new TextField("Passwort");
-    private TextField passwordAgain = new TextField("Passwort wiederholen");
-    private TextField firstName = new TextField( "Vorname");
-    private TextField lastName = new TextField( "Name");
-    private DatePicker dateOfBirth = new DatePicker("Geburtsdatum");
+    private EmailField emailEdit = new EmailField("E-Mail");
+    private TextField passwordEdit = new TextField("Passwort");
+    private TextField passwordAgainEdit = new TextField("Passwort wiederholen");
+    private TextField firstNameEdit = new TextField( "Vorname");
+    private TextField lastNameEdit = new TextField( "Name");
+    private DatePicker dateOfBirthEdit = new DatePicker("Geburtsdatum");
 
     private Checkbox savestOptions = new Checkbox("Die besten Sicherheitseinstellungen verwenden.");
     private Checkbox getNotifications = new Checkbox("Benachrichtigungen erhalten.");
@@ -134,13 +140,14 @@ public class ProfilView extends Div {
         //email.getElement().setAttribute("name", "email");
 
         FormLayout formLayout = new FormLayout();
+        formLayout.add(emailShow, firstNameShow, dateOfBirthShow, lastNameShow);
 
         return formLayout;
     }
 
     private Component createFormLayoutEditProfile() {
         FormLayout formLayout = new FormLayout();
-        formLayout.add(email, firstName, password, lastName, passwordAgain, dateOfBirth);
+        formLayout.add(emailEdit, firstNameEdit, passwordEdit, lastNameEdit, passwordAgainEdit, dateOfBirthEdit);
         return formLayout;
     }
 
@@ -155,6 +162,7 @@ public class ProfilView extends Div {
         content.removeAll();
 
         content.add(createButtonLayoutShowProfile());
+        content.add(createFormLayoutShowProfile());
     }
 
     private void navigateToSubBarShowProfilWithSave() {
@@ -163,5 +171,6 @@ public class ProfilView extends Div {
         //ToDo: save new input
 
         content.add(createButtonLayoutShowProfile());
+        content.add(createFormLayoutShowProfile());
     }
 }
