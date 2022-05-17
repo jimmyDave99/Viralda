@@ -1,39 +1,24 @@
 package org.hbrs.se2.project.hellocar.views;
 
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.Text;
-import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.applayout.AppLayout;
-import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
-import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.dependency.JsModule;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.menubar.MenuBar;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.TabVariant;
 import com.vaadin.flow.component.tabs.Tabs;
-import com.vaadin.flow.component.tabs.TabsVariant;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.*;
-import com.vaadin.flow.server.PWA;
 //import org.hbrs.se2.project.hellocar.control.AuthorizationControl;
-import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 import org.hbrs.se2.project.hellocar.util.Globals;
-import org.hbrs.se2.project.hellocar.util.Utils;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Arrays;
-import java.util.Optional;
 
 @Route(value = Globals.Pages.PROFIL_VIEW, layout = AppView.class)
 @PageTitle("Profil")
@@ -88,8 +73,7 @@ public class ProfilView extends Div {
 
         Tabs tabs = new Tabs(profile, settings, notifications);
 
-        tabs.addSelectedChangeListener( selectedChangeEvent ->
-                setContent(selectedChangeEvent.getSelectedTab()));
+        tabs.addSelectedChangeListener( event -> setContent( event.getSelectedTab() ) );
 
         // Content for the tabs
         content = new VerticalLayout();
@@ -106,8 +90,9 @@ public class ProfilView extends Div {
         content.removeAll();
 
         if ( tab.equals( profile ) ) {
-            content.add(createButtonLayoutTabProfile());
-            //ToDo: add context for button editProfile
+            content.add(createButtonLayoutShowProfile());
+            //ToDo: add context for button editProfile, idea: Split Layout, Upload
+            content.add(createFormLayoutShowProfile());
 
         } else if ( tab.equals( settings ) ) {
             content.add(new H4("Sicherheitseinstellungen"));
@@ -123,10 +108,60 @@ public class ProfilView extends Div {
         }
     }
 
-    private Component createButtonLayoutTabProfile() {
+
+
+    private Component createButtonLayoutShowProfile() {
+        HorizontalLayout buttonLayout = new HorizontalLayout();
+
+        buttonLayout.add(editProfil);
+        editProfil.addClickListener(event  -> navigateToSubBarEditProfile());
+
+        return buttonLayout;
+    }
+
+    private Component createButtonLayoutTabProfileEdit() {
         HorizontalLayout buttonLayout = new HorizontalLayout();
         //buttonLayout.addClassName("button-layout-tab-profile");
-        buttonLayout.add(editProfil);
+        buttonLayout.add(save);
+        buttonLayout.add(cancel);
+
+        cancel.addClickListener(event -> navigateToSubBarShowProfilWithoutSave() );
+        save.addClickListener(event -> navigateToSubBarShowProfilWithSave());
         return buttonLayout;
+    }
+
+    private Component createFormLayoutShowProfile() {
+        //email.getElement().setAttribute("name", "email");
+
+        FormLayout formLayout = new FormLayout();
+
+        return formLayout;
+    }
+
+    private Component createFormLayoutEditProfile() {
+        FormLayout formLayout = new FormLayout();
+        formLayout.add(email, firstName, password, lastName, passwordAgain, dateOfBirth);
+        return formLayout;
+    }
+
+    private void navigateToSubBarEditProfile() {
+        content.removeAll();
+
+        content.add(createButtonLayoutTabProfileEdit());
+        content.add(createFormLayoutEditProfile());
+    }
+
+    private void navigateToSubBarShowProfilWithoutSave() {
+        content.removeAll();
+
+        content.add(createButtonLayoutShowProfile());
+    }
+
+    private void navigateToSubBarShowProfilWithSave() {
+        content.removeAll();
+
+        //ToDo: save new input
+
+        content.add(createButtonLayoutShowProfile());
     }
 }
