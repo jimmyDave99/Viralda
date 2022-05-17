@@ -6,6 +6,7 @@ import org.hbrs.se2.project.hellocar.services.db.JDBCConnection;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
 import org.hbrs.se2.project.hellocar.util.Globals;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -35,9 +36,9 @@ public class UserDAO {
 
             set = statement.executeQuery(
                     "SELECT * "
-                       + "FROM collathbrs.user "
-                       + "WHERE collathbrs.user.email = \'" + email + "\'"
-                         + "AND collathbrs.user.passwort = \'" + password + "\'");
+                            + "FROM collathbrs.user "
+                            + "WHERE collathbrs.user.email = \'" + email + "\'"
+                            + "AND collathbrs.user.passwort = \'" + password + "\'");
 
             // JDBCConnection.getInstance().closeConnection();
 
@@ -81,5 +82,52 @@ public class UserDAO {
 
     }
 
+    public void insertUser(UserDTO userDTO, String password) throws DatabaseLayerException {
+
+        // Exception für UserDTO leer fehlt noch oder kommt das in RegistrationControl?
+
+        try {
+            PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement("INSERT" +
+                    "INTO collathbrs.user VALUES (?,?,?,?,?)");
+
+            statement.setString(1, String.valueOf(userDTO.getId()));
+            statement.setString(2, userDTO.getEmail());
+            statement.setString(3, userDTO.getPassword());
+            statement.setString(4, userDTO.rolle.getBezeichnung());
+            statement.setNull(5, java.sql.Types.NULL);
+
+            statement.executeUpdate();
+
+            if (userDTO.rolle.getBezeichnung().equals("student")) {
+                PreparedStatement studentStatement = JDBCConnection.getInstance().getPreparedStatement("INSERT" +
+                        "INTO collathbrs.student VALUES (?,?,?,?)");
+
+                studentStatement.setString(1, String.valueOf(userDTO.getStudentId()));
+                studentStatement.setString(2, String.valueOf(userDTO.getId()));
+                studentStatement.setString(3, userDTO.getFirstName());
+                studentStatement.setString(4, userDTO.getLastName());
+
+                studentStatement.executeUpdate();
+
+            } else if (userDTO.rolle.getBezeichnung().equals("unternehmen")) {
+                PreparedStatement unternehmenStatement = JDBCConnection.getInstance().getPreparedStatement("INSERT" +
+                        "INTO collathbrs.unternehmen VALUES (?,?,?,?,?)");
+
+                unternehmenStatement.setString(1, String.valueOf(userDTO.getUnternehmenId()));
+                unternehmenStatement.setString(2, String.valueOf(userDTO.getId()));
+                unternehmenStatement.setString(3, userDTO.getUName());
+                unternehmenStatement.setString(4, userDTO.getBranche());
+                unternehmenStatement.setString(5, userDTO.getBeschreibung());
+
+                unternehmenStatement.executeUpdate();
+            }
+
+        } catch (SQLException ex) {
+            DatabaseLayerException e = new DatabaseLayerException("Probleme mit der Datenbank");
+            e.setReason(Globals.Errors.DATABASE);
+            throw e;
+
+        }
+    }
 
 }

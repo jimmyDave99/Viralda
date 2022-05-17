@@ -1,5 +1,6 @@
 package org.hbrs.se2.project.hellocar.test;
 
+import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
 import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,23 +28,28 @@ class UserDAOTest {
         // create new user instance
         UserDTOImpl newUser = new UserDTOImpl();
         newUser.setUserId(0);
+        newUser.setEmail("hp@test.de");
         newUser.setFirstName("Hans");
         newUser.setLastName("Peter");
-
-        List<RolleDTO> roles = new ArrayList<>();
-        RolleDTOImpl role = new RolleDTOImpl();
-        role.setBezeichnung("User");
-        roles.add(role);
-        newUser.setRoles(roles);
+        newUser.setRole("User");
 
         // create user in database
-        userDAO.createUser(newUser, "test");
+        try {
+            userDAO.insertUser(newUser, "test");
+        } catch (DatabaseLayerException e) {
+            e.printStackTrace();
+        }
 
         // search user with wrong password
-        assertThrows(Exception.class, () -> { userDAO.findUser(0, "hallo"); });
+        assertThrows(DatabaseLayerException.class, () -> { userDAO.findUserByUserEmailAndPassword("hp@test.de", "hallo"); });
 
         // search user in database
-        UserDTO user = userDAO.findUser(0, "test");
+        UserDTO user = null;
+        try {
+            user = userDAO.findUserByUserEmailAndPassword("hp@test.de", "test");
+        } catch (DatabaseLayerException e) {
+            e.printStackTrace();
+        }
 
         assertEquals(newUser.getFirstName(), user.getFirstName());
         assertEquals(newUser.getLastName(), user.getLastName());
@@ -52,7 +58,7 @@ class UserDAOTest {
         newUser.setFirstName("Fritz");
         userDAO.updateUser(newUser);
 
-        user = userDAO.findUser("0", "test");
+        user = userDAO.findUserByUserEmailAndPassword(0, "test");
 
         assertEquals(newUser.getFirstName(), user.getFirstName());
         assertEquals(newUser.getLastName(), user.getLastName());
@@ -60,7 +66,7 @@ class UserDAOTest {
         // delete user in database
         userDAO.deleteUser("0");
 
-        assertThrows(Exception.class, () -> { userDAO.findUser("0", "test"); });
+        assertThrows(DatabaseLayerException.class, () -> { userDAO.findUserByUserEmailAndPassword("hp@test.de", "test"); });
     }
 
     @Test
@@ -71,13 +77,8 @@ class UserDAOTest {
         newUser.setUserId(0);
         newUser.setFirstName(""); // ungültig
         newUser.setLastName("Peter");
+        newUser.setRole("");
 
-        List<RolleDTO> roles = new ArrayList<>();
-        RolleDTOImpl role = new RolleDTOImpl();
-        role.setBezeichnung("User");
-        roles.add(role);
-        newUser.setRoles(roles);
-
-        assertThrows(Exception.class, () -> { userDAO.createUser(newUser, "test"); });
+        assertThrows(DatabaseLayerException.class, () -> { userDAO.insertUser(newUser, "test"); });
     }
 }
