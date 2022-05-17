@@ -1,8 +1,6 @@
 package org.hbrs.se2.project.hellocar.views;
 
-import com.vaadin.flow.component.ComponentEvent;
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -10,8 +8,9 @@ import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
+import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.data.validator.EmailValidator;
 import org.hbrs.se2.project.hellocar.control.RegistrationControl;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -22,6 +21,7 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.hbrs.se2.project.hellocar.dtos.impl.UserDTOImpl;
@@ -40,7 +40,6 @@ public class RegistrationView extends VerticalLayout {
     private TextField firstName = new TextField( "Vorname");
     private TextField lastName = new TextField( "Name");
     private TextField companyName = new TextField( "Unternehmensname");
-    private DatePicker dateOfBirth = new DatePicker("Geburtsdatum");
     private Checkbox termsOfService = new Checkbox("Hiermit bestätige ich die Endnutzervereinbarung.");
 
     private Button cancel = new Button("Abbrechen");
@@ -66,7 +65,6 @@ public class RegistrationView extends VerticalLayout {
                 add(createTitle());
                 add(createCompanyFormLayout());
                 add(createButtonLayout());
-                remove(firstName, lastName);
             }
         });
 
@@ -104,8 +102,11 @@ public class RegistrationView extends VerticalLayout {
         userGroup.setLabel("Benutzer");
         userGroup.setItems("Student", "Unternehmen");
         email.getElement().setAttribute("name", "email");
-        email.setValue("julia.scheider@email.com");
-        email.setErrorMessage("Please enter a valid email address");
+        email.setValue("random@test.de");
+        email.setErrorMessage("Geben Sie bitte eine gültige Emailadresse ein!");
+        password.setHelperText("Ein Passwort muss mind. 8 Zeichen lang sein. Es muss aus mind. einem Buchstaben und einer Zahl bestehen.");;
+        password.setPattern("^(?=.*[0-9])(?=.*[a-zA-Z]).{8}.*$");
+        password.setErrorMessage("Kein valides Passwort!");
         FormLayout formLayout = new FormLayout();
         formLayout.add(
                 userGroup,
@@ -147,8 +148,11 @@ public class RegistrationView extends VerticalLayout {
         HorizontalLayout buttonLayout = new HorizontalLayout();
         buttonLayout.addClassName("button-layout");
         register.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        register.addClickShortcut(Key.ENTER);
+        cancel.addClickShortcut(Key.ESCAPE);
         buttonLayout.add(register);
         buttonLayout.add(cancel);
+        binder.addStatusChangeListener(e -> register.setEnabled(binder.isValid()));
         return buttonLayout;
     }
 
@@ -157,5 +161,6 @@ public class RegistrationView extends VerticalLayout {
         UI.getCurrent().navigate(Globals.Pages.LOGIN_VIEW);
 
     }
+
 
 }
