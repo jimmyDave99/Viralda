@@ -9,9 +9,7 @@ import java.util.List;
 
 import org.hbrs.se2.project.hellocar.dao.UserDAO;
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
-import org.hbrs.se2.project.hellocar.dtos.RolleDTO;
 import org.hbrs.se2.project.hellocar.dtos.impl.UserDTOImpl;
-import org.hbrs.se2.project.hellocar.dtos.impl.RolleDTOImpl;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

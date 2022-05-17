@@ -8,7 +8,7 @@ public interface UserDTO {
     //Setter
     void setUserId(int userId);
     void setEmail(String email);
-    void setRoles(List<RolleDTO> roles);
+    void setRole(String role);
     void setProfilePicture(BufferedImage profilePicture);
     void setPlz(int plz);
     void setLand(String land);
@@ -26,7 +26,7 @@ public interface UserDTO {
     //Getter
     int getUserId();
     String getEmail();
-    List<RolleDTO> getRoles();
+    String getRole();
     BufferedImage getProfilePicture();
     int getPlz();
     String getLand();

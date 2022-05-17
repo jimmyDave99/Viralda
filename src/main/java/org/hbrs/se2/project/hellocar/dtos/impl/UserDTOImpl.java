@@ -1,10 +1,8 @@
 package org.hbrs.se2.project.hellocar.dtos.impl;
 
-import org.hbrs.se2.project.hellocar.dtos.RolleDTO;
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 
 import java.awt.image.BufferedImage;
-import java.time.LocalDate;
 import java.util.List;
 
 public class UserDTOImpl implements UserDTO {
@@ -12,7 +10,7 @@ public class UserDTOImpl implements UserDTO {
     //User
     private int userId;
     private String email;
-    private List<RolleDTO> roles;
+    private String role;
     private BufferedImage profilePicture;
 
     //Useranschrift
@@ -45,8 +43,8 @@ public class UserDTOImpl implements UserDTO {
     }
 
     @Override
-    public void setRoles(List<RolleDTO> roles) {
-        this.roles = roles;
+    public void setRole(String role) {
+        this.role = role;
     }
 
     @Override
@@ -126,8 +124,8 @@ public class UserDTOImpl implements UserDTO {
     }
 
     @Override
-    public List<RolleDTO> getRoles() {
-        return this.roles;
+    public String getRole() {
+        return this.role;
     }
 
     @Override
