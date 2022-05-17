@@ -39,14 +39,14 @@ import java.util.Optional;
  */
 @Route(value = Globals.Pages.LANDING_PAGE_COMPANY_VIEW, layout = AppView.class)
 @PageTitle("Startseite")
-@CssImport(".styles/views/showcars/show-cars-view.css")
+@CssImport("./styles/views/landingpage/landing-page.css")
 public class LandingPageCompanyView extends Div {
 
     //ToDO: muss nach Einbindung Datenbank noch angepasst werden
     //private List<> employmentAds;
 
     public LandingPageCompanyView() {
-        addClassName("show-cars-view");
+        addClassName("landing-page");
 
         add(createTitle());
         add(createFormLayout());

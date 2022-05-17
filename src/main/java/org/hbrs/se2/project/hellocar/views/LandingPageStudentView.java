@@ -38,12 +38,15 @@ import java.util.Optional;
 
 @Route(value = Globals.Pages.LANDING_PAGE_STUDENT_VIEW, layout = AppView.class)
 @PageTitle("Startseite")
+@CssImport("./styles/views/landingpage/landing-page.css")
 public class LandingPageStudentView extends Div {
 
     //ToDO: muss nach Einbindung Datenbank noch angepasst werden
     //private List<> employmentAds;
 
     public LandingPageStudentView() {
+        addClassName("landing-page");
+
         add(createTitle());
 
         //ToDO: generische Typ ersetzen

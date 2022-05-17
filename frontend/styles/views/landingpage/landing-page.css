@@ -1,0 +1,27 @@
+.landing-page {
+    display: block;
+    height: 100%;
+    margin: 0 auto;
+    max-width: 1024px;
+    padding: 0 var(--lumo-space-l);
+}
+.landing-page vaadin-grid-pro {
+    height: 100%;
+}
+.landing-page vaadin-grid-filter,
+.landing-page vaadin-grid-filter > * {
+    width: 100%;
+}
+.landing-page vaadin-grid-pro vaadin-horizontal-layout {
+    align-items: center;
+}
+.landing-page vaadin-grid-pro img {
+    border-radius: 10%;
+    flex-shrink: 0;
+    height: var(--lumo-size-m);
+    width: var(--lumo-size-m);
+}
+.landing-page .name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
