@@ -63,5 +63,5 @@ public class LandingPageStudentView extends Div {
 
     }
 
-    private Component createTitle() { return new H3("Stellenazeigen"); }
+    private Component createTitle() { return new H2("Stellenanzeigen"); }
 }

@@ -12,10 +12,7 @@ import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -66,7 +63,7 @@ public class LandingPageCompanyView extends Div {
 
     }
 
-    private Component createTitle() { return new H3("Stellenazeigen von 'Platzhalter unternehmen'"); }
+    private Component createTitle() { return new H2("Stellenanzeigen von 'Platzhalter unternehmen'"); }
     private Component createFormLayout() {
         FormLayout formLayout = new FormLayout();
         return formLayout;

@@ -11,6 +11,7 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -32,5 +33,15 @@ import java.util.Optional;
 
 @Route(value = Globals.Pages.PROFIL_VIEW, layout = AppView.class)
 @PageTitle("Profil")
-public class ProfilView extends VerticalLayout {
+@CssImport("./styles/views/profile/profile.css")
+public class ProfilView extends HorizontalLayout {
+
+    public ProfilView() {
+        addClassName("profile");
+
+        add(createTitle());
+    }
+
+    private Component createTitle() { return new H2("Profil von 'Name' 'Nachname' ");
+    }
 }
