@@ -7,7 +7,9 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.contextmenu.MenuItem;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.html.*;
@@ -20,6 +22,8 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.TabVariant;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.tabs.TabsVariant;
+import com.vaadin.flow.component.textfield.EmailField;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.PWA;
 //import org.hbrs.se2.project.hellocar.control.AuthorizationControl;
@@ -42,8 +46,19 @@ public class ProfilView extends Div {
 
     private final VerticalLayout content;
 
+    private Button cancel = new Button("Abbrechen");
     private Button save = new Button("Speichern");
-    private Button edit = new Button("Bearbeiten");
+    private Button editProfil = new Button("Profil bearbeiten");
+
+    private EmailField email = new EmailField("E-Mail");
+    private TextField password = new TextField("Passwort");
+    private TextField passwordAgain = new TextField("Passwort wiederholen");
+    private TextField firstName = new TextField( "Vorname");
+    private TextField lastName = new TextField( "Name");
+    private DatePicker dateOfBirth = new DatePicker("Geburtsdatum");
+
+    private Checkbox savestOptions = new Checkbox("Die besten Sicherheitseinstellungen verwenden.");
+    private Checkbox getNotifications = new Checkbox("Benachrichtigungen erhalten.");
 
     public ProfilView() {
         addClassName("profile");
@@ -92,22 +107,26 @@ public class ProfilView extends Div {
 
         if ( tab.equals( profile ) ) {
             content.add(createButtonLayoutTabProfile());
+            //ToDo: add context for button editProfile
 
         } else if ( tab.equals( settings ) ) {
-            content.add(new Paragraph("Sicherheitseinstellungen"));
-            content.add(new Paragraph("Privatssphäreeinstellungen"));
-            content.add(new H3("Sonstiges"));
+            content.add(new H4("Sicherheitseinstellungen"));
+            content.add(savestOptions);
+            content.add(new H4("Privatssphäreeinstellungen"));
+            content.add(getNotifications);
+            content.add(new H4("Sonstiges"));
 
         } else if ( tab.equals( notifications ) ) {
-            content.add(new Text("Beispieltext in vielleicht einer ganzen Zeile."));
+            content.add(new Paragraph("Du hast keine neuen Benachrichtigungen!"));
+            content.add(new Text("Möchtest du dich nicht bewerben um das zu ändern?"));
+            content.add(new Text(" Besser wäre es."));
         }
     }
 
     private Component createButtonLayoutTabProfile() {
         HorizontalLayout buttonLayout = new HorizontalLayout();
         //buttonLayout.addClassName("button-layout-tab-profile");
-        buttonLayout.add(save);
-        buttonLayout.add(edit);
+        buttonLayout.add(editProfil);
         return buttonLayout;
     }
 }
