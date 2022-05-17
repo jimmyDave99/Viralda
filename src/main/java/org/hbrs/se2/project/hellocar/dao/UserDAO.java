@@ -60,7 +60,7 @@ public class UserDAO {
                 // Durchführung des Object-Relational-Mapping (ORM)
 
                 user = new UserDTOImpl();
-                user.setId( set.getInt(1));
+                user.setUserId( set.getInt(1));
                 user.setEmail(set.getString(2));
 
                 return user;
@@ -90,34 +90,34 @@ public class UserDAO {
             PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement("INSERT" +
                     "INTO collathbrs.user VALUES (?,?,?,?,?)");
 
-            statement.setString(1, String.valueOf(userDTO.getId()));
+            statement.setString(1, String.valueOf(userDTO.getUserId()));
             statement.setString(2, userDTO.getEmail());
             statement.setString(3, userDTO.getPassword());
-            statement.setString(4, userDTO.rolle.getBezeichnung());
+            statement.setString(4, userDTO.getRole());
             statement.setNull(5, java.sql.Types.NULL);
 
             statement.executeUpdate();
 
-            if (userDTO.rolle.getBezeichnung().equals("student")) {
+            if (userDTO.getRole().equals("student")) {
                 PreparedStatement studentStatement = JDBCConnection.getInstance().getPreparedStatement("INSERT" +
                         "INTO collathbrs.student VALUES (?,?,?,?)");
 
                 studentStatement.setString(1, String.valueOf(userDTO.getStudentId()));
-                studentStatement.setString(2, String.valueOf(userDTO.getId()));
+                studentStatement.setString(2, String.valueOf(userDTO.getUserId()));
                 studentStatement.setString(3, userDTO.getFirstName());
                 studentStatement.setString(4, userDTO.getLastName());
 
                 studentStatement.executeUpdate();
 
-            } else if (userDTO.rolle.getBezeichnung().equals("unternehmen")) {
+            } else if (userDTO.getRole().equals("unternehmen")) {
                 PreparedStatement unternehmenStatement = JDBCConnection.getInstance().getPreparedStatement("INSERT" +
                         "INTO collathbrs.unternehmen VALUES (?,?,?,?,?)");
 
                 unternehmenStatement.setString(1, String.valueOf(userDTO.getUnternehmenId()));
-                unternehmenStatement.setString(2, String.valueOf(userDTO.getId()));
-                unternehmenStatement.setString(3, userDTO.getUName());
+                unternehmenStatement.setString(2, String.valueOf(userDTO.getUserId()));
+                unternehmenStatement.setString(3, userDTO.getUnternehmenName());
                 unternehmenStatement.setString(4, userDTO.getBranche());
-                unternehmenStatement.setString(5, userDTO.getBeschreibung());
+                unternehmenStatement.setString(5, userDTO.getDescription());
 
                 unternehmenStatement.executeUpdate();
             }

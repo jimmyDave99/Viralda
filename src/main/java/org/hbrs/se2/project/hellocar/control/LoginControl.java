@@ -3,24 +3,17 @@ package org.hbrs.se2.project.hellocar.control;
 import org.hbrs.se2.project.hellocar.control.exception.DatabaseUserException;
 import org.hbrs.se2.project.hellocar.dao.UserDAO;
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
-import org.hbrs.se2.project.hellocar.repository.UserRepository;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
 import org.hbrs.se2.project.hellocar.util.Globals;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
 @Component
 public class LoginControl {
 
-    @Autowired
-    private UserRepository repository;
-
     private UserDTO userDTO = null;
 
     public boolean authentificate(String username, String password ) throws DatabaseUserException {
-        // Standard: User wird mit Spring JPA ausgelesen (Was sind die Vorteile?)
-        //UserDTO tmpUser = this.getUserWithJPA( username , password );
 
         // Alternative: Auslesen des Users mit JDBC (Was sind die Vorteile bzw. Nachteile?)
         UserDTO tmpUser = this.getUserWithJDBC( username , password );
@@ -69,15 +62,5 @@ public class LoginControl {
         return userDTO;
     }
 
-    private UserDTO getUserWithJPA( String email , String password ) throws DatabaseUserException {
-        UserDTO userTmp;
-        try {
-            userTmp = repository.findUserByEmailAndPassword(email, password);
-        } catch ( org.springframework.dao.DataAccessResourceFailureException e ) {
-            // Analyse und Umwandlung der technischen Errors in 'lesbaren' Darstellungen (ToDo!)
-           throw new DatabaseUserException("A failure occured while trying to connect to database with JPA");
-        }
-        return userTmp;
-    }
 
 }

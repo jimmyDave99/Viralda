@@ -11,6 +11,7 @@ public class UserDTOImpl implements UserDTO {
     private int userId;
     private String email;
     private String role;
+    private String password;
     private BufferedImage profilePicture;
 
     //Useranschrift
@@ -46,6 +47,9 @@ public class UserDTOImpl implements UserDTO {
     public void setRole(String role) {
         this.role = role;
     }
+
+    @Override
+    public void setPassword(String password){ this.password = password; }
 
     @Override
     public void setProfilePicture(BufferedImage profilePicture) {
@@ -127,6 +131,9 @@ public class UserDTOImpl implements UserDTO {
     public String getRole() {
         return this.role;
     }
+
+    @Override
+    public String getPassword(){ return this.password; }
 
     @Override
     public BufferedImage getProfilePicture() {

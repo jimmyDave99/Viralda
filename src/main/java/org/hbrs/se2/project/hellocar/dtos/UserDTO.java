@@ -9,6 +9,7 @@ public interface UserDTO {
     void setUserId(int userId);
     void setEmail(String email);
     void setRole(String role);
+    void setPassword(String password);
     void setProfilePicture(BufferedImage profilePicture);
     void setPlz(int plz);
     void setLand(String land);
@@ -27,6 +28,7 @@ public interface UserDTO {
     int getUserId();
     String getEmail();
     String getRole();
+    String getPassword();
     BufferedImage getProfilePicture();
     int getPlz();
     String getLand();

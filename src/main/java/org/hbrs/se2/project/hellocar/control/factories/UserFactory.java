@@ -1,20 +1,21 @@
 package org.hbrs.se2.project.hellocar.control.factories;
 
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
-import org.hbrs.se2.project.hellocar.entities.User;
+import org.hbrs.se2.project.hellocar.dtos.impl.UserDTOImpl;
 
 public class UserFactory {
-    public static User createUser(UserDTO userDTO) {
+    public static UserDTOImpl createUser(UserDTO userDTO) {
         // Erzeuge ein User-Entity; die ID wird intern hochgezählt (@GeneratedValue auf ID)
-        User user = new User();
+        UserDTOImpl user = new UserDTOImpl();
         // ID könnte man ggf. noch mal anpassen: car.setID( xx );
 
         // Übernehme die Grundparameter aus dem DTO, also den Werten, die in der UI eingegeben wurden:
         user.setEmail( userDTO.getEmail() );
         user.setFirstName( userDTO.getFirstName() );
         user.setLastName( userDTO.getLastName() );
+        user.setUnternehmenName(userDTO.getUnternehmenName());
         user.setPassword( userDTO.getPassword() );
-        user.setDateOfBirth( userDTO.getDateOfBirth() );
+        user.setRole( userDTO.getRole() );
 
         // und zurück das gute Stück:
         return user;
