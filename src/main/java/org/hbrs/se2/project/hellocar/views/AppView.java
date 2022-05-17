@@ -1,5 +1,7 @@
 package org.hbrs.se2.project.hellocar.views;
 
+//import com.vaadin.flow.component.grid.contextmenu.
+
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.UI;
@@ -52,6 +54,18 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
         }
     }
 
+    /*
+    private void addDependencies() {
+        UI.getCurrent().getPage()
+                .addJavaScript("/js/script.js");
+        UI.getCurrent().getPage()
+                .addHtmlImport("/html/htmlimport.html");
+        // external JavaScript module
+        UI.getCurrent().getPage()
+                .addJsModule("https://unpkg.com/lodash@4.17.15");
+    }
+     */
+
     public void setUpUI() {
         // Anzeige des Toggles über den Drawer
         setPrimarySection(Section.DRAWER);
@@ -103,6 +117,16 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
         // Der Name des Users wird später reingesetzt, falls die Navigation stattfindet
         helloUser = new H1();
         topRightPanel.add(helloUser);
+
+        //Hinzufügen des Profilbuttons als Profilbild
+        /*
+        ToDO: (vielleicht) Abfrage, ob User ein Profilbild hochgeladen hat
+        if (Profilbildabfrage positiv) {
+
+        } else {
+
+        }
+         */
 
         // Profil-Button am rechten oberen Rand.
         MenuBar bar = new MenuBar();
