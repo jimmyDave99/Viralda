@@ -36,9 +36,9 @@ public class UserDAO {
 
             set = statement.executeQuery(
                     "SELECT * "
-                       + "FROM collathbrs.user "
-                       + "WHERE collathbrs.user.email = \'" + email + "\'"
-                         + "AND collathbrs.user.passwort = \'" + password + "\'");
+                            + "FROM collathbrs.user "
+                            + "WHERE collathbrs.user.email = \'" + email + "\'"
+                            + "AND collathbrs.user.passwort = \'" + password + "\'");
 
             // JDBCConnection.getInstance().closeConnection();
 
@@ -82,7 +82,7 @@ public class UserDAO {
 
     }
 
-    public void insertUser(UserDTO userDTO) throws DatabaseLayerException {
+    public void insertUser(UserDTO userDTO, String password) throws DatabaseLayerException {
 
         // Exception für UserDTO leer fehlt noch oder kommt das in RegistrationControl?
 
