@@ -1,5 +1,7 @@
 package org.hbrs.se2.project.hellocar.views;
 
+//import com.vaadin.flow.component.grid.contextmenu.
+
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.UI;
@@ -51,6 +53,18 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
             setUpUI();
         }
     }
+
+    /*
+    private void addDependencies() {
+        UI.getCurrent().getPage()
+                .addJavaScript("/js/script.js");
+        UI.getCurrent().getPage()
+                .addHtmlImport("/html/htmlimport.html");
+        // external JavaScript module
+        UI.getCurrent().getPage()
+                .addJsModule("https://unpkg.com/lodash@4.17.15");
+    }
+     */
 
     public void setUpUI() {
         // Anzeige des Toggles über den Drawer
@@ -104,9 +118,23 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
         helloUser = new H1();
         topRightPanel.add(helloUser);
 
-        // Logout-Button am rechts-oberen Rand.
+        //Hinzufügen des Profilbuttons als Profilbild
+        /*
+        ToDO: (vielleicht) Abfrage, ob User ein Profilbild hochgeladen hat
+        if (Profilbildabfrage positiv) {
+
+        } else {
+
+        }
+         */
+
+        // Profil-Button am rechten oberen Rand.
         MenuBar bar = new MenuBar();
-        MenuItem item = bar.addItem("Logout" , e -> logoutUser());
+        MenuItem item_profil = bar.addItem("Profil", e -> goToProfil() );
+
+        // Logout-Button am rechts-oberen Rand.
+        MenuItem item_logout = bar.addItem("Logout" , e -> logoutUser());
+
         topRightPanel.add(bar);
 
         layout.add( topRightPanel );
@@ -117,6 +145,10 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
         UI ui = this.getUI().get();
         ui.getSession().close();
         ui.getPage().setLocation("/");
+    }
+
+    private void goToProfil() {
+        UI.getCurrent().navigate(Globals.Pages.PROFIL_VIEW);
     }
 
     /**
@@ -139,8 +171,8 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
         // Hinzufügen des Logos
         logoLayout.setId("logo");
         logoLayout.setAlignItems(FlexComponent.Alignment.CENTER);
-        logoLayout.add(new Image("images/logo.png", "CollatH-BRS"));
-        logoLayout.add(new H1("CollatH-Brs"));
+        logoLayout.add(new Image("images/logo.png", "Coll@H-BRS"));
+        logoLayout.add(new H1("Coll@H-Brs"));
 
         // Hinzufügen des Menus inklusive der Tabs
         layout.add(logoLayout, menu);
@@ -188,16 +220,18 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
 
         Tab[] tabs = new Tab[]{};
 
-        //Falls User ein Stundent ist soll die LandingPageStundent angezeigt werden
+        //Falls User ein Stundent ist soll die LandingPageStundentView angezeigt werden
         /*
         if ()
-            tabs = Utils.append( tabs, createTab("Landing Page Stundent", LandingPageStudent.class) );
+            tabs = Utils.append( tabs, createTab("Landing Page Stundent", LandingPageStudentView.class) );
+            System.out.println("User is a Company!");
          */
 
-        //Falls User ein Arbeitgeber ist soll die LandingPageEmployer angezeigt werden
+        //Falls User ein Arbeitgeber ist soll die LandingPageCompanyView angezeigt werden
         /*
         if ()
-            tabs = Utils.append( tabs, createTab("Landing Page Employer", LandingPageEmployer.class));
+            tabs = Utils.append( tabs, createTab("Landing Page Company", LandingPageCompanyView.class));
+            System.out.println("User is Student!");
          */
 
         //retrun tabs;
@@ -224,8 +258,14 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
         // Setzen des aktuellen Names des Tabs
         viewTitle.setText(getCurrentPageTitle());
 
-        // Setzen des Vornamens von dem aktuell eingeloggten Benutzer
-        helloUser.setText("Hello my dear old friend!! "  + this.getCurrentNameOfUser() );
+        //ToDO: anpassen
+        // Setzen des Vornamens von dem aktuell eingeloggten Benutzer, wenn der User einen Vornamen hat
+        if (this.getCurrentNameOfUser() != null) {
+            helloUser.setText("Willkommen "  + this.getCurrentNameOfUser() + " auf der HBRS@Collab Seite!");
+        } else {
+            helloUser.setText("Willkommen auf der HBRS@Collab Seite!");
+        }
+
     }
 
     private Optional<Tab> getTabForComponent(Component component) {
