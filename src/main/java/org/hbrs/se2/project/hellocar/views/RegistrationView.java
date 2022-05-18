@@ -25,7 +25,10 @@ import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.hbrs.se2.project.hellocar.dtos.impl.UserDTOImpl;
+import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
 import org.hbrs.se2.project.hellocar.util.Globals;
+
+import java.security.NoSuchAlgorithmException;
 
 @Route(value = Globals.Pages.REGISTRATION_VIEW)
 @PageTitle("Registration")
@@ -82,7 +85,11 @@ public class RegistrationView extends VerticalLayout {
             // Speicherung der Daten über das zuhörige Control-Object.
             // Daten des Autos werden aus Formular erfasst und als DTO übergeben.
             // Zusätzlich wird das aktuelle UserDTO übergeben.
-            registrationService.createUser( binder.getBean() );
+            try {
+                registrationService.createUser( binder.getBean() );
+            } catch (DatabaseLayerException | NoSuchAlgorithmException ex) {
+                ex.printStackTrace();
+            }
             Notification.show("Sie haben sich erfolgreich registriert.");
             clearForm();
             navigateToLoginPage();

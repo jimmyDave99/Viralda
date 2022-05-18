@@ -92,7 +92,7 @@ public class UserDAO {
 
             statement.setString(1, String.valueOf(userDTO.getUserId()));
             statement.setString(2, userDTO.getEmail());
-            statement.setString(3, userDTO.getPassword());
+            statement.setString(3, password);
             statement.setString(4, userDTO.getRole());
             statement.setNull(5, java.sql.Types.NULL);
 
