@@ -29,24 +29,27 @@ public class ProfilView extends Div {
     private final Tab settings;
     private final Tab notifications;
 
-    private Label emailShow = new Label("E-Mail-Adresse: ");
-    private Label firstNameShow = new Label("Vorname: ");
-    private Label lastNameShow = new Label("Name: ");
-    private Label dateOfBirthShow = new Label("Geburtstag: ");
-    private Label roleShow = new Label("Rolle: ");
-
     private final VerticalLayout content;
 
     private Button cancel = new Button("Abbrechen");
     private Button save = new Button("Speichern");
     private Button editProfil = new Button("Profil bearbeiten");
 
-    private EmailField emailEdit = new EmailField("E-Mail");
-    private TextField passwordEdit = new TextField("Passwort");
-    private TextField passwordAgainEdit = new TextField("Passwort wiederholen");
+    private Label empty = new Label("");
+
+    private TextField firstNameShow = new TextField("Vorname");
+    private TextField lastNameShow = new TextField("Name");
+    private EmailField emailShow = new EmailField("E-Mail-Adresse");
+    private DatePicker dateOfBirthShow = new DatePicker("Geburtsdatum");
+    private TextField roleShow = new TextField("Rolle");
+
     private TextField firstNameEdit = new TextField( "Vorname");
     private TextField lastNameEdit = new TextField( "Name");
+    private EmailField emailEdit = new EmailField("E-Mail");
     private DatePicker dateOfBirthEdit = new DatePicker("Geburtsdatum");
+    private TextField oldPasswordEdit = new TextField("Altes Passwort");
+    private TextField newPasswordEdit = new TextField("Passwort");
+    private TextField newPasswordAgainEdit = new TextField("Passwort wiederholen");
 
     private Checkbox savestOptions = new Checkbox("Die besten Sicherheitseinstellungen verwenden.");
     private Checkbox getNotifications = new Checkbox("Benachrichtigungen erhalten.");
@@ -117,8 +120,9 @@ public class ProfilView extends Div {
 
 
     private Component createButtonLayoutShowProfile() {
-        HorizontalLayout buttonLayout = new HorizontalLayout();
+        content.removeAll();
 
+        HorizontalLayout buttonLayout = new HorizontalLayout();
         buttonLayout.add(editProfil);
         editProfil.addClickListener(event  -> navigateToSubBarEditProfile());
 
@@ -126,28 +130,57 @@ public class ProfilView extends Div {
     }
 
     private Component createButtonLayoutTabProfileEdit() {
+        content.removeAll();
+
         HorizontalLayout buttonLayout = new HorizontalLayout();
-        //buttonLayout.addClassName("button-layout-tab-profile");
         buttonLayout.add(save);
         buttonLayout.add(cancel);
 
         cancel.addClickListener(event -> navigateToSubBarShowProfilWithoutSave() );
         save.addClickListener(event -> navigateToSubBarShowProfilWithSave());
+
         return buttonLayout;
     }
 
     private Component createFormLayoutShowProfile() {
-        //email.getElement().setAttribute("name", "email");
+
+        firstNameShow.setPrefixComponent(new Div(new Text("'Platzhalter Vorname'")));
+        firstNameShow.setEnabled(false);
+
+        lastNameShow.setPrefixComponent(new Div(new Text("'Platzhalter Name'")));
+        lastNameShow.setEnabled(false);
+
+        emailShow.setPrefixComponent(new Div(new Text("'Platzhalter E-Mail-Adresse'")));
+        emailShow.setEnabled(false);
+
+        dateOfBirthShow.setPlaceholder("'Platzhalter Geburtstag'");
+        dateOfBirthShow.setEnabled(false);
+
+        roleShow.setPrefixComponent(new Div(new Text("'Platzhalter Rolle'")));
+        roleShow.setEnabled(false);
 
         FormLayout formLayout = new FormLayout();
-        formLayout.add(emailShow, firstNameShow, dateOfBirthShow, lastNameShow);
-
+        formLayout.add(
+                firstNameShow, lastNameShow,
+                emailShow, dateOfBirthShow,
+                roleShow);
         return formLayout;
     }
 
     private Component createFormLayoutEditProfile() {
+
+        firstNameEdit.setPlaceholder("'Platzhalter Vorname'");
+        lastNameEdit.setPlaceholder("'Platzhalter Name'");
+        emailEdit.setPlaceholder("'Platzhalter E-Mail-Adresse'");
+        dateOfBirthEdit.setPlaceholder("'Platzhalter Geburtsdatum'");
+
         FormLayout formLayout = new FormLayout();
-        formLayout.add(emailEdit, firstNameEdit, passwordEdit, lastNameEdit, passwordAgainEdit, dateOfBirthEdit);
+        formLayout.add(firstNameEdit, lastNameEdit,
+                emailEdit, dateOfBirthEdit,
+                new H4("Passwort ändern"), new H4(""),
+                oldPasswordEdit, new H4(""),
+                newPasswordEdit, new H4(""),
+                newPasswordAgainEdit);
         return formLayout;
     }
 
