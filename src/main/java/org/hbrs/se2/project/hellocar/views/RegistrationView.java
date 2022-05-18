@@ -159,7 +159,6 @@ public class RegistrationView extends VerticalLayout {
         cancel.addClickShortcut(Key.ESCAPE);
         buttonLayout.add(register);
         buttonLayout.add(cancel);
-        binder.addStatusChangeListener(e -> register.setEnabled(binder.isValid()));
         return buttonLayout;
     }
 

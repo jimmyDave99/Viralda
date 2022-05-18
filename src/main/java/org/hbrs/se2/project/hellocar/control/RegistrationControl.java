@@ -32,9 +32,9 @@ public class RegistrationControl {
         if ( userDTO.getLastName() == null || userDTO.getLastName().equals("")) {
             throw new DatabaseLayerException("Lastname missing");
         }
-        if (isPasswordAndConfirmPasswordNotEquals(userDTO)) {
+        /*if (isPasswordAndConfirmPasswordNotEquals(userDTO)) {
             throw new DatabaseLayerException("Password and confirmation password don't match");
-        }
+        }*/
 
         userDAO.insertUser(userDTO, hashPassword(userDTO.getPassword()));
     }

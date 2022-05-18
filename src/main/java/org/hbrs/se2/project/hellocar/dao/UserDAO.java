@@ -90,7 +90,7 @@ public class UserDAO {
             PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement("INSERT" +
                     "INTO collathbrs.user VALUES (?,?,?,?,?)");
 
-            statement.setString(1, String.valueOf(userDTO.getUserId()));
+            statement.setInt(1, userDTO.getUserId());
             statement.setString(2, userDTO.getEmail());
             statement.setString(3, password);
             statement.setString(4, userDTO.getRole());
@@ -102,8 +102,8 @@ public class UserDAO {
                 PreparedStatement studentStatement = JDBCConnection.getInstance().getPreparedStatement("INSERT" +
                         "INTO collathbrs.student VALUES (?,?,?,?)");
 
-                studentStatement.setString(1, String.valueOf(userDTO.getStudentId()));
-                studentStatement.setString(2, String.valueOf(userDTO.getUserId()));
+                studentStatement.setInt(1, userDTO.getStudentId());
+                studentStatement.setInt(2, userDTO.getUserId());
                 studentStatement.setString(3, userDTO.getFirstName());
                 studentStatement.setString(4, userDTO.getLastName());
 
@@ -113,8 +113,8 @@ public class UserDAO {
                 PreparedStatement unternehmenStatement = JDBCConnection.getInstance().getPreparedStatement("INSERT" +
                         "INTO collathbrs.unternehmen VALUES (?,?,?,?,?)");
 
-                unternehmenStatement.setString(1, String.valueOf(userDTO.getUnternehmenId()));
-                unternehmenStatement.setString(2, String.valueOf(userDTO.getUserId()));
+                unternehmenStatement.setInt(1, userDTO.getUnternehmenId());
+                unternehmenStatement.setInt(2, userDTO.getUserId());
                 unternehmenStatement.setString(3, userDTO.getUnternehmenName());
                 unternehmenStatement.setString(4, userDTO.getBranche());
                 unternehmenStatement.setString(5, userDTO.getDescription());
