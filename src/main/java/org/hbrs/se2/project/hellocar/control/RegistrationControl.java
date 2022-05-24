@@ -8,12 +8,14 @@ import org.springframework.stereotype.Component;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Component
 public class RegistrationControl {
+
+    public static final String STUDENT = "student";
+    public static final String UNTERNEHMEN = "unternehmen";
 
     UserDAO userDAO = new UserDAO();
 
@@ -21,22 +23,26 @@ public class RegistrationControl {
 
     private static final Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
 
-    public void createUser( UserDTO userDTO ) throws DatabaseLayerException, NoSuchAlgorithmException {
+    public boolean createUser( UserDTO userDTO ) throws DatabaseLayerException, NoSuchAlgorithmException {
 
         if ( userDTO.getPassword() == null || userDTO.getPassword().equals("")) {
             throw new DatabaseLayerException("Password missing");
         }
         if ( !isPasswordValid(userDTO.getPassword())) {
-            throw new DatabaseLayerException("Passwort muss mind. 8 Zeichen lang sein. Es muss aus mind. einem Buchstaben und einer Zahl bestehen");
+            throw new DatabaseLayerException("invalid password");
         }
-        if ( userDTO.getLastName() == null || userDTO.getLastName().equals("")) {
-            throw new DatabaseLayerException("Lastname missing");
+        if (userDTO.getRole().equals(STUDENT)) {
+            if (userDTO.getLastName() == null || userDTO.getLastName().equals("")) {
+                throw new DatabaseLayerException("Lastname missing");
+            }
+        } else if (userDTO.getRole().equals(UNTERNEHMEN)) {
+            if (userDTO.getCompanyName() == null || userDTO.getCompanyName().equals("")) {
+                throw new DatabaseLayerException("company name missing");
+            }
         }
-        /*if (isPasswordAndConfirmPasswordNotEquals(userDTO)) {
-            throw new DatabaseLayerException("Password and confirmation password don't match");
-        }*/
 
         userDAO.insertUser(userDTO, hashPassword(userDTO.getPassword()));
+        return true;
     }
 
     private static boolean isPasswordValid(final String password) {
@@ -44,20 +50,17 @@ public class RegistrationControl {
         return matcher.matches();
     }
 
-    // todo check if the Password and Confirm Password are same
-    private boolean isPasswordAndConfirmPasswordNotEquals(UserDTO userDTO){
-        return false;
-    }
-
     private String hashPassword(String password) throws NoSuchAlgorithmException {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
 
-        return Arrays.toString(hash);
+        return bytesToHex(digest.digest(password.getBytes(StandardCharsets.UTF_8)));
     }
 
-    private boolean check(UserDTO userDTO){
-        return true;
+    private static String bytesToHex(byte[] hash) {
+        StringBuilder pwd = new StringBuilder();
+        for (int i = 0; i < hash.length; i++) {
+            pwd.append(Integer.toString((hash[i] & 0xff) + 0x100, 16).substring(1));
+        }
+        return pwd.toString();
     }
-
 }

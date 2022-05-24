@@ -28,7 +28,7 @@ public class UserDTOImpl implements UserDTO {
 
     //Unternehmen
     private int unternehmenId;
-    private String unternehmenName;
+    private String companyName;
     private String branche;
     private String description;
 
@@ -102,8 +102,8 @@ public class UserDTOImpl implements UserDTO {
     }
 
     @Override
-    public void setUnternehmenName(String unternehmenName) {
-        this.unternehmenName = unternehmenName;
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
     }
 
     @Override
@@ -186,8 +186,8 @@ public class UserDTOImpl implements UserDTO {
     }
 
     @Override
-    public String getUnternehmenName() {
-        return unternehmenName;
+    public String getCompanyName() {
+        return companyName;
     }
 
     @Override

@@ -87,10 +87,13 @@ public class UserDAO {
         // Exception für UserDTO leer fehlt noch oder kommt das in RegistrationControl?
 
         try {
-            PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement("INSERT" +
+            PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement("INSERT " +
                     "INTO collathbrs.user VALUES (?,?,?,?,?)");
 
-            statement.setInt(1, userDTO.getUserId());
+            /* todo generate keys automatic (UserID)
+             see https://www.ibm.com/docs/en/db2/11.5?topic=applications-retrieving-auto-generated-keys-insert-statement
+             */
+            statement.setInt(1, 9995);
             statement.setString(2, userDTO.getEmail());
             statement.setString(3, password);
             statement.setString(4, userDTO.getRole());
@@ -99,23 +102,25 @@ public class UserDAO {
             statement.executeUpdate();
 
             if (userDTO.getRole().equals("student")) {
-                PreparedStatement studentStatement = JDBCConnection.getInstance().getPreparedStatement("INSERT" +
+                PreparedStatement studentStatement = JDBCConnection.getInstance().getPreparedStatement("INSERT " +
                         "INTO collathbrs.student VALUES (?,?,?,?)");
 
-                studentStatement.setInt(1, userDTO.getStudentId());
-                studentStatement.setInt(2, userDTO.getUserId());
+                // todo generate keys automatic (UserID, StudentID)
+                studentStatement.setInt(1, 9995);
+                studentStatement.setInt(2, 9995);
                 studentStatement.setString(3, userDTO.getFirstName());
                 studentStatement.setString(4, userDTO.getLastName());
 
                 studentStatement.executeUpdate();
 
             } else if (userDTO.getRole().equals("unternehmen")) {
-                PreparedStatement unternehmenStatement = JDBCConnection.getInstance().getPreparedStatement("INSERT" +
+                PreparedStatement unternehmenStatement = JDBCConnection.getInstance().getPreparedStatement("INSERT " +
                         "INTO collathbrs.unternehmen VALUES (?,?,?,?,?)");
 
-                unternehmenStatement.setInt(1, userDTO.getUnternehmenId());
-                unternehmenStatement.setInt(2, userDTO.getUserId());
-                unternehmenStatement.setString(3, userDTO.getUnternehmenName());
+                // todo generate keys automatic (UserID, UnternehmerID)
+                unternehmenStatement.setInt(1, 9995);
+                unternehmenStatement.setInt(2, 9995);
+                unternehmenStatement.setString(3, userDTO.getCompanyName());
                 unternehmenStatement.setString(4, userDTO.getBranche());
                 unternehmenStatement.setString(5, userDTO.getDescription());
 
