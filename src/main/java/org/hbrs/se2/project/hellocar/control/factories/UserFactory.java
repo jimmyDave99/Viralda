@@ -13,7 +13,7 @@ public class UserFactory {
         user.setEmail( userDTO.getEmail() );
         user.setFirstName( userDTO.getFirstName() );
         user.setLastName( userDTO.getLastName() );
-        user.setUnternehmenName(userDTO.getUnternehmenName());
+        user.setCompanyName(userDTO.getCompanyName());
         user.setPassword( userDTO.getPassword() );
         user.setRole( userDTO.getRole() );
 
