@@ -8,20 +8,15 @@ import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
-import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.data.validator.EmailValidator;
 import org.hbrs.se2.project.hellocar.control.RegistrationControl;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.hbrs.se2.project.hellocar.dtos.impl.UserDTOImpl;
@@ -54,10 +49,14 @@ public class RegistrationView extends VerticalLayout {
         addClassName("register-user");
 
         add(createTitle());
+        userGroup.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
+        userGroup.setLabel("Benutzer");
+        userGroup.setItems("student", "unternehmen");
+        add(userGroup);
         add(createFormLayout());
         add(createButtonLayout());
         userGroup.addValueChangeListener( event -> {
-            if(userGroup.getValue().equals(new String("Student"))) {
+            if(userGroup.getValue().contains("student")) {
                 removeAll();
                 add(createTitle());
                 add(createStudentFormLayout());
@@ -75,7 +74,11 @@ public class RegistrationView extends VerticalLayout {
 
         // Default Mapping of User attributes and the names of this View based on names
         // Source: https://vaadin.com/docs/flow/binding-data/tutorial-flow-components-binder-beans.html
+        binder.forField(userGroup)
+                .asRequired("role is required")
+                .bind(UserDTOImpl::getRole, UserDTOImpl::setRole);
         binder.bindInstanceFields(this);
+        binder.readBean(new UserDTOImpl());
         clearForm();
 
         // Registrierung eines Listeners Nr. 1 (moderne Variante mit Lambda-Expression)
@@ -87,10 +90,10 @@ public class RegistrationView extends VerticalLayout {
             // Zusätzlich wird das aktuelle UserDTO übergeben.
             try {
                 registrationService.createUser( binder.getBean() );
+                Notification.show("Sie haben sich erfolgreich registriert.");
             } catch (DatabaseLayerException | NoSuchAlgorithmException ex) {
                 ex.printStackTrace();
             }
-            Notification.show("Sie haben sich erfolgreich registriert.");
             clearForm();
             navigateToLoginPage();
         });
@@ -105,9 +108,6 @@ public class RegistrationView extends VerticalLayout {
     }
 
     private Component createFormLayout() {
-        userGroup.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
-        userGroup.setLabel("Benutzer");
-        userGroup.setItems("Student", "Unternehmen");
         email.getElement().setAttribute("name", "email");
         email.setValue("random@test.de");
         email.setErrorMessage("Geben Sie bitte eine gültige Emailadresse ein!");
