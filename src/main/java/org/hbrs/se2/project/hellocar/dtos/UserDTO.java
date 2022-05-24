@@ -20,7 +20,7 @@ public interface UserDTO {
     void setFirstName(String firstName);
     void setLastName(String lastName);
     void setUnternehmenId(int unternehmenId);
-    void setUnternehmenName(String unternehmenName);
+    void setCompanyName(String companyName);
     void setBranche(String branche);
     void setDescription(String description);
 
@@ -39,7 +39,7 @@ public interface UserDTO {
     String getFirstName();
     String getLastName();
     int getUnternehmenId();
-    String getUnternehmenName();
+    String getCompanyName();
     String getBranche();
     String getDescription();
 }
