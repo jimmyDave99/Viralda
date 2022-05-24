@@ -51,7 +51,7 @@ public class RegistrationView extends VerticalLayout {
         add(createTitle());
         userGroup.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
         userGroup.setLabel("Benutzer");
-        userGroup.setItems("student", "unternehmen");
+        userGroup.setItems("Student", "Unternehmen");
         add(userGroup);
         add(createFormLayout());
         add(createButtonLayout());
@@ -75,7 +75,7 @@ public class RegistrationView extends VerticalLayout {
         // Default Mapping of User attributes and the names of this View based on names
         // Source: https://vaadin.com/docs/flow/binding-data/tutorial-flow-components-binder-beans.html
         binder.forField(userGroup)
-                .asRequired("role is required")
+                .asRequired("Bitte wäheln Sie eine Benutzerrolle.")
                 .bind(UserDTOImpl::getRole, UserDTOImpl::setRole);
         binder.bindInstanceFields(this);
         binder.readBean(new UserDTOImpl());
@@ -111,7 +111,8 @@ public class RegistrationView extends VerticalLayout {
         email.getElement().setAttribute("name", "email");
         email.setValue("random@test.de");
         email.setErrorMessage("Geben Sie bitte eine gültige Emailadresse ein!");
-        password.setHelperText("Ein Passwort muss mind. 8 Zeichen lang sein. Es muss aus mind. einem Buchstaben und einer Zahl bestehen.");;
+        password.setHelperText("Ein Passwort muss mind. 8 Zeichen lang sein. Es muss aus mind. einem Buchstaben " +
+                                "und einer Zahl bestehen.");;
         password.setPattern("^(?=.*[0-9])(?=.*[a-zA-Z]).{8}.*$");
         password.setErrorMessage("Kein valides Passwort!");
         FormLayout formLayout = new FormLayout();

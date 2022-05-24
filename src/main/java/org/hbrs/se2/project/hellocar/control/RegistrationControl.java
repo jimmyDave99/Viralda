@@ -14,8 +14,8 @@ import java.util.regex.Pattern;
 @Component
 public class RegistrationControl {
 
-    public static final String STUDENT = "student";
-    public static final String UNTERNEHMEN = "unternehmen";
+    public static final String STUDENT = "Student";
+    public static final String UNTERNEHMEN = "Unternehmen";
 
     UserDAO userDAO = new UserDAO();
 
