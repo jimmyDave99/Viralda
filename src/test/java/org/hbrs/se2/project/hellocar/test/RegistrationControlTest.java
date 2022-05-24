@@ -7,13 +7,14 @@ import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerExcepti
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 
 import java.security.NoSuchAlgorithmException;
 
 public class RegistrationControlTest {
 
-    public static final String STUDENT = "student";
-    public static final String UNTERNEHMEN = "unternehmen";
+    public static final String STUDENT = "Student";
+    public static final String UNTERNEHMEN = "Unternehmen";
 
     private RegistrationControl registrationControl = null;
 

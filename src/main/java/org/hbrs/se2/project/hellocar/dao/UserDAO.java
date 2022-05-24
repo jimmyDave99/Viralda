@@ -12,6 +12,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
+
+// TODO: CRUD komplett umsetzten, vorallem aber Delete
 public class UserDAO {
 
     /**
@@ -101,7 +103,7 @@ public class UserDAO {
 
             statement.executeUpdate();
 
-            if (userDTO.getRole().equals("student")) {
+            if (userDTO.getRole().equals("Student")) {
                 PreparedStatement studentStatement = JDBCConnection.getInstance().getPreparedStatement("INSERT " +
                         "INTO collathbrs.student VALUES (?,?,?,?)");
 
@@ -113,7 +115,7 @@ public class UserDAO {
 
                 studentStatement.executeUpdate();
 
-            } else if (userDTO.getRole().equals("unternehmen")) {
+            } else if (userDTO.getRole().equals("Unternehmen")) {
                 PreparedStatement unternehmenStatement = JDBCConnection.getInstance().getPreparedStatement("INSERT " +
                         "INTO collathbrs.unternehmen VALUES (?,?,?,?,?)");
 
