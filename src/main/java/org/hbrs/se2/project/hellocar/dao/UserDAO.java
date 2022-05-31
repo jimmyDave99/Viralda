@@ -5,6 +5,7 @@ import org.hbrs.se2.project.hellocar.dtos.impl.UserDTOImpl;
 import org.hbrs.se2.project.hellocar.services.db.JDBCConnection;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
 import org.hbrs.se2.project.hellocar.util.Globals;
+import org.springframework.jdbc.core.metadata.HsqlTableMetaDataProvider;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,6 +19,7 @@ public class UserDAO {
 
     /**
      * Method for finding Users
+     *
      * @param email
      * @param password
      * @return
@@ -48,8 +50,7 @@ public class UserDAO {
             DatabaseLayerException e = new DatabaseLayerException("Fehler im SQL-Befehl!");
             e.setReason(Globals.Errors.SQLERROR);
             throw e;
-        }
-        catch (NullPointerException ex) {
+        } catch (NullPointerException ex) {
             DatabaseLayerException e = new DatabaseLayerException("Fehler bei Datenbankverbindung!");
             e.setReason(Globals.Errors.DATABASE);
             throw e;
@@ -62,7 +63,7 @@ public class UserDAO {
                 // Durchführung des Object-Relational-Mapping (ORM)
 
                 user = new UserDTOImpl();
-                user.setUserId( set.getInt(1));
+                user.setUserId(set.getInt(1));
                 user.setEmail(set.getString(2));
 
                 return user;
@@ -90,16 +91,17 @@ public class UserDAO {
 
         try {
             PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement("INSERT " +
-                    "INTO collathbrs.user VALUES (?,?,?,?,?)");
+                    "INTO collathbrs.user VALUES (?,?,?,?,?,?)");
 
             /* todo generate keys automatic (UserID)
              see https://www.ibm.com/docs/en/db2/11.5?topic=applications-retrieving-auto-generated-keys-insert-statement
              */
-            statement.setInt(1, 9995);
+            statement.setInt(1, userDTO.getUserId());
             statement.setString(2, userDTO.getEmail());
             statement.setString(3, password);
             statement.setString(4, userDTO.getRole());
             statement.setNull(5, java.sql.Types.NULL);
+            statement.setNull(6, java.sql.Types.NULL);
 
             statement.executeUpdate();
 
@@ -108,8 +110,8 @@ public class UserDAO {
                         "INTO collathbrs.student VALUES (?,?,?,?)");
 
                 // todo generate keys automatic (UserID, StudentID)
-                studentStatement.setInt(1, 9995);
-                studentStatement.setInt(2, 9995);
+                studentStatement.setInt(1, userDTO.getUserId());
+                studentStatement.setInt(2, userDTO.getStudentId());
                 studentStatement.setString(3, userDTO.getFirstName());
                 studentStatement.setString(4, userDTO.getLastName());
 
@@ -131,9 +133,66 @@ public class UserDAO {
 
         } catch (SQLException ex) {
             DatabaseLayerException e = new DatabaseLayerException("Probleme mit der Datenbank");
-            e.setReason(Globals.Errors.DATABASE);
+            e.setReason(ex.getMessage());
             throw e;
 
+        }
+    }
+
+    public void updateUser(UserDTO userDTO) throws DatabaseLayerException {
+        try {
+            //Update User
+            Statement statement = JDBCConnection.getInstance().getStatement();
+            statement.executeUpdate("UPDATE collathbrs.user "
+                    + "SET email = \'" + userDTO.getEmail() + "\'"
+                    + ", passwort = \'" + userDTO.getPassword() + "\' "
+                    + "WHERE \"userID\" = " + userDTO.getUserId());
+
+            //Update Student or Unternehmen
+            if (userDTO.getRole().equals("Student")) {
+                Statement studentStatement = JDBCConnection.getInstance().getStatement();
+                studentStatement.executeUpdate(
+                        "UPDATE collathbrs.student "
+                                + "SET vorname = \'" + userDTO.getFirstName() + "\'"
+                                + ", nachname = \'" + userDTO.getLastName() + "\' "
+                                + "WHERE \"userID\" = " + userDTO.getUserId());
+            } else if (userDTO.getRole().equals("Unternehmen")) {
+                Statement unternehemnStatement = JDBCConnection.getInstance().getStatement();
+                unternehemnStatement.executeUpdate(
+                        "UPDATE collathbrs.unternehmen "
+                                + "SET \"uName\" = \'" + userDTO.getCompanyName() + "\'"
+                                + ", branche = \'" + userDTO.getBranche() + "\' "
+                                + "WHERE \"userID\" = " + userDTO.getUserId());
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    public void deleteUser(int userId, String role) throws DatabaseLayerException {
+        try {
+            //Delete Student or Unternehmen
+            Statement statement = JDBCConnection.getInstance().getStatement();
+            if (role.equals("Student")) {
+                statement.execute(
+                        "DELETE "
+                                + "FROM collathbrs.student "
+                                + "WHERE \"userID\" = " + userId);
+            } else if (role.equals("Unternehmen")) {
+                statement.execute(
+                        "DELETE "
+                                + "FROM collathbrs.unternehmen "
+                                + "WHERE \"userID\" = " + userId);
+            }
+
+            //Delete User
+            Statement userStatement = JDBCConnection.getInstance().getStatement();
+            userStatement.execute(
+                    "DELETE "
+                            + "FROM collathbrs.user "
+                            + "WHERE \"userID\" = " + userId);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 
