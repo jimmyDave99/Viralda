@@ -90,41 +90,32 @@ public class UserDAO {
 
         try {
             PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement("INSERT " +
-                    "INTO collathbrs.user VALUES (?,?,?,?,?)");
+                    "INTO collathbrs.user (email, passwort, rolle) VALUES (?,?,?)");
 
-            /* todo generate keys automatic (UserID)
-             see https://www.ibm.com/docs/en/db2/11.5?topic=applications-retrieving-auto-generated-keys-insert-statement
-             */
-            statement.setInt(1, 9995);
-            statement.setString(2, userDTO.getEmail());
-            statement.setString(3, password);
-            statement.setString(4, userDTO.getRole());
-            statement.setNull(5, java.sql.Types.NULL);
+            statement.setString(1, userDTO.getEmail());
+            statement.setString(2, password);
+            statement.setString(3, userDTO.getRole());
 
             statement.executeUpdate();
 
             if (userDTO.getRole().equals("Student")) {
-                PreparedStatement studentStatement = JDBCConnection.getInstance().getPreparedStatement("INSERT " +
-                        "INTO collathbrs.student VALUES (?,?,?,?)");
 
-                // todo generate keys automatic (UserID, StudentID)
-                studentStatement.setInt(1, 9995);
-                studentStatement.setInt(2, 9995);
-                studentStatement.setString(3, userDTO.getFirstName());
-                studentStatement.setString(4, userDTO.getLastName());
+                PreparedStatement studentStatement = JDBCConnection.getInstance().getPreparedStatement("INSERT " +
+                        "INTO collathbrs.student (user_id, vorname, nachname) VALUES (?,?,?)");
+
+                studentStatement.setInt(1, getUserId(userDTO));
+                studentStatement.setString(2, userDTO.getFirstName());
+                studentStatement.setString(3, userDTO.getLastName());
 
                 studentStatement.executeUpdate();
 
             } else if (userDTO.getRole().equals("Unternehmen")) {
                 PreparedStatement unternehmenStatement = JDBCConnection.getInstance().getPreparedStatement("INSERT " +
-                        "INTO collathbrs.unternehmen VALUES (?,?,?,?,?)");
+                        "INTO collathbrs.unternehmen (user_id, company_name, branche) VALUES (?,?,?)");
 
-                // todo generate keys automatic (UserID, UnternehmerID)
-                unternehmenStatement.setInt(1, 9995);
-                unternehmenStatement.setInt(2, 9995);
-                unternehmenStatement.setString(3, userDTO.getCompanyName());
-                unternehmenStatement.setString(4, userDTO.getBranche());
-                unternehmenStatement.setString(5, userDTO.getDescription());
+                unternehmenStatement.setInt(1, getUserId(userDTO));
+                unternehmenStatement.setString(2, userDTO.getCompanyName());
+                unternehmenStatement.setString(3, userDTO.getBranche());
 
                 unternehmenStatement.executeUpdate();
             }
@@ -133,7 +124,25 @@ public class UserDAO {
             DatabaseLayerException e = new DatabaseLayerException("Probleme mit der Datenbank");
             e.setReason(Globals.Errors.DATABASE);
             throw e;
+        }
+    }
 
+    public int getUserId(UserDTO userDTO) throws DatabaseLayerException {
+        try {
+            int userId = 0;
+            PreparedStatement ps = JDBCConnection.getInstance().getPreparedStatement("SELECT id " +
+                    "FROM collathbrs.user WHERE email LIKE ?");
+            ps.setString(1, userDTO.getEmail());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next())
+                userId = rs.getInt(1);
+
+            return userId;
+
+        } catch (SQLException ex) {
+            DatabaseLayerException e = new DatabaseLayerException("Probleme mit der Datenbank");
+            e.setReason(Globals.Errors.DATABASE);
+            throw e;
         }
     }
 
