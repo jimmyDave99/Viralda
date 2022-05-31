@@ -103,7 +103,7 @@ public class UserDAO {
                 PreparedStatement studentStatement = JDBCConnection.getInstance().getPreparedStatement("INSERT " +
                         "INTO collathbrs.student (user_id, vorname, nachname) VALUES (?,?,?)");
 
-                studentStatement.setInt(1, getUserId(userDTO));
+                studentStatement.setInt(1, getUserIdByEmail(userDTO));
                 studentStatement.setString(2, userDTO.getFirstName());
                 studentStatement.setString(3, userDTO.getLastName());
 
@@ -113,7 +113,7 @@ public class UserDAO {
                 PreparedStatement unternehmenStatement = JDBCConnection.getInstance().getPreparedStatement("INSERT " +
                         "INTO collathbrs.unternehmen (user_id, company_name, branche) VALUES (?,?,?)");
 
-                unternehmenStatement.setInt(1, getUserId(userDTO));
+                unternehmenStatement.setInt(1, getUserIdByEmail(userDTO));
                 unternehmenStatement.setString(2, userDTO.getCompanyName());
                 unternehmenStatement.setString(3, userDTO.getBranche());
 
@@ -127,7 +127,7 @@ public class UserDAO {
         }
     }
 
-    public int getUserId(UserDTO userDTO) throws DatabaseLayerException {
+    public int getUserIdByEmail(UserDTO userDTO) throws DatabaseLayerException {
         try {
             int userId = 0;
             PreparedStatement ps = JDBCConnection.getInstance().getPreparedStatement("SELECT id " +
