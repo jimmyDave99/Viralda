@@ -7,7 +7,6 @@ import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerExcepti
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 
 import java.security.NoSuchAlgorithmException;
 
@@ -104,17 +103,27 @@ public class RegistrationControlTest {
     @Test
     void registrationTest() throws DatabaseLayerException, NoSuchAlgorithmException {
 
-        UserDTOImpl user4 = UserBuilder
+        UserDTOImpl student = UserBuilder
                 .getInstance()
                 .createNewUser()
                 .withRole(STUDENT)
-                .withEmail("student@email.de")
-                .withFirstName("Harry")
-                .withLastName("Paul")
-                .withPassword("QK21vrNe")
+                .withEmail("mmuster@student.de")
+                .withFirstName("Max")
+                .withLastName("Mustermann")
+                .withPassword("Hallo123")
                 .build();
 
-        Assertions.assertTrue(registrationControl.createUser(user4));
+        UserDTOImpl company = UserBuilder
+                .getInstance()
+                .createNewUser()
+                .withRole(UNTERNEHMEN)
+                .withEmail("viralda@company.de")
+                .withCompanyName("Viralda")
+                .withBranche("IT")
+                .withPassword("QA3Ene3vf")
+                .build();
 
+        Assertions.assertTrue(registrationControl.createUser(student));
+        Assertions.assertTrue(registrationControl.createUser(company));
     }
 }

@@ -38,6 +38,7 @@ public class RegistrationView extends VerticalLayout {
     private TextField firstName = new TextField( "Vorname");
     private TextField lastName = new TextField( "Name");
     private TextField companyName = new TextField( "Unternehmensname");
+    private TextField branche = new TextField( "Branche");
     private Checkbox termsOfService = new Checkbox("Hiermit bestätige ich die Endnutzervereinbarung.");
 
     private Button cancel = new Button("Abbrechen");
@@ -56,7 +57,7 @@ public class RegistrationView extends VerticalLayout {
         add(createFormLayout());
         add(createButtonLayout());
         userGroup.addValueChangeListener( event -> {
-            if(userGroup.getValue().contains("student")) {
+            if(userGroup.getValue().contains("Student")) {
                 removeAll();
                 add(createTitle());
                 add(createStudentFormLayout());
@@ -75,7 +76,7 @@ public class RegistrationView extends VerticalLayout {
         // Default Mapping of User attributes and the names of this View based on names
         // Source: https://vaadin.com/docs/flow/binding-data/tutorial-flow-components-binder-beans.html
         binder.forField(userGroup)
-                .asRequired("Bitte wäheln Sie eine Benutzerrolle.")
+                .asRequired("Bitte wählen Sie eine Benutzerrolle.")
                 .bind(UserDTOImpl::getRole, UserDTOImpl::setRole);
         binder.bindInstanceFields(this);
         binder.readBean(new UserDTOImpl());
@@ -147,6 +148,7 @@ public class RegistrationView extends VerticalLayout {
                 password,
                 comfirmPassword,
                 companyName,
+                branche,
                 termsOfService);
         formLayout.setResponsiveSteps( new FormLayout.ResponsiveStep("0",1));
         return formLayout;
