@@ -5,6 +5,7 @@ import org.hbrs.se2.project.hellocar.dtos.impl.UserDTOImpl;
 import org.hbrs.se2.project.hellocar.services.db.JDBCConnection;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
 import org.hbrs.se2.project.hellocar.util.Globals;
+import org.springframework.jdbc.core.metadata.HsqlTableMetaDataProvider;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,6 +19,7 @@ public class UserDAO {
 
     /**
      * Method for finding Users
+     *
      * @param email
      * @param password
      * @return
@@ -84,6 +86,7 @@ public class UserDAO {
 
     }
 
+
     public void insertUser(UserDTO userDTO, String password) throws DatabaseLayerException {
 
         // Exception für UserDTO leer fehlt noch oder kommt das in RegistrationControl?
@@ -143,6 +146,69 @@ public class UserDAO {
             DatabaseLayerException e = new DatabaseLayerException("Probleme mit der Datenbank");
             e.setReason(Globals.Errors.DATABASE);
             throw e;
+        }
+    }
+
+    public void updateUserByEmail(UserDTO userDTO) throws DatabaseLayerException {
+        try {
+            int userId = getUserIdByEmail(userDTO);
+
+            //Update User
+            Statement statement = JDBCConnection.getInstance().getStatement();
+            statement.executeUpdate("UPDATE collathbrs.user "
+                    + "SET email = \'" + userDTO.getEmail() + "\'"
+                    + ", passwort = \'" + userDTO.getPassword() + "\' "
+                    + "WHERE id = " + userId);
+
+            //Update Student or Unternehmen
+            if (userDTO.getRole().equals("Student")) {
+                Statement studentStatement = JDBCConnection.getInstance().getStatement();
+                studentStatement.executeUpdate(
+                        "UPDATE collathbrs.student "
+                                + "SET vorname = \'" + userDTO.getFirstName() + "\'"
+                                + ", nachname = \'" + userDTO.getLastName() + "\' "
+                                + "WHERE user_id = " + userId);
+            } else if (userDTO.getRole().equals("Unternehmen")) {
+                Statement unternehemnStatement = JDBCConnection.getInstance().getStatement();
+                unternehemnStatement.executeUpdate(
+                        "UPDATE collathbrs.unternehmen "
+                                + "SET company_name = \'" + userDTO.getCompanyName() + "\'"
+                                + ", branche = \'" + userDTO.getBranche() + "\' "
+                                + "WHERE user_id = " + userId);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    public void deleteUserByEmail(String email, String role) throws DatabaseLayerException {
+        try {
+            UserDTO userDTO = new UserDTOImpl();
+            userDTO.setEmail(email);
+            int userId = getUserIdByEmail(userDTO);
+
+            //Delete Student or Unternehmen
+            Statement statement = JDBCConnection.getInstance().getStatement();
+            if (role.equals("Student")) {
+                statement.execute(
+                        "DELETE "
+                                + "FROM collathbrs.student "
+                                + "WHERE user_id = " + userId);
+            } else if (role.equals("Unternehmen")) {
+                statement.execute(
+                        "DELETE "
+                                + "FROM collathbrs.unternehmen "
+                                + "WHERE user_id = " + userId);
+            }
+
+            //Delete User
+            Statement userStatement = JDBCConnection.getInstance().getStatement();
+            userStatement.execute(
+                    "DELETE "
+                            + "FROM collathbrs.user "
+                            + "WHERE id = " + userId);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 
