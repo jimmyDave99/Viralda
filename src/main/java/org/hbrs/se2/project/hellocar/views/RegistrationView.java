@@ -8,6 +8,7 @@ import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
+import com.vaadin.flow.data.validator.EmailValidator;
 import org.hbrs.se2.project.hellocar.control.RegistrationControl;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -60,18 +61,11 @@ public class RegistrationView extends VerticalLayout {
         add(createFormLayout());
         add(createButtonLayout());
         userGroup.addValueChangeListener( event -> {
-            if(userGroup.getValue().contains(STUDENT)) {
-                removeAll();
-                add(createTitle());
-                add(createStudentFormLayout());
-                add(createButtonLayout());
-
-            } else {
-                removeAll();
-                add(createTitle());
-                add(createCompanyFormLayout());
-                add(createButtonLayout());
-            }
+            removeAll();
+            add(createTitle());
+            if(userGroup.getValue().contains(STUDENT)) { add(createStudentFormLayout());}
+            else { add(createCompanyFormLayout()); }
+            add(createButtonLayout());
         });
 
 
@@ -82,6 +76,10 @@ public class RegistrationView extends VerticalLayout {
                 .asRequired("Bitte wählen Sie eine Benutzerrolle.")
                 .bind(UserDTOImpl::getRole, UserDTOImpl::setRole);
 
+        binder.forField(email)
+                .asRequired( new EmailValidator("Bitte tregen Sie ein gültige Emailadresse ein!"))
+                .bind(UserDTOImpl::getEmail, UserDTOImpl::setEmail);
+
         binder.forField(password)
                 .asRequired("Passwort eingeben")
                 .bind(UserDTOImpl::getPassword, UserDTOImpl::setPassword);
@@ -89,6 +87,10 @@ public class RegistrationView extends VerticalLayout {
         binder.forField(confirmPassword)
                 .asRequired("passwort bestätigen")
                 .bind(UserDTOImpl::getConfirmPassword, UserDTOImpl::setConfirmPassword);
+
+        binder.forField(firstName)
+                .asRequired("Vorname eingeben")
+                .bind(UserDTOImpl::getFirstName, UserDTOImpl::setFirstName);
 
         binder.forField(lastName)
                 .asRequired("Nachname eingeben")

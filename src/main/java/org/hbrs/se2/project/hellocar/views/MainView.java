@@ -16,6 +16,8 @@ import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 import org.hbrs.se2.project.hellocar.util.Globals;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.security.NoSuchAlgorithmException;
+
 
 /**
  * View zur Darstellung der Startseite. Diese zeigt dem Benutzer ein Login-Formular an.
@@ -73,6 +75,8 @@ public class MainView extends VerticalLayout {
                 dialog.setWidth("400px");
                 dialog.setHeight("150px");
                 dialog.open();
+            } catch (NoSuchAlgorithmException ex) {
+                ex.printStackTrace();
             }
             if (isAuthenticated) {
                 grabAndSetUserIntoSession();
