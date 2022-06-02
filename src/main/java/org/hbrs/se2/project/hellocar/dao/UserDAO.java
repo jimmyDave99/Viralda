@@ -5,13 +5,14 @@ import org.hbrs.se2.project.hellocar.dtos.impl.UserDTOImpl;
 import org.hbrs.se2.project.hellocar.services.db.JDBCConnection;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
 import org.hbrs.se2.project.hellocar.util.Globals;
-import org.springframework.jdbc.core.metadata.HsqlTableMetaDataProvider;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
+
+import static org.hbrs.se2.project.hellocar.util.Globals.Roles.STUDENT;
+import static org.hbrs.se2.project.hellocar.util.Globals.Roles.UNTERNEHMEN;
 
 
 // TODO: CRUD komplett umsetzten, vorallem aber Delete
@@ -101,7 +102,7 @@ public class UserDAO {
 
             statement.executeUpdate();
 
-            if (userDTO.getRole().equals("Student")) {
+            if (userDTO.getRole().equals(STUDENT)) {
 
                 PreparedStatement studentStatement = JDBCConnection.getInstance().getPreparedStatement("INSERT " +
                         "INTO collathbrs.student (user_id, vorname, nachname) VALUES (?,?,?)");
@@ -112,7 +113,7 @@ public class UserDAO {
 
                 studentStatement.executeUpdate();
 
-            } else if (userDTO.getRole().equals("Unternehmen")) {
+            } else if (userDTO.getRole().equals(UNTERNEHMEN)) {
                 PreparedStatement unternehmenStatement = JDBCConnection.getInstance().getPreparedStatement("INSERT " +
                         "INTO collathbrs.unternehmen (user_id, company_name, branche) VALUES (?,?,?)");
 
@@ -161,14 +162,14 @@ public class UserDAO {
                     + "WHERE id = " + userId);
 
             //Update Student or Unternehmen
-            if (userDTO.getRole().equals("Student")) {
+            if (userDTO.getRole().equals(STUDENT)) {
                 Statement studentStatement = JDBCConnection.getInstance().getStatement();
                 studentStatement.executeUpdate(
                         "UPDATE collathbrs.student "
                                 + "SET vorname = \'" + userDTO.getFirstName() + "\'"
                                 + ", nachname = \'" + userDTO.getLastName() + "\' "
                                 + "WHERE user_id = " + userId);
-            } else if (userDTO.getRole().equals("Unternehmen")) {
+            } else if (userDTO.getRole().equals(UNTERNEHMEN)) {
                 Statement unternehemnStatement = JDBCConnection.getInstance().getStatement();
                 unternehemnStatement.executeUpdate(
                         "UPDATE collathbrs.unternehmen "
@@ -189,12 +190,12 @@ public class UserDAO {
 
             //Delete Student or Unternehmen
             Statement statement = JDBCConnection.getInstance().getStatement();
-            if (role.equals("Student")) {
+            if (role.equals(STUDENT)) {
                 statement.execute(
                         "DELETE "
                                 + "FROM collathbrs.student "
                                 + "WHERE user_id = " + userId);
-            } else if (role.equals("Unternehmen")) {
+            } else if (role.equals(UNTERNEHMEN)) {
                 statement.execute(
                         "DELETE "
                                 + "FROM collathbrs.unternehmen "

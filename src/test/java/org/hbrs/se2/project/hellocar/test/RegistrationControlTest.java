@@ -2,6 +2,7 @@ package org.hbrs.se2.project.hellocar.test;
 
 import org.hbrs.se2.builder.UserBuilder;
 import org.hbrs.se2.project.hellocar.control.RegistrationControl;
+import org.hbrs.se2.project.hellocar.dao.UserDAO;
 import org.hbrs.se2.project.hellocar.dtos.impl.UserDTOImpl;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
 import org.junit.jupiter.api.Assertions;
@@ -10,16 +11,18 @@ import org.junit.jupiter.api.Test;
 
 import java.security.NoSuchAlgorithmException;
 
+import static org.hbrs.se2.project.hellocar.util.Globals.Roles.STUDENT;
+import static org.hbrs.se2.project.hellocar.util.Globals.Roles.UNTERNEHMEN;
+
 public class RegistrationControlTest {
 
-    public static final String STUDENT = "Student";
-    public static final String UNTERNEHMEN = "Unternehmen";
-
     private RegistrationControl registrationControl = null;
+    private UserDAO userDAO = null;
 
     @BeforeEach
     public void init(){
         registrationControl = new RegistrationControl();
+        userDAO = new UserDAO();
     }
 
     @Test
@@ -32,6 +35,7 @@ public class RegistrationControlTest {
                 .withFirstName("Max")
                 .withLastName("Seth")
                 .withPassword("")
+                .withConfirmPassword("")
                 .build();
 
         DatabaseLayerException thrown = Assertions.assertThrows(
@@ -52,6 +56,7 @@ public class RegistrationControlTest {
                 .withFirstName("Rich")
                 .withLastName("")
                 .withPassword("QK21vrNe")
+                .withConfirmPassword("QK21vrNe")
                 .build();
 
         DatabaseLayerException thrown = Assertions.assertThrows(
@@ -71,6 +76,7 @@ public class RegistrationControlTest {
                 .withEmail("office@email.de")
                 .withCompanyName("Viralda")
                 .withPassword("pass12")
+                .withConfirmPassword("pass12")
                 .build();
 
         DatabaseLayerException thrown = Assertions.assertThrows(
@@ -90,6 +96,7 @@ public class RegistrationControlTest {
                 .withEmail("office@email.de")
                 .withCompanyName("")
                 .withPassword("pass1QA32")
+                .withConfirmPassword("pass1QA32")
                 .build();
 
         DatabaseLayerException thrown = Assertions.assertThrows(
@@ -101,7 +108,31 @@ public class RegistrationControlTest {
     }
 
     @Test
+    void differentPasswordTest() {
+        UserDTOImpl student = UserBuilder
+                .getInstance()
+                .createNewUser()
+                .withRole(STUDENT)
+                .withEmail("brich@student.de")
+                .withFirstName("Bob")
+                .withLastName("Rich")
+                .withPassword("Hallo123")
+                .withConfirmPassword("Hallo124")
+                .build();
+
+        DatabaseLayerException thrown = Assertions.assertThrows(
+                DatabaseLayerException.class,
+                () -> registrationControl.createUser(student)
+        );
+
+        Assertions.assertEquals("password are different", thrown.getReason());
+    }
+
+    @Test
     void registrationTest() throws DatabaseLayerException, NoSuchAlgorithmException {
+
+        userDAO.deleteUserByEmail("mmuster@student.de", STUDENT);
+        userDAO.deleteUserByEmail("viralda@company.de", UNTERNEHMEN);
 
         UserDTOImpl student = UserBuilder
                 .getInstance()
@@ -111,6 +142,7 @@ public class RegistrationControlTest {
                 .withFirstName("Max")
                 .withLastName("Mustermann")
                 .withPassword("Hallo123")
+                .withConfirmPassword("Hallo123")
                 .build();
 
         UserDTOImpl company = UserBuilder
@@ -121,6 +153,7 @@ public class RegistrationControlTest {
                 .withCompanyName("Viralda")
                 .withBranche("IT")
                 .withPassword("QA3Ene3vf")
+                .withConfirmPassword("QA3Ene3vf")
                 .build();
 
         Assertions.assertTrue(registrationControl.createUser(student));

@@ -25,6 +25,9 @@ import org.hbrs.se2.project.hellocar.util.Globals;
 
 import java.security.NoSuchAlgorithmException;
 
+import static org.hbrs.se2.project.hellocar.util.Globals.Roles.STUDENT;
+import static org.hbrs.se2.project.hellocar.util.Globals.Roles.UNTERNEHMEN;
+
 @Route(value = Globals.Pages.REGISTRATION_VIEW)
 @PageTitle("Registration")
 @CssImport("./styles/views/register/register-user.css")
@@ -34,7 +37,7 @@ public class RegistrationView extends VerticalLayout {
 
     private EmailField email = new EmailField("E-Mail");
     private PasswordField password = new PasswordField("Passwort");
-    private PasswordField comfirmPassword = new PasswordField("Passwort bestätigen");
+    private PasswordField confirmPassword = new PasswordField("Passwort bestätigen");
     private TextField firstName = new TextField( "Vorname");
     private TextField lastName = new TextField( "Name");
     private TextField companyName = new TextField( "Unternehmensname");
@@ -52,12 +55,12 @@ public class RegistrationView extends VerticalLayout {
         add(createTitle());
         userGroup.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
         userGroup.setLabel("Benutzer");
-        userGroup.setItems("Student", "Unternehmen");
+        userGroup.setItems(STUDENT, UNTERNEHMEN);
         add(userGroup);
         add(createFormLayout());
         add(createButtonLayout());
         userGroup.addValueChangeListener( event -> {
-            if(userGroup.getValue().contains("Student")) {
+            if(userGroup.getValue().contains(STUDENT)) {
                 removeAll();
                 add(createTitle());
                 add(createStudentFormLayout());
@@ -78,6 +81,27 @@ public class RegistrationView extends VerticalLayout {
         binder.forField(userGroup)
                 .asRequired("Bitte wählen Sie eine Benutzerrolle.")
                 .bind(UserDTOImpl::getRole, UserDTOImpl::setRole);
+
+        binder.forField(password)
+                .asRequired("Passwort eingeben")
+                .bind(UserDTOImpl::getPassword, UserDTOImpl::setPassword);
+
+        binder.forField(confirmPassword)
+                .asRequired("passwort bestätigen")
+                .bind(UserDTOImpl::getConfirmPassword, UserDTOImpl::setConfirmPassword);
+
+        binder.forField(lastName)
+                .asRequired("Nachname eingeben")
+                .bind(UserDTOImpl::getLastName, UserDTOImpl::setLastName);
+
+        binder.forField(companyName)
+                .asRequired("Unternehmenname eingeben")
+                .bind(UserDTOImpl::getCompanyName, UserDTOImpl::setCompanyName);
+
+        binder.forField(branche)
+                .asRequired("Branche eingeben")
+                .bind(UserDTOImpl::getBranche, UserDTOImpl::setBranche);
+
         binder.bindInstanceFields(this);
         binder.readBean(new UserDTOImpl());
         clearForm();
@@ -85,18 +109,32 @@ public class RegistrationView extends VerticalLayout {
         // Registrierung eines Listeners Nr. 1 (moderne Variante mit Lambda-Expression)
         cancel.addClickListener(event -> navigateToLoginPage() );
 
+        termsOfService.setValue(false);
+        register.setEnabled(false);
+        termsOfService.addValueChangeListener(ev -> {
+            boolean value = ev.getValue();
+            register.setEnabled(value);
+        });
+
         register.addClickListener(e -> {
             // Speicherung der Daten über das zuhörige Control-Object.
             // Daten des Autos werden aus Formular erfasst und als DTO übergeben.
             // Zusätzlich wird das aktuelle UserDTO übergeben.
             try {
-                registrationService.createUser( binder.getBean() );
+                if(!(binder.getBean().getPassword().equals(binder.getBean().getConfirmPassword()))){
+                    Notification.show("Passwörter stimmen nicht überein!");
+                }
+
+                if(!(registrationService.isPasswordValid(binder.getBean().getPassword()))){
+                    Notification.show("Passwort invalid!");
+                }
+
+                registrationService.createUser(binder.getBean());
+                navigateToLoginPage();
                 Notification.show("Sie haben sich erfolgreich registriert.");
             } catch (DatabaseLayerException | NoSuchAlgorithmException ex) {
                 ex.printStackTrace();
             }
-            clearForm();
-            navigateToLoginPage();
         });
     }
 
@@ -114,14 +152,14 @@ public class RegistrationView extends VerticalLayout {
         email.setErrorMessage("Geben Sie bitte eine gültige Emailadresse ein!");
         password.setHelperText("Ein Passwort muss mind. 8 Zeichen lang sein. Es muss aus mind. einem Buchstaben " +
                                 "und einer Zahl bestehen.");;
-        password.setPattern("^(?=.*[0-9])(?=.*[a-zA-Z]).{8}.*$");
+        password.setPattern("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8}.*$");
         password.setErrorMessage("Kein valides Passwort!");
         FormLayout formLayout = new FormLayout();
         formLayout.add(
                 userGroup,
                 email,
                 password,
-                comfirmPassword,
+                confirmPassword,
                 termsOfService);
         formLayout.setResponsiveSteps( new FormLayout.ResponsiveStep("0",1));
         return formLayout;
@@ -133,7 +171,7 @@ public class RegistrationView extends VerticalLayout {
                 userGroup,
                 email,
                 password,
-                comfirmPassword,
+                confirmPassword,
                 firstName,
                 lastName,
                 termsOfService);
@@ -146,7 +184,7 @@ public class RegistrationView extends VerticalLayout {
                 userGroup,
                 email,
                 password,
-                comfirmPassword,
+                confirmPassword,
                 companyName,
                 branche,
                 termsOfService);
