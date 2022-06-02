@@ -7,16 +7,20 @@ import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerExcepti
 import org.hbrs.se2.project.hellocar.util.Globals;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 
 @Component
 public class LoginControl {
 
     private UserDTO userDTO = null;
 
-    public boolean authentificate(String username, String password ) throws DatabaseUserException {
+    public boolean authentificate(String username, String password ) throws DatabaseUserException, NoSuchAlgorithmException {
 
         // Alternative: Auslesen des Users mit JDBC (Was sind die Vorteile bzw. Nachteile?)
-        UserDTO tmpUser = this.getUserWithJDBC( username , password );
+        UserDTO tmpUser = this.getUserWithJDBC( username , hashPassword(password) );
 
         if ( tmpUser == null ) {
             // ggf. hier ein Loggin einfügen
@@ -32,7 +36,6 @@ public class LoginControl {
     }
 
     private UserDTO getUserWithJDBC( String email , String password ) throws DatabaseUserException {
-        UserDTO userTmp = null;
         UserDAO dao = new UserDAO();
         try {
             userDTO = dao.findUserByUserEmailAndPassword( email , password );
@@ -44,7 +47,7 @@ public class LoginControl {
             String reason = e.getReason();
 
             if (reason.equals(Globals.Errors.NOUSERFOUND)) {
-                return userTmp;
+                return userDTO;
                 // throw new DatabaseUserException("No User could be found! Please check your credentials!");
             }
             else if ( reason.equals((Globals.Errors.SQLERROR))) {
@@ -60,6 +63,20 @@ public class LoginControl {
 
         }
         return userDTO;
+    }
+
+    private String hashPassword(String password) throws NoSuchAlgorithmException {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+
+        return bytesToHex(digest.digest(password.getBytes(StandardCharsets.UTF_8)));
+    }
+
+    private static String bytesToHex(byte[] hash) {
+        StringBuilder pwd = new StringBuilder();
+        for (byte b : hash) {
+            pwd.append(Integer.toString((b & 0xff) + 0x100, 16).substring(1));
+        }
+        return pwd.toString();
     }
 
 
