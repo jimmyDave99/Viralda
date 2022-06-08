@@ -18,7 +18,8 @@ public class Globals {
     public static class Roles {
         public static final String ADMIN = "admin";
         public static final String USER = "user";
-
+        public static final String STUDENT = "Student";
+        public static final String UNTERNEHMEN = "Unternehmen";
     }
 
     public static class Errors {

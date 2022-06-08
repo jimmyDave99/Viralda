@@ -3,7 +3,6 @@ package org.hbrs.se2.project.hellocar.dtos.impl;
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 
 import java.awt.image.BufferedImage;
-import java.util.List;
 
 public class UserDTOImpl implements UserDTO {
 
@@ -12,6 +11,7 @@ public class UserDTOImpl implements UserDTO {
     private String email;
     private String role;
     private String password;
+    private String confirmPassword;
     private BufferedImage profilePicture;
 
     //Useranschrift
@@ -50,6 +50,9 @@ public class UserDTOImpl implements UserDTO {
 
     @Override
     public void setPassword(String password){ this.password = password; }
+
+    @Override
+    public void setConfirmPassword(String confirmPassword){ this.confirmPassword = confirmPassword; }
 
     @Override
     public void setProfilePicture(BufferedImage profilePicture) {
@@ -134,6 +137,9 @@ public class UserDTOImpl implements UserDTO {
 
     @Override
     public String getPassword(){ return this.password; }
+
+    @Override
+    public String getConfirmPassword(){ return this.confirmPassword; }
 
     @Override
     public BufferedImage getProfilePicture() {

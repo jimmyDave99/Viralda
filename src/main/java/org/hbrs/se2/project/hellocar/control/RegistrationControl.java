@@ -11,15 +11,15 @@ import java.security.NoSuchAlgorithmException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.hbrs.se2.project.hellocar.util.Globals.Roles.STUDENT;
+import static org.hbrs.se2.project.hellocar.util.Globals.Roles.UNTERNEHMEN;
+
 @Component
 public class RegistrationControl {
 
-    public static final String STUDENT = "Student";
-    public static final String UNTERNEHMEN = "Unternehmen";
-
     UserDAO userDAO = new UserDAO();
 
-    private static final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-zA-Z]).{8}.*$";
+    private static final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8}.*$";
 
     private static final Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
 
@@ -27,6 +27,11 @@ public class RegistrationControl {
 
         if ( userDTO.getPassword() == null || userDTO.getPassword().equals("")) {
             throw new DatabaseLayerException("Password missing");
+        }
+        if(!(userDTO.getPassword().equals(userDTO.getConfirmPassword()))
+                || userDTO.getConfirmPassword() == null
+                || userDTO.getConfirmPassword().equals("")) {
+            throw new DatabaseLayerException("password are different");
         }
         if ( !isPasswordValid(userDTO.getPassword())) {
             throw new DatabaseLayerException("invalid password");
@@ -45,7 +50,7 @@ public class RegistrationControl {
         return true;
     }
 
-    private static boolean isPasswordValid(final String password) {
+    public boolean isPasswordValid(final String password) {
         Matcher matcher = pattern.matcher(password);
         return matcher.matches();
     }
@@ -58,8 +63,8 @@ public class RegistrationControl {
 
     private static String bytesToHex(byte[] hash) {
         StringBuilder pwd = new StringBuilder();
-        for (int i = 0; i < hash.length; i++) {
-            pwd.append(Integer.toString((hash[i] & 0xff) + 0x100, 16).substring(1));
+        for (byte b : hash) {
+            pwd.append(Integer.toString((b & 0xff) + 0x100, 16).substring(1));
         }
         return pwd.toString();
     }

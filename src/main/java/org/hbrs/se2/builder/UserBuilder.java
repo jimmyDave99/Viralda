@@ -36,6 +36,11 @@ public class UserBuilder {
         return this;
     }
 
+    public UserBuilder withConfirmPassword( String confirmPassword ) {
+        this.userDTO.setConfirmPassword(confirmPassword);
+        return this;
+    }
+
     public UserBuilder withProfilePicture( BufferedImage profilePicture ) {
         this.userDTO.setProfilePicture(profilePicture);
         return this;
