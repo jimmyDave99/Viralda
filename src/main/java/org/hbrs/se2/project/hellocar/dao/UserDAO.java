@@ -89,6 +89,9 @@ public class UserDAO {
 
 
     public void insertUser(UserDTO userDTO, String password) throws DatabaseLayerException {
+        System.out.println("--------------------");
+        System.out.println(userDTO.toString());
+        System.out.println("--------------------");
 
         // Exception für UserDTO leer fehlt noch oder kommt das in RegistrationControl?
 
@@ -155,27 +158,37 @@ public class UserDAO {
             int userId = getUserIdByEmail(userDTO);
 
             //Update User
-            Statement statement = JDBCConnection.getInstance().getStatement();
-            statement.executeUpdate("UPDATE collathbrs.user "
-                    + "SET email = \'" + userDTO.getEmail() + "\'"
-                    + ", passwort = \'" + userDTO.getPassword() + "\' "
-                    + "WHERE id = " + userId);
+            PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement(
+                    "UPDATE collathbrs.user " +
+                            "SET email = ? " +
+                            ", passwort = ? " +
+                            "WHERE id = ?");
+            statement.setString(1, userDTO.getEmail());
+            statement.setString(2, userDTO.getPassword());
+            statement.setInt(3, userId);
+            statement.executeUpdate();
 
             //Update Student or Unternehmen
-            if (userDTO.getRole().equals(STUDENT)) {
-                Statement studentStatement = JDBCConnection.getInstance().getStatement();
-                studentStatement.executeUpdate(
-                        "UPDATE collathbrs.student "
-                                + "SET vorname = \'" + userDTO.getFirstName() + "\'"
-                                + ", nachname = \'" + userDTO.getLastName() + "\' "
-                                + "WHERE user_id = " + userId);
-            } else if (userDTO.getRole().equals(UNTERNEHMEN)) {
-                Statement unternehemnStatement = JDBCConnection.getInstance().getStatement();
-                unternehemnStatement.executeUpdate(
-                        "UPDATE collathbrs.unternehmen "
-                                + "SET company_name = \'" + userDTO.getCompanyName() + "\'"
-                                + ", branche = \'" + userDTO.getBranche() + "\' "
-                                + "WHERE user_id = " + userId);
+            if (userDTO.getRole().equals("Student")) {
+                PreparedStatement studentStatement = JDBCConnection.getInstance().getPreparedStatement(
+                        "UPDATE collathbrs.student " +
+                                "SET vorname = ? " +
+                                ", nachname = ? " +
+                                "WHERE user_id = ?");
+                studentStatement.setString(1, userDTO.getFirstName());
+                studentStatement.setString(2, userDTO.getLastName());
+                studentStatement.setInt(3, userId);
+                studentStatement.executeUpdate();
+            } else if (userDTO.getRole().equals("Unternehmen")) {
+                PreparedStatement unternehmenStatement = JDBCConnection.getInstance().getPreparedStatement(
+                        "UPDATE collathbrs.unternehmen " +
+                                "SET company_name = ? " +
+                                ", branche = ? " +
+                                "WHERE user_id = ?");
+                unternehmenStatement.setString(1, userDTO.getCompanyName());
+                unternehmenStatement.setString(2, userDTO.getBranche());
+                unternehmenStatement.setInt(3, userId);
+                unternehmenStatement.executeUpdate();
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -189,25 +202,23 @@ public class UserDAO {
             int userId = getUserIdByEmail(userDTO);
 
             //Delete Student or Unternehmen
-            Statement statement = JDBCConnection.getInstance().getStatement();
-            if (role.equals(STUDENT)) {
-                statement.execute(
-                        "DELETE "
-                                + "FROM collathbrs.student "
-                                + "WHERE user_id = " + userId);
-            } else if (role.equals(UNTERNEHMEN)) {
-                statement.execute(
-                        "DELETE "
-                                + "FROM collathbrs.unternehmen "
-                                + "WHERE user_id = " + userId);
+            if (role.equals("Student")) {
+                PreparedStatement studentStatement = JDBCConnection.getInstance().getPreparedStatement(
+                        "DELETE FROM collathbrs.student WHERE user_id = ?");
+                studentStatement.setInt(1, userId);
+                studentStatement.executeUpdate();
+            } else if (role.equals("Unternehmen")) {
+                PreparedStatement unternehmenStatement = JDBCConnection.getInstance().getPreparedStatement(
+                        "DELETE FROM collathbrs.unternehmen WHERE user_id = ?");
+                unternehmenStatement.setInt(1, userId);
+                unternehmenStatement.executeUpdate();
             }
 
             //Delete User
-            Statement userStatement = JDBCConnection.getInstance().getStatement();
-            userStatement.execute(
-                    "DELETE "
-                            + "FROM collathbrs.user "
-                            + "WHERE id = " + userId);
+            PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement(
+                    "DELETE FROM collathbrs.user WHERE id = ?");
+            statement.setInt(1, userId);
+            statement.executeUpdate();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
