@@ -26,64 +26,71 @@ public class UserDAO {
      * @throws DatabaseLayerException
      */
     public UserDTO findUserByUserEmailAndPassword(String email, String password) throws DatabaseLayerException {
-        // Set ResultSet to null;
         ResultSet set = null;
+        UserDTOImpl userDTO = null;
 
-        // Set try-clause
         try {
-            Statement statement = null;
-            try {
-                statement = JDBCConnection.getInstance().getStatement();
-            } catch (DatabaseLayerException e) {
-                e.printStackTrace();
+            //Get User
+            PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement(
+                    "SELECT * FROM collathbrs.user " +
+                            "WHERE collathbrs.user.email = ? " +
+                            "AND collathbrs.user.passwort = ?");
+            statement.setString(1, email);
+            statement.setString(2, password);
+            set = statement.executeQuery();
+
+            //Map User
+            if (set.next()) {
+                userDTO = new UserDTOImpl();
+                userDTO.setUserId(set.getInt(1));
+                userDTO.setEmail(set.getString(2));
+                userDTO.setPassword(set.getString(3));
+                userDTO.setRole(set.getString(4));
+
+                if (userDTO.getRole().equals("Student")) {
+                    //Get Student
+                    PreparedStatement studentStatement = JDBCConnection.getInstance().getPreparedStatement(
+                            "SELECT * FROM collathbrs.student WHERE user_id = ?");
+                    studentStatement.setInt(1, userDTO.getUserId());
+                    set = studentStatement.executeQuery();
+
+                    //Map Student
+                    if (set.next()) {
+                        userDTO.setStudentId(set.getInt(1));
+                        userDTO.setFirstName(set.getString(3));
+                        userDTO.setLastName(set.getString(4));
+                    }
+                } else if (userDTO.getRole().equals("Unternehmen")) {
+                    //Get Unternehmen
+                    PreparedStatement unternehmenStatement = JDBCConnection.getInstance().getPreparedStatement(
+                            "SELECT * FROM collathbrs.unternehmen WHERE user_id = ?");
+                    unternehmenStatement.setInt(1, userDTO.getUserId());
+                    set = unternehmenStatement.executeQuery();
+
+                    //Map Unternehmen
+                    if (set.next()) {
+                        userDTO.setUnternehmenId(set.getInt(1));
+                        userDTO.setCompanyName(set.getString(3));
+                        userDTO.setBranche(set.getString(4));
+                    }
+                }
+            } else {
+                throw new DatabaseLayerException("Kein User mit dieser Email und diesem Passwort gefunden");
             }
-
-            set = statement.executeQuery(
-                    "SELECT * "
-                            + "FROM collathbrs.user "
-                            + "WHERE collathbrs.user.email = \'" + email + "\'"
-                            + "AND collathbrs.user.passwort = \'" + password + "\'");
-
-            // JDBCConnection.getInstance().closeConnection();
-
         } catch (SQLException ex) {
+            System.out.println("test");
             DatabaseLayerException e = new DatabaseLayerException("Fehler im SQL-Befehl!");
             e.setReason(Globals.Errors.SQLERROR);
             throw e;
-        }
-        catch (NullPointerException ex) {
+        } catch (NullPointerException ex) {
             DatabaseLayerException e = new DatabaseLayerException("Fehler bei Datenbankverbindung!");
             e.setReason(Globals.Errors.DATABASE);
             throw e;
-        }
-
-        UserDTOImpl user = null;
-
-        try {
-            if (set.next()) {
-                // Durchführung des Object-Relational-Mapping (ORM)
-
-                user = new UserDTOImpl();
-                user.setUserId( set.getInt(1));
-                user.setEmail(set.getString(2));
-
-                return user;
-
-            } else {
-                // Error Handling
-                DatabaseLayerException e = new DatabaseLayerException("No User Could be found");
-                e.setReason(Globals.Errors.NOUSERFOUND);
-                throw e;
-            }
-        } catch (SQLException ex) {
-            DatabaseLayerException e = new DatabaseLayerException("Probleme mit der Datenbank");
-            e.setReason(Globals.Errors.DATABASE);
-            throw e;
-
         } finally {
             JDBCConnection.getInstance().closeConnection();
         }
 
+        return userDTO;
     }
 
 
