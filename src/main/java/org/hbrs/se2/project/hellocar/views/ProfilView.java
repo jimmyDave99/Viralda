@@ -2,6 +2,7 @@ package org.hbrs.se2.project.hellocar.views;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -18,6 +19,7 @@ import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.*;
 //import org.hbrs.se2.project.hellocar.control.AuthorizationControl;
+import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 import org.hbrs.se2.project.hellocar.util.Globals;
 
 @Route(value = Globals.Pages.PROFIL_VIEW, layout = AppView.class)
@@ -29,7 +31,7 @@ public class ProfilView extends Div {
     private final Tab settings;
     private final Tab notifications;
 
-    private final VerticalLayout content;
+    private VerticalLayout content;
 
     private Button cancel = new Button("Abbrechen");
     private Button save = new Button("Speichern");
@@ -37,19 +39,19 @@ public class ProfilView extends Div {
 
     private Label empty = new Label("");
 
-    private TextField firstNameShow = new TextField("Vorname");
-    private TextField lastNameShow = new TextField("Name");
-    private EmailField emailShow = new EmailField("E-Mail-Adresse");
-    private DatePicker dateOfBirthShow = new DatePicker("Geburtsdatum");
-    private TextField roleShow = new TextField("Rolle");
+    private TextField firstNameShow;
+    private TextField lastNameShow;
+    private EmailField emailShow;
+    private DatePicker dateOfBirthShow;
+    private TextField roleShow;
 
-    private TextField firstNameEdit = new TextField( "Vorname");
-    private TextField lastNameEdit = new TextField( "Name");
-    private EmailField emailEdit = new EmailField("E-Mail");
-    private DatePicker dateOfBirthEdit = new DatePicker("Geburtsdatum");
-    private TextField oldPasswordEdit = new TextField("Altes Passwort");
-    private TextField newPasswordEdit = new TextField("Passwort");
-    private TextField newPasswordAgainEdit = new TextField("Passwort wiederholen");
+    private TextField firstNameEdit;
+    private TextField lastNameEdit;
+    private EmailField emailEdit;
+    private DatePicker dateOfBirthEdit;
+    private TextField oldPasswordEdit;
+    private TextField newPasswordEdit;
+    private TextField newPasswordAgainEdit;
 
     private Checkbox savestOptions = new Checkbox("Die besten Sicherheitseinstellungen verwenden.");
     private Checkbox getNotifications = new Checkbox("Benachrichtigungen erhalten.");
@@ -92,7 +94,18 @@ public class ProfilView extends Div {
         add(tabs, content);
     }
 
-    private Component createTitle() { return new H2("Profil von 'Name' 'Nachname' ");
+    private Component createTitle() {
+        H2 title = new H2();
+
+        if(getCurrentUser().getRole().equals("Student")) {
+            title = new H2("Studentenprofil von " + getCurrentUser().getFirstName() + " " + getCurrentUser().getLastName());
+        } else if (getCurrentUser().getRole().equals("Unternehmen")) {
+            title = new H2("Unternehmensprofil " + getCurrentUser().getCompanyName());
+        } else {
+            System.out.println("Error: User is not a student or a company.");
+        }
+
+        return title;
     }
 
     private void setContent( Tab tab ) {
@@ -144,19 +157,21 @@ public class ProfilView extends Div {
 
     private Component createFormLayoutShowProfile() {
 
-        firstNameShow.setPrefixComponent(new Div(new Text("'Platzhalter Vorname'")));
+        setFieldsShow();
+        firstNameShow.setPrefixComponent(new Div(new Text(getCurrentUser().getFirstName())));
         firstNameShow.setEnabled(false);
 
-        lastNameShow.setPrefixComponent(new Div(new Text("'Platzhalter Name'")));
+        lastNameShow.setPrefixComponent(new Div(new Text(getCurrentUser().getLastName())));
         lastNameShow.setEnabled(false);
 
-        emailShow.setPrefixComponent(new Div(new Text("'Platzhalter E-Mail-Adresse'")));
+        emailShow.setPrefixComponent(new Div(new Text(getCurrentUser().getEmail())));
         emailShow.setEnabled(false);
 
+        //ToDo: sobald Geburtsdatum in Datenbank vorhanden ist BDay abfragen
         dateOfBirthShow.setPlaceholder("'Platzhalter Geburtstag'");
         dateOfBirthShow.setEnabled(false);
 
-        roleShow.setPrefixComponent(new Div(new Text("'Platzhalter Rolle'")));
+        roleShow.setPrefixComponent(new Div(new Text(getCurrentUser().getRole())));
         roleShow.setEnabled(false);
 
         FormLayout formLayout = new FormLayout();
@@ -169,9 +184,11 @@ public class ProfilView extends Div {
 
     private Component createFormLayoutEditProfile() {
 
-        firstNameEdit.setPlaceholder("'Platzhalter Vorname'");
-        lastNameEdit.setPlaceholder("'Platzhalter Name'");
-        emailEdit.setPlaceholder("'Platzhalter E-Mail-Adresse'");
+        setFieldsEdit();
+        firstNameEdit.setPlaceholder(getCurrentUser().getFirstName());
+        lastNameEdit.setPlaceholder(getCurrentUser().getLastName());
+        emailEdit.setPlaceholder(getCurrentUser().getEmail());
+        //ToDo: sobald Geburtsdatum in Datenbank vorhanden ist BDay abfragen
         dateOfBirthEdit.setPlaceholder("'Platzhalter Geburtsdatum'");
 
         FormLayout formLayout = new FormLayout();
@@ -205,5 +222,27 @@ public class ProfilView extends Div {
 
         content.add(createButtonLayoutShowProfile());
         content.add(createFormLayoutShowProfile());
+    }
+
+    private void setFieldsShow() {
+        firstNameShow = new TextField("Vorname");
+        lastNameShow = new TextField("Name");
+        emailShow = new EmailField("E-Mail-Adresse");
+        dateOfBirthShow = new DatePicker("Geburtsdatum");
+        roleShow = new TextField("Rolle");
+    }
+
+    public void setFieldsEdit() {
+        firstNameEdit = new TextField( "Vorname");
+        lastNameEdit = new TextField( "Name");
+        emailEdit = new EmailField("E-Mail");
+        dateOfBirthEdit = new DatePicker("Geburtsdatum");
+        oldPasswordEdit = new TextField("Altes Passwort");
+        newPasswordEdit = new TextField("Passwort");
+        newPasswordAgainEdit = new TextField("Passwort wiederholen");
+    }
+
+    private UserDTO getCurrentUser() {
+        return (UserDTO) UI.getCurrent().getSession().getAttribute(Globals.CURRENT_USER);
     }
 }
