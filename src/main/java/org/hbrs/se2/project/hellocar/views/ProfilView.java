@@ -17,9 +17,11 @@ import com.vaadin.flow.component.tabs.TabVariant;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.*;
 //import org.hbrs.se2.project.hellocar.control.AuthorizationControl;
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
+import org.hbrs.se2.project.hellocar.dtos.impl.UserDTOImpl;
 import org.hbrs.se2.project.hellocar.util.Globals;
 
 @Route(value = Globals.Pages.PROFIL_VIEW, layout = AppView.class)
@@ -55,6 +57,8 @@ public class ProfilView extends Div {
 
     private Checkbox savestOptions = new Checkbox("Die besten Sicherheitseinstellungen verwenden.");
     private Checkbox getNotifications = new Checkbox("Benachrichtigungen erhalten.");
+
+    private Binder<UserDTOImpl> binder = new Binder(UserDTOImpl.class);
 
     public ProfilView() {
         addClassName("profile");
@@ -216,13 +220,30 @@ public class ProfilView extends Div {
     }
 
     private void navigateToSubBarShowProfilWithSave() {
-        content.removeAll();
-
         //ToDo: save new input
+        if (firstNameEdit != null) {
+            binder.forField(firstNameEdit)
+                    .bind(UserDTOImpl::getFirstName, UserDTOImpl::setFirstName);
+        } else if (lastNameEdit != null) {
+            binder.forField(lastNameEdit)
+                    .bind(UserDTOImpl::getLastName, UserDTOImpl::setLastName);
+        } else if (emailEdit != null) {
+            binder.forField(emailEdit)
+                    .bind(UserDTOImpl::getEmail, UserDTOImpl::setEmail);
+        } else if (dateOfBirthEdit != null) {
+            //ToDo: sobald Geburtsdatum in Datenbank vorhanden ist anpassen, dass BDay geändert weden kann
+        }
+
+        binder.readBean((UserDTOImpl) getCurrentUser());
+        clearForm();
+
+        content.removeAll();
 
         content.add(createButtonLayoutShowProfile());
         content.add(createFormLayoutShowProfile());
     }
+
+    private void clearForm() { binder.setBean((UserDTOImpl) getCurrentUser());}
 
     private void setFieldsShow() {
         firstNameShow = new TextField("Vorname");
