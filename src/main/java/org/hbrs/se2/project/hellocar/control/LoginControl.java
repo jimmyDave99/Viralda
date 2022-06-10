@@ -20,7 +20,7 @@ public class LoginControl {
     public boolean authentificate(String username, String password ) throws DatabaseUserException, NoSuchAlgorithmException {
 
         // Alternative: Auslesen des Users mit JDBC (Was sind die Vorteile bzw. Nachteile?)
-        UserDTO tmpUser = this.getUserWithJDBC( username , hashPassword(password) );
+        UserDTO tmpUser = this.getUserWithJDBC( username , RegistrationControl.hashPassword(password) );
 
         if ( tmpUser == null ) {
             // ggf. hier ein Loggin einfügen
@@ -64,20 +64,5 @@ public class LoginControl {
         }
         return userDTO;
     }
-
-    private String hashPassword(String password) throws NoSuchAlgorithmException {
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-
-        return bytesToHex(digest.digest(password.getBytes(StandardCharsets.UTF_8)));
-    }
-
-    private static String bytesToHex(byte[] hash) {
-        StringBuilder pwd = new StringBuilder();
-        for (byte b : hash) {
-            pwd.append(Integer.toString((b & 0xff) + 0x100, 16).substring(1));
-        }
-        return pwd.toString();
-    }
-
 
 }

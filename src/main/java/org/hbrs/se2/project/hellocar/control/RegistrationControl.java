@@ -55,7 +55,7 @@ public class RegistrationControl {
         return matcher.matches();
     }
 
-    private String hashPassword(String password) throws NoSuchAlgorithmException {
+    protected static String hashPassword(String password) throws NoSuchAlgorithmException {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
 
         return bytesToHex(digest.digest(password.getBytes(StandardCharsets.UTF_8)));

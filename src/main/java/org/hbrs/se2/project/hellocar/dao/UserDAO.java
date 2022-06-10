@@ -15,7 +15,6 @@ import static org.hbrs.se2.project.hellocar.util.Globals.Roles.STUDENT;
 import static org.hbrs.se2.project.hellocar.util.Globals.Roles.UNTERNEHMEN;
 
 
-// TODO: CRUD komplett umsetzten, vorallem aber Delete
 public class UserDAO {
 
     /**
@@ -48,7 +47,7 @@ public class UserDAO {
                 userDTO.setPassword(set.getString(3));
                 userDTO.setRole(set.getString(4));
 
-                if (userDTO.getRole().equals("Student")) {
+                if (userDTO.getRole().equals(STUDENT)) {
                     //Get Student
                     PreparedStatement studentStatement = JDBCConnection.getInstance().getPreparedStatement(
                             "SELECT * FROM collathbrs.student WHERE user_id = ?");
@@ -61,7 +60,7 @@ public class UserDAO {
                         userDTO.setFirstName(set.getString(3));
                         userDTO.setLastName(set.getString(4));
                     }
-                } else if (userDTO.getRole().equals("Unternehmen")) {
+                } else if (userDTO.getRole().equals(UNTERNEHMEN)) {
                     //Get Unternehmen
                     PreparedStatement unternehmenStatement = JDBCConnection.getInstance().getPreparedStatement(
                             "SELECT * FROM collathbrs.unternehmen WHERE user_id = ?");
@@ -94,7 +93,13 @@ public class UserDAO {
         return userDTO;
     }
 
-
+    /**
+     * Method to insert Users
+     *
+     * @param userDTO
+     * @param password
+     * @throws DatabaseLayerException
+     */
     public void insertUser(UserDTO userDTO, String password) throws DatabaseLayerException {
         System.out.println("--------------------");
         System.out.println(userDTO.toString());
@@ -141,6 +146,14 @@ public class UserDAO {
         }
     }
 
+
+    /**
+     * Method for finding Users
+     *
+     * @param userDTO
+     * @return int
+     * @throws DatabaseLayerException
+     */
     public int getUserIdByEmail(UserDTO userDTO) throws DatabaseLayerException {
         try {
             int userId = 0;
@@ -160,6 +173,13 @@ public class UserDAO {
         }
     }
 
+    /**
+     * Method for finding Users
+     *
+     * @param userDTO
+     * @return
+     * @throws DatabaseLayerException
+     */
     public void updateUserByEmail(UserDTO userDTO) throws DatabaseLayerException {
         try {
             int userId = getUserIdByEmail(userDTO);
@@ -176,7 +196,7 @@ public class UserDAO {
             statement.executeUpdate();
 
             //Update Student or Unternehmen
-            if (userDTO.getRole().equals("Student")) {
+            if (userDTO.getRole().equals(STUDENT)) {
                 PreparedStatement studentStatement = JDBCConnection.getInstance().getPreparedStatement(
                         "UPDATE collathbrs.student " +
                                 "SET vorname = ? " +
@@ -186,7 +206,7 @@ public class UserDAO {
                 studentStatement.setString(2, userDTO.getLastName());
                 studentStatement.setInt(3, userId);
                 studentStatement.executeUpdate();
-            } else if (userDTO.getRole().equals("Unternehmen")) {
+            } else if (userDTO.getRole().equals(UNTERNEHMEN)) {
                 PreparedStatement unternehmenStatement = JDBCConnection.getInstance().getPreparedStatement(
                         "UPDATE collathbrs.unternehmen " +
                                 "SET company_name = ? " +
@@ -209,12 +229,12 @@ public class UserDAO {
             int userId = getUserIdByEmail(userDTO);
 
             //Delete Student or Unternehmen
-            if (role.equals("Student")) {
+            if (role.equals(STUDENT)) {
                 PreparedStatement studentStatement = JDBCConnection.getInstance().getPreparedStatement(
                         "DELETE FROM collathbrs.student WHERE user_id = ?");
                 studentStatement.setInt(1, userId);
                 studentStatement.executeUpdate();
-            } else if (role.equals("Unternehmen")) {
+            } else if (role.equals(UNTERNEHMEN)) {
                 PreparedStatement unternehmenStatement = JDBCConnection.getInstance().getPreparedStatement(
                         "DELETE FROM collathbrs.unternehmen WHERE user_id = ?");
                 unternehmenStatement.setInt(1, userId);
