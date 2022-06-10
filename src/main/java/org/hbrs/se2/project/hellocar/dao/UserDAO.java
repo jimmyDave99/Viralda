@@ -9,7 +9,6 @@ import org.hbrs.se2.project.hellocar.util.Globals;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import static org.hbrs.se2.project.hellocar.util.Globals.Roles.STUDENT;
 import static org.hbrs.se2.project.hellocar.util.Globals.Roles.UNTERNEHMEN;
@@ -148,7 +147,7 @@ public class UserDAO {
 
 
     /**
-     * Method for finding Users
+     * Method for finding UserId
      *
      * @param userDTO
      * @return int
@@ -174,7 +173,7 @@ public class UserDAO {
     }
 
     /**
-     * Method for finding Users
+     * Method for updating Users
      *
      * @param userDTO
      * @return
@@ -222,6 +221,13 @@ public class UserDAO {
         }
     }
 
+    /**
+     * Method for deleting Users
+     *
+     * @param email
+     * @param role
+     * @throws DatabaseLayerException
+     */
     public void deleteUserByEmail(String email, String role) throws DatabaseLayerException {
         try {
             UserDTO userDTO = new UserDTOImpl();
