@@ -14,6 +14,7 @@ import org.hbrs.se2.project.hellocar.control.LoginControl;
 import org.hbrs.se2.project.hellocar.control.exception.DatabaseUserException;
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 import org.hbrs.se2.project.hellocar.util.Globals;
+import org.hbrs.se2.project.hellocar.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.security.NoSuchAlgorithmException;
@@ -104,8 +105,11 @@ public class MainView extends VerticalLayout {
 
     private void navigateToMainPage() {
         // Navigation zur Startseite.
-        UI.getCurrent().navigate("main");
-
+        UserDTO userDTO = loginControl.getCurrentUser();
+        if(userDTO.getRole().equals(Globals.Roles.STUDENT))
+            UI.getCurrent().navigate(Globals.Pages.LANDING_PAGE_STUDENT_VIEW);
+        if(userDTO.getRole().equals(Globals.Roles.UNTERNEHMEN))
+            UI.getCurrent().navigate(Globals.Pages.LANDING_PAGE_COMPANY_VIEW);
     }
 
     private void navigateToRegistrationPage() {
