@@ -47,7 +47,7 @@ public class AuthorizationControl {
      * Diese Zuordnung sollte man natürlich in Praxis in einer Datenbank hinterlegen, so dass man
      * die Zuordnungen flexibel anpassen kann.
      * @param feature beschreibt eine View der Webseite
-     * @return die
+     * @return die Rolle des angefragten Features
      */
     private String[] getRollesForFeature(String feature) {
         // Da im Framework nur zwei Views unterstützt werden, werden auch diese nur unterschieden
