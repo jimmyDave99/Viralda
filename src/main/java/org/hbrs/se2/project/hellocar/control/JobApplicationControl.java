@@ -12,7 +12,7 @@ public class JobApplicationControl {
 
     StellenAnzeigeDAO stellenAnzeigeDAO = new StellenAnzeigeDAO();
 
-    private List<StellenanzeigeDTO> readAllJobApplications() throws DatabaseLayerException {
+    public List<StellenanzeigeDTO> readAllJobApplications() throws DatabaseLayerException {
         return stellenAnzeigeDAO.findAllJobs();
     }
 
