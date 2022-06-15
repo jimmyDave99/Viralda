@@ -14,9 +14,8 @@ public class AuthorizationControl {
      * 
      */
    public boolean isUserInRole(UserDTO user , String role  ) {
-        if ( user.getRole().equals(role) ) return true;
-        return false;
-    }
+       return user.getRole().equals(role);
+   }
 
     /**
      * Erweiterte Methode zur Bestimmung, ob ein User mit einer bestimmten Rolle ein
