@@ -10,6 +10,7 @@ import org.hbrs.se2.project.hellocar.util.Globals;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,9 +37,9 @@ public class StellenAnzeigeDAO {
                         .withTitle(rs.getString("titel"))
                         .withBranche(rs.getString("bereich"))
                         .withDescription(rs.getString("beschreibung"))
-                        .withStartDate(rs.getDate("einstellungsdatum"))
-                        .withSalary(rs.getFloat("gehalt"))
-                        .withWeeklyHours(rs.getFloat("wochenstunden"))
+                        .withStartDate(rs.getDate("einstellungsdatum").toLocalDate())
+                        .withSalary(rs.getDouble("gehalt"))
+                        .withWeeklyHours(rs.getDouble("wochenstunden"))
                         .build();
 
                 list.add(userDTO);

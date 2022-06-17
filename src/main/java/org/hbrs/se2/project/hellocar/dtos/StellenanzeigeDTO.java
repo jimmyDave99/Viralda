@@ -1,5 +1,6 @@
 package org.hbrs.se2.project.hellocar.dtos;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public interface StellenanzeigeDTO {
@@ -7,15 +8,15 @@ public interface StellenanzeigeDTO {
     public String getTitel();
     public String getBereich();
     public String getBeschreibung();
-    public Date getEinstellungsdatum();
-    public float getGehalt();
-    public float getWochenstunden();
+    public LocalDate getEinstellungsdatum();
+    public double getGehalt();
+    public double getWochenstunden();
 
     // setter-Methoden
     public void setTitel(String titel);
     public void  setBereich(String bereich);
     public void  setBeschreibung(String beschreibung);
-    public void  setEinstellungsdatum(Date einstellungsdatum);
-    public void  setGehalt(float gehalt);
-    public void  setWochenstunden(float wochenstunden);
+    public void  setEinstellungsdatum(LocalDate einstellungsdatum);
+    public void  setGehalt(double gehalt);
+    public void  setWochenstunden(double wochenstunden);
 }
