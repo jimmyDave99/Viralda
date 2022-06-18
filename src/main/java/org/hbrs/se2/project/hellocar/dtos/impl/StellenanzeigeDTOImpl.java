@@ -9,6 +9,8 @@ import java.util.Date;
 // TODO: 15.06.22 Eine weitere Variable fuer den Status der Stellenanzeige (Aktiv/Inaktiv) 
 public class StellenanzeigeDTOImpl implements StellenanzeigeDTO {
 
+    private int stellenId;
+    private int unternehmenId;
     private String titel;
     private String bereich;
     private String beschreibung;
@@ -16,6 +18,26 @@ public class StellenanzeigeDTOImpl implements StellenanzeigeDTO {
     private double gehalt;
     private double wochenstunden;
 
+
+    @Override
+    public int getStellenId() {
+        return stellenId;
+    }
+
+    @Override
+    public void setStellenId(int stellenId) {
+        this.stellenId = stellenId;
+    }
+
+    @Override
+    public int getUnternehmenId() {
+        return unternehmenId;
+    }
+
+    @Override
+    public void setUnternehmenId(int unternehmenId) {
+        this.unternehmenId = unternehmenId;
+    }
 
     @Override
     public String getTitel() {

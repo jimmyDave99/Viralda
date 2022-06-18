@@ -23,6 +23,7 @@ import org.hbrs.se2.project.hellocar.control.JobApplicationControl;
 import org.hbrs.se2.project.hellocar.dtos.StellenanzeigeDTO;
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 import org.hbrs.se2.project.hellocar.dtos.impl.StellenanzeigeDTOImpl;
+import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
 import org.hbrs.se2.project.hellocar.util.Globals;
 
 import com.vaadin.flow.component.ComponentEvent;
@@ -69,7 +70,11 @@ public class EnterStellenanzeigeView extends Div {
         save.addClickListener(e -> {
             UserDTO userDTO = (UserDTO) UI.getCurrent().getSession().getAttribute(Globals.CURRENT_USER);
             // TODO: 17.06.22 create-method in jobApplicationControl
-            jobApplicationControl.createStellenanzeige(binder.getBean(), userDTO);
+            try {
+                jobApplicationControl.createStellenanzeige(binder.getBean(), userDTO);
+            } catch (DatabaseLayerException ex) {
+                throw new RuntimeException(ex);
+            }
 
             Notification.show("Stellenanzeige mit den Angegebenen Details wurden gespeichert!");
         });

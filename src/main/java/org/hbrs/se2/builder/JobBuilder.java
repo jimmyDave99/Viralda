@@ -18,6 +18,16 @@ public class JobBuilder {
         return this;
     }
 
+    public JobBuilder withStudentID(int studentID) {
+        this.jobDTO.setStellenId(studentID);
+        return this;
+    }
+
+    public JobBuilder withUnternehmenID(int unternehmenID) {
+        this.jobDTO.setUnternehmenId(unternehmenID);
+        return this;
+    }
+
     public JobBuilder withTitle(String title) {
         this.jobDTO.setTitel(title);
         return this;

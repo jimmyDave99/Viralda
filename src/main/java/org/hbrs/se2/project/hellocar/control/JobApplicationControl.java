@@ -17,8 +17,8 @@ public class JobApplicationControl {
         return stellenAnzeigeDAO.findAllJobs();
     }
 
-    public void createStellenanzeige(StellenanzeigeDTO stellenanzeigeDTO, UserDTO userDTO){
-        // TODO: 17.06.22 implement create Stellenanzeige 
+    public void createStellenanzeige(StellenanzeigeDTO stellenanzeigeDTO, UserDTO userDTO) throws DatabaseLayerException {
+        stellenAnzeigeDAO.insertStellenanzeige(stellenanzeigeDTO, userDTO);
     }
 
 }
