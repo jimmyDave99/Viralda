@@ -2,7 +2,6 @@ package org.hbrs.se2.project.hellocar.dtos.impl;
 
 import org.hbrs.se2.project.hellocar.dtos.BewerbungDTO;
 
-import java.awt.image.BufferedImage;
 import java.util.Date;
 // TODO: Eventuell eine weitere Variable um ein Firmenlogo/Bild abzuspeichern
 public class BewerbungDTOImpl implements BewerbungDTO {
