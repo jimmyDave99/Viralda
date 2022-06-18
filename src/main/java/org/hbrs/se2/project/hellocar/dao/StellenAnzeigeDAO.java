@@ -30,7 +30,7 @@ public class StellenAnzeigeDAO {
 
             ResultSet rs = statement.executeQuery();
             while (rs.next()){
-                StellenanzeigeDTOImpl userDTO = JobBuilder
+                StellenanzeigeDTOImpl job = JobBuilder
                         .getInstance()
                         .createNewJob()
                         .withTitle(rs.getString("titel"))
@@ -41,7 +41,7 @@ public class StellenAnzeigeDAO {
                         .withWeeklyHours(rs.getFloat("wochenstunden"))
                         .build();
 
-                list.add(userDTO);
+                list.add(job);
             }
 
             return list;
