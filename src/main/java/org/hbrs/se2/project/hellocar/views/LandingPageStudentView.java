@@ -1,6 +1,7 @@
 package org.hbrs.se2.project.hellocar.views;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
@@ -19,6 +20,7 @@ import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerExcepti
 import org.hbrs.se2.project.hellocar.util.Globals;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The LandingPageStudent is the home page for users with the role = "Student".
@@ -30,7 +32,6 @@ import java.util.List;
 public class LandingPageStudentView extends Div {
 
     private List<StellenanzeigeDTO> jobList;
-
 
     public LandingPageStudentView(JobApplicationControl jobApplicationControl) throws DatabaseLayerException {
         addClassName("landing-page");
@@ -45,7 +46,7 @@ public class LandingPageStudentView extends Div {
 
     private Component createGridTable(){
 
-        Grid<StellenanzeigeDTO> grid = new Grid<>();
+        Grid<StellenanzeigeDTO> grid = new Grid<>(StellenanzeigeDTO.class, false);
         grid.setHeight("800px");
 
         // Befüllen der Tabelle mit den zuvor ausgelesenen Stellen
@@ -72,7 +73,7 @@ public class LandingPageStudentView extends Div {
         Grid.Column<StellenanzeigeDTO> submitColumn = grid.addComponentColumn( job -> {
                     Button saveButton = new Button("Bewerben");
                     saveButton.addClickListener(e -> {
-                        Notification.show("Sie haben sich erfolgreich beworben.");
+                        navigateToJobApplicationView();
                     });
                     return saveButton;
                 }).setWidth("150px").setFlexGrow(0);
@@ -113,4 +114,9 @@ public class LandingPageStudentView extends Div {
     }
 
     private Component createTitle() { return new H2("Stellenanzeigen"); }
+
+    private void navigateToJobApplicationView() {
+        UI.getCurrent().navigate(Globals.Pages.JOB_APPLICATION_VIEW);
+    }
+
 }
