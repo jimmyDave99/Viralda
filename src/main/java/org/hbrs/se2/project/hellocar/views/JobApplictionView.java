@@ -65,9 +65,10 @@ public class JobApplictionView extends VerticalLayout {
 
 
 
-        Button saveButton = new Button("Speichern");
+        Button saveButton = new Button("Abgeben");
         saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         saveButton.addClickListener(event -> {
+            Notification.show("Sie haben sich erfolgreich beworben.");
         });
         Button cancelButton = new Button("Abbrechen");
         cancelButton.addClickListener(e -> {
