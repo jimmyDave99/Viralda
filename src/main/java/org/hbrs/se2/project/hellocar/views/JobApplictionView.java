@@ -83,8 +83,6 @@ public class JobApplictionView extends VerticalLayout {
 
         }
 
-
-
     private void navigateToLandingPageStudentView() {
         UI.getCurrent().navigate(Globals.Pages.LANDING_PAGE_STUDENT_VIEW);
     }
