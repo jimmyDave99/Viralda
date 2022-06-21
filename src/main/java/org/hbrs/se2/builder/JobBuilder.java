@@ -16,6 +16,11 @@ public class JobBuilder {
         return this;
     }
 
+    public JobBuilder withJobId(int jobId) {
+        this.jobDTO.setJobId(jobId);
+        return this;
+    }
+
     public JobBuilder withTitle(String title) {
         this.jobDTO.setTitel(title);
         return this;
@@ -43,6 +48,12 @@ public class JobBuilder {
 
     public JobBuilder withDescription(String description ) {
         this.jobDTO.setBeschreibung(description);
+        return this;
+    }
+
+
+    public JobBuilder withStatus(String status ) {
+        this.jobDTO.setStatus(status);
         return this;
     }
 
