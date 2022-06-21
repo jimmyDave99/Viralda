@@ -18,8 +18,8 @@ public class JobBuilder {
         return this;
     }
 
-    public JobBuilder withStudentID(int studentID) {
-        this.jobDTO.setStellenId(studentID);
+    public JobBuilder withStellenID(int stellenID) {
+        this.jobDTO.setStellenId(stellenID);
         return this;
     }
 
