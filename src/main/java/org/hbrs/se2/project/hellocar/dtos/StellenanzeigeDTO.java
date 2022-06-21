@@ -10,6 +10,8 @@ public interface StellenanzeigeDTO {
     public Date getEinstellungsdatum();
     public float getGehalt();
     public float getWochenstunden();
+    public int getJobId();
+    public String getStatus();
 
     // setter-Methoden
     public void setTitel(String titel);
@@ -18,4 +20,6 @@ public interface StellenanzeigeDTO {
     public void  setEinstellungsdatum(Date einstellungsdatum);
     public void  setGehalt(float gehalt);
     public void  setWochenstunden(float wochenstunden);
+    public void setJobId(int jobId);
+    public void setStatus(String status);
 }
