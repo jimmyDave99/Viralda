@@ -1,5 +1,7 @@
 package org.hbrs.se2.project.hellocar.util;
 
+import com.vaadin.flow.component.Component;
+
 public class Globals {
     public static String CURRENT_USER = "current_User";
 
@@ -8,6 +10,7 @@ public class Globals {
         public static final String LANDING_PAGE_COMPANY_VIEW = "landing-page-company";
         public static final String LANDING_PAGE_STUDENT_VIEW = "landing-page-student";
         public static final String JOB_APPLICATION_VIEW = LANDING_PAGE_STUDENT_VIEW+ "/job/";
+        public static final String ENTER_STELLENANZEIGE_VIEW = "enter";
         public static final String PROFIL_VIEW = "profil";
 
         public static final String LOGIN_VIEW = "login";
