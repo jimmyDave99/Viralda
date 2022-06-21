@@ -7,7 +7,7 @@ public class Globals {
         public static final String REGISTRATION_VIEW = "registration";
         public static final String LANDING_PAGE_COMPANY_VIEW = "landing-page-company";
         public static final String LANDING_PAGE_STUDENT_VIEW = "landing-page-student";
-        public static final String JOB_APPLICATION_VIEW = LANDING_PAGE_STUDENT_VIEW+ "/job-detail";
+        public static final String JOB_APPLICATION_VIEW = LANDING_PAGE_STUDENT_VIEW+ "/job/";
         public static final String PROFIL_VIEW = "profil";
 
         public static final String LOGIN_VIEW = "login";
