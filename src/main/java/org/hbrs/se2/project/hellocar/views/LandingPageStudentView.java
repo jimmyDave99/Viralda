@@ -1,13 +1,13 @@
 package org.hbrs.se2.project.hellocar.views;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.*;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.value.ValueChangeMode;
@@ -26,11 +26,12 @@ import java.util.List;
 
 @Route(value = Globals.Pages.LANDING_PAGE_STUDENT_VIEW, layout = AppView.class)
 @PageTitle("Startseite")
-@CssImport("./styles/views/landingpage/landing-page.css")
+@CssImport(value = "./styles/views/landingpage/landing-page.css", themeFor = "vaadin-grid")
 public class LandingPageStudentView extends Div {
 
-    private List<StellenanzeigeDTO> jobList;
+    protected static volatile int jobId = 0;
 
+    private List<StellenanzeigeDTO> jobList;
 
     public LandingPageStudentView(JobApplicationControl jobApplicationControl) throws DatabaseLayerException {
         addClassName("landing-page");
@@ -40,13 +41,14 @@ public class LandingPageStudentView extends Div {
         add(createTitle());
 
         add(createGridTable());
-
     }
 
     private Component createGridTable(){
 
-        Grid<StellenanzeigeDTO> grid = new Grid<>();
-        grid.setHeight("800px");
+        Grid<StellenanzeigeDTO> grid = new Grid<>(StellenanzeigeDTO.class, false);
+        grid.setHeightByRows(true);
+
+        grid.setSelectionMode(Grid.SelectionMode.NONE);
 
         // Befüllen der Tabelle mit den zuvor ausgelesenen Stellen
         ListDataProvider<StellenanzeigeDTO> dataProvider = new ListDataProvider<>(jobList);
@@ -69,14 +71,14 @@ public class LandingPageStudentView extends Div {
         grid.addColumn(StellenanzeigeDTO::getWochenstunden)
                 .setHeader("Wochenstunden");
 
-        Grid.Column<StellenanzeigeDTO> submitColumn = grid.addComponentColumn( job -> {
+        grid.addComponentColumn( job -> {
                     Button saveButton = new Button("Bewerben");
                     saveButton.addClickListener(e -> {
-                        Notification.show("Sie haben sich erfolgreich beworben.");
+                        jobId = job.getJobId();
+                        navigateToJobApplicationView(jobId);
                     });
                     return saveButton;
                 }).setWidth("150px").setFlexGrow(0);
-
 
         HeaderRow filterRow = grid.appendHeaderRow();
 
@@ -108,9 +110,12 @@ public class LandingPageStudentView extends Div {
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.addThemeVariants(GridVariant.LUMO_WRAP_CELL_CONTENT);
 
-        return grid;
-
+         return grid;
     }
 
     private Component createTitle() { return new H2("Stellenanzeigen"); }
+
+    private void navigateToJobApplicationView(int jobId) {
+        UI.getCurrent().navigate(Globals.Pages.JOB_APPLICATION_VIEW + jobId);
+    }
 }

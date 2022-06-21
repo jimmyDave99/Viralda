@@ -2,18 +2,18 @@ package org.hbrs.se2.project.hellocar.dtos.impl;
 
 import org.hbrs.se2.project.hellocar.dtos.StellenanzeigeDTO;
 
-import java.awt.image.BufferedImage;
 import java.util.Date;
 // TODO: Eventuell eine weitere Variable um ein Firmenlogo/Bild abzuspeichern
-// TODO: 15.06.22 Eine weitere Variable fuer den Status der Stellenanzeige (Aktiv/Inaktiv) 
 public class StellenanzeigeDTOImpl implements StellenanzeigeDTO {
 
     private String titel;
     private String bereich;
     private String beschreibung;
     private Date einstellungsdatum;
+    private String status;
     private float gehalt;
     private float wochenstunden;
+    private int jobId;
 
 
     @Override
@@ -74,6 +74,26 @@ public class StellenanzeigeDTOImpl implements StellenanzeigeDTO {
     @Override
     public void setWochenstunden(float wochenstunden) {
         this.wochenstunden = wochenstunden;
+    }
+
+    @Override
+    public int getJobId() {
+        return this.jobId;
+    }
+
+    @Override
+    public String getStatus() {
+        return this.status;
+    }
+
+    @Override
+    public void setJobId(int jobId) {
+        this.jobId = jobId;
+    }
+
+    @Override
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     @Override
