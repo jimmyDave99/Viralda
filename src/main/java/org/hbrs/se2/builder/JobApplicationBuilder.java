@@ -43,7 +43,7 @@ public class JobApplicationBuilder {
         return this;
     }
 
-    public JobApplicationBuilder withBewerbungsdatum(Date bewerbungsdatum ) {
+    public JobApplicationBuilder mitBewerbungsdatum(Date bewerbungsdatum ) {
         this.jobAppliDTO.setBewerbungsdatum(bewerbungsdatum);
         return this;
     }

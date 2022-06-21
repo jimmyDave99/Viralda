@@ -14,6 +14,7 @@ public class JobApplicationControl {
 
     StellenAnzeigeDAO stellenAnzeigeDAO = new StellenAnzeigeDAO();
     BewerbungDAO bewerbungDAO = new BewerbungDAO();
+
     public List<StellenanzeigeDTO> readAllJobApplications() throws DatabaseLayerException {
         return stellenAnzeigeDAO.findAllJobs();
     }

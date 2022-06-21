@@ -1,5 +1,6 @@
 package org.hbrs.se2.project.hellocar.dao;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import org.hbrs.se2.builder.JobApplicationBuilder;
 import org.hbrs.se2.builder.JobBuilder;
 import org.hbrs.se2.project.hellocar.dtos.BewerbungDTO;
@@ -36,11 +37,12 @@ public class BewerbungDAO {
                 BewerbungDTOImpl userDTO = JobApplicationBuilder
                         .getInstance()
                         .createNewJobApli()
-                        .mitStellenID(rs.getInt("stelleID"))
-                        .mitBewerberId(rs.getInt("bewerberid"))
+                        .mitStellenID(rs.getInt("stellen_id"))
+                        .mitBewerberId(rs.getInt("bewerber_id"))
                         .mitAnschreiben(rs.getString("anschreiben"))
                         .mitLebenslauf(rs.getString("lebenslauf"))
-                        .mitWeitereUnterlagen(rs.getString("weitereUnterlagen"))
+                        .mitWeitereUnterlagen(rs.getString("weitere_unterlagen"))
+                        .mitBewerbungsdatum(rs.getDate("bewerbungsdatum"))
                         .build();
 
                 list.add(userDTO);

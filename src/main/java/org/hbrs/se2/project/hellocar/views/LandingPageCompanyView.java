@@ -59,7 +59,8 @@ public class LandingPageCompanyView extends Div {
         bewerbungslist = jobApplicationControl.readAllJobApplications2();
 
         add(createTitle());
-        add(createFormLayout());
+        //add(createFormLayout());
+        add(createGridTable());
 
         //ToDO: generische Typ ersetzen
 //        Grid<Integer> grid = new Grid<>(Integer.class, false);
@@ -88,24 +89,21 @@ public class LandingPageCompanyView extends Div {
                 .addColumn(BewerbungDTO::getStellenId)
                 .setHeader("StelleID");
 
-        grid.addColumn(BewerbungDTO::getBewerberId)
-                .setHeader("BewerberId");
-
         Grid.Column<BewerbungDTO> bewerberIdColumn = grid
                 .addColumn(BewerbungDTO::getBewerberId)
-                .setHeader("bewerberId");
+                .setHeader("BewerberId");
 
         grid.addColumn(BewerbungDTO::getAnschreiben)
-                .setHeader("Anschreiben").setWidth("450px").setFlexGrow(0);
+                .setHeader("Anschreiben").setWidth("250px").setFlexGrow(0);
 
         grid.addColumn(BewerbungDTO::getLebenslauf)
-                .setHeader("Lebenslauf").setWidth("450px").setFlexGrow(0);
+                .setHeader("Lebenslauf").setWidth("250px").setFlexGrow(0);
 
         grid.addColumn(BewerbungDTO::getWeitereUnterlagen)
-                .setHeader("WeitererUnterlagen").setWidth("450px").setFlexGrow(0);
+                .setHeader("WeitererUnterlagen").setWidth("250px").setFlexGrow(0);
 
         grid.addColumn(BewerbungDTO::getBewerbungsdatum)
-                .setHeader("Bewerbungsdatum");
+                .setHeader("Datum");
 
         Grid.Column<BewerbungDTO> submitColumn = grid.addComponentColumn( job -> {
             Button saveButton = new Button("Bearbeiten");
@@ -151,8 +149,8 @@ public class LandingPageCompanyView extends Div {
     }
 
     private Component createTitle() { return new H2("Bewerbungen Von Studenten"); }
-    private Component createFormLayout() {
-        FormLayout formLayout = new FormLayout();
-        return formLayout;
-    }
+//    private Component createFormLayout() {
+//        FormLayout formLayout = new FormLayout();
+//        return formLayout;
+//    }
 }
