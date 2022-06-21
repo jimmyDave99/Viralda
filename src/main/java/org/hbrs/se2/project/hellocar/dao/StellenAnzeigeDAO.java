@@ -25,6 +25,7 @@ public class StellenAnzeigeDAO {
      * @throws DatabaseLayerException
      */
     public List<StellenanzeigeDTO> findAllJobs() throws DatabaseLayerException {
+        // TODO: 21.06.22 SELECT-Befehl nach status einschraenken
 
         try {
             List<StellenanzeigeDTO> list = new ArrayList<>();
@@ -68,7 +69,7 @@ public class StellenAnzeigeDAO {
         try {
             PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement(
             "INSERT " +
-                "INTO collathbrs.stellenanzeige (unternehmen_id, titel, bereich, beschreibung, einstellungsdatum, gehalt, wochenstunden) " +
+                "INTO collathbrs.stellenanzeige (unternehmer_id, titel, bereich, beschreibung, einstellungsdatum, gehalt, wochenstunden) " +
                 "VALUES (?,?,?,?,?,?,?)"
             );
 
@@ -79,6 +80,8 @@ public class StellenAnzeigeDAO {
             statement.setDate(5, Date.valueOf(stellenanzeigeDTO.getEinstellungsdatum()));
             statement.setDouble(6, stellenanzeigeDTO.getGehalt());
             statement.setDouble(7, stellenanzeigeDTO.getWochenstunden());
+
+            statement.executeUpdate();
         } catch (SQLException ex) {
             DatabaseLayerException e = new DatabaseLayerException("Probleme mit der Datenbank");
             e.setReason(Globals.Errors.DATABASE);
