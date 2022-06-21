@@ -74,7 +74,7 @@ public class LandingPageStudentView extends Div {
         grid.addComponentColumn( job -> {
                     Button saveButton = new Button("Bewerben");
                     saveButton.addClickListener(e -> {
-                        jobId = job.getJobId();
+                        jobId = job.getStellenId();
                         navigateToJobApplicationView(jobId);
                     });
                     return saveButton;
