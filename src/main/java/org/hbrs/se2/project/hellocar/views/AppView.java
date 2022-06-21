@@ -1,7 +1,5 @@
 package org.hbrs.se2.project.hellocar.views;
 
-//import com.vaadin.flow.component.grid.contextmenu.
-
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.UI;
@@ -22,7 +20,7 @@ import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.tabs.TabsVariant;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.PWA;
-//import org.hbrs.se2.project.hellocar.control.AuthorizationControl;
+import org.hbrs.se2.project.hellocar.control.AuthorizationControl;
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 import org.hbrs.se2.project.hellocar.util.Globals;
 import org.hbrs.se2.project.hellocar.util.Utils;
@@ -44,7 +42,7 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
     private H1 viewTitle;
     private H1 helloUser;
 
-    //private AuthorizationControl authorizationControl;
+    private AuthorizationControl authorizationControl;
 
     public AppView() {
         if (getCurrentUser() == null) {
@@ -92,7 +90,7 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
      * Erzeugung der horizontalen Leiste (Header).
      * @return
      */
-    private Component   createHeaderContent() {
+    private Component createHeaderContent() {
         // Ein paar Grund-Einstellungen. Alles wird in ein horizontales Layout gesteckt.
         HorizontalLayout layout = new HorizontalLayout();
         layout.setId("header");
@@ -192,50 +190,33 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
         tabs.setId("tabs");
 
         // Anlegen der einzelnen Menuitems
-        //tabs.add(createMenuItems());
+        tabs.add(createMenuItems());
         return tabs;
     }
 
     private Component[] createMenuItems() {
-       // Abholung der Referenz auf den Authorisierungs-Service
-       //authorizationControl = new AuthorizationControl();
+        //Abholung der Referenz auf den Authorisierungs-Service
+        authorizationControl = new AuthorizationControl();
 
-       // Jeder User sollte Autos sehen können, von daher wird dieser schon mal erzeugt und
-       // und dem Tabs-Array hinzugefügt. In der Methode createTab wird ein (Key, Value)-Pair übergeben:
-        // Key: der sichtbare String des Menu-Items
-        // Value: Die UI-Component, die nach dem Klick auf das Menuitem angezeigt wird.
-       //Tab[] tabs = new Tab[]{ createTab( "Profil", Profil.class) };
-
-       // Falls er Admin-Rechte hat, sollte der User auch Autos hinzufügen können
-       // (Alternative: Verwendung der Methode 'isUserisAllowedToAccessThisFeature')
-      /* if ( this.authorizationControl.isUserInRole( this.getCurrentUser() , Globals.Roles.ADMIN ) ) {
-           System.out.println("User is Admin!");
-           tabs = Utils.append( tabs , createTab("Enter Car", EnterCarView.class)  );
-       } */
-
-       // ToDo für die Teams: Weitere Tabs aus ihrem Projekt hier einfügen!
-       // tabs = Utils.append( tabs , createTab("Enter Car", EnterCarView.class)  );
-
-        // ToDo: sobald alles bereit ist folgendes auskommentieren
-
+        /* In der Methode createTab wird ein (Key, Value)-Pair übergeben:
+        Key: der sichtbare String des Menu-Items
+        Value: Die UI-Component, die nach dem Klick auf das Menuitem angezeigt wird */
         Tab[] tabs = new Tab[]{};
 
         //Falls User ein Stundent ist soll die LandingPageStundentView angezeigt werden
-        /*
-        if ()
-            tabs = Utils.append( tabs, createTab("Landing Page Stundent", LandingPageStudentView.class) );
-            System.out.println("User is a Company!");
-         */
+        if (this.authorizationControl.isUserInRole(this.getCurrentUser(), Globals.Roles.STUDENT)) {
+            tabs = Utils.append(tabs, createTab("Startseite", LandingPageStudentView.class));
+            System.out.println("User is a Student!");
+        }
 
         //Falls User ein Arbeitgeber ist soll die LandingPageCompanyView angezeigt werden
-        /*
-        if ()
-            tabs = Utils.append( tabs, createTab("Landing Page Company", LandingPageCompanyView.class));
-            System.out.println("User is Student!");
-         */
+        if (this.authorizationControl.isUserInRole(this.getCurrentUser(), Globals.Roles.UNTERNEHMEN)) {
+            tabs = Utils.append(tabs, createTab("Startseite", LandingPageCompanyView.class));
+            tabs = Utils.append(tabs, createTab("Stellenanzeige erstellen", EnterStellenanzeigeView.class));
+            System.out.println("User is a Company!");
+        }
 
-        //retrun tabs;
-       return null;
+        return tabs;
     }
 
     private static Tab createTab(String text, Class<? extends Component> navigationTarget) {

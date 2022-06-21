@@ -14,6 +14,7 @@ import org.hbrs.se2.project.hellocar.control.LoginControl;
 import org.hbrs.se2.project.hellocar.control.exception.DatabaseUserException;
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 import org.hbrs.se2.project.hellocar.util.Globals;
+import org.hbrs.se2.project.hellocar.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.security.NoSuchAlgorithmException;
@@ -21,7 +22,6 @@ import java.security.NoSuchAlgorithmException;
 
 /**
  * View zur Darstellung der Startseite. Diese zeigt dem Benutzer ein Login-Formular an.
- * ToDo: Integration einer Seite zur Registrierung von Benutzern
  */
 @Route(value = "")
 @RouteAlias(value = "login")
@@ -33,35 +33,8 @@ public class MainView extends VerticalLayout {
     public MainView() {
         setSizeFull();
 
-        //Login with internationalization -> German
-        LoginI18n i18n = LoginI18n.createDefault();
-
-        /*
-        LoginI18n.Header i18nHeader = i18n.getHeader();
-        i18nHeader.setTitle("Coll@H-BRS");
-        i18nHeader.setDescription("Ihre Plattform für regionales Networking");
-         */
-
-        LoginI18n.Form i18nForm = i18n.getForm();
-        i18nForm.setTitle("Anmeldung");
-        i18nForm.setUsername("Emailadresse");
-        i18nForm.setPassword("Passwort");
-        i18nForm.setSubmit("Anmelden");
-        i18nForm.setForgotPassword("Passwort vergessen?");
-        i18n.setForm(i18nForm);
-
-        LoginI18n.ErrorMessage i18nErrorMessage = i18n.getErrorMessage();
-        i18nErrorMessage.setTitle("Überprüfen Sie ihre Emailadresse oder ihr Passwort!");
-        i18nErrorMessage.setMessage("Versuchen Sie Ihre Anmeldedaten nochmals einzugeben.");
-        i18n.setErrorMessage(i18nErrorMessage);
-
-        i18n.setAdditionalInformation("Sie haben noch keinen Account? Hier geht's zur Registrierung.");
-
-        //LoginOverlay loginOverlay = new LoginOverlay();
-        //loginOverlay.setI18n(i18n);
-
         LoginForm loginForm =  new LoginForm();
-        loginForm.setI18n(i18n);
+        loginForm.setI18n(createLoginFormGerman());
 
         loginForm.addLoginListener(e -> {
 
@@ -95,6 +68,35 @@ public class MainView extends VerticalLayout {
         this.setAlignItems( Alignment.CENTER );
     }
 
+    private LoginI18n createLoginFormGerman(){
+        LoginI18n i18n = LoginI18n.createDefault();
+        i18n.setHeader(new LoginI18n.Header());
+
+        LoginI18n.Header i18nHeader = i18n.getHeader();
+        i18nHeader.setTitle("Coll@H-BRS");
+        i18nHeader.setDescription("Ihre Plattform für regionales Networking");
+
+        LoginI18n.Form i18nForm = i18n.getForm();
+        i18nForm.setTitle("Anmeldung");
+        i18nForm.setUsername("Emailadresse");
+        i18nForm.setPassword("Passwort");
+        i18nForm.setSubmit("Anmelden");
+        i18nForm.setForgotPassword("Passwort vergessen?");
+        i18n.setForm(i18nForm);
+
+        LoginI18n.ErrorMessage i18nErrorMessage = i18n.getErrorMessage();
+        i18nErrorMessage.setTitle("Überprüfen Sie ihre Emailadresse oder ihr Passwort!");
+        i18nErrorMessage.setMessage("Versuchen Sie Ihre Anmeldedaten nochmals einzugeben.");
+        i18n.setErrorMessage(i18nErrorMessage);
+
+        i18n.setAdditionalInformation("Sie haben noch keinen Account? Hier geht's zur Registrierung.");
+
+        //LoginOverlay loginOverlay = new LoginOverlay();
+        //loginOverlay.setI18n(i18n);
+
+        return i18n;
+    }
+
     private void grabAndSetUserIntoSession() {
         UserDTO userDTO = loginControl.getCurrentUser();
         UI.getCurrent().getSession().setAttribute( Globals.CURRENT_USER, userDTO );
@@ -103,8 +105,11 @@ public class MainView extends VerticalLayout {
 
     private void navigateToMainPage() {
         // Navigation zur Startseite.
-        UI.getCurrent().navigate("main");
-
+        UserDTO userDTO = loginControl.getCurrentUser();
+        if(userDTO.getRole().equals(Globals.Roles.STUDENT))
+            UI.getCurrent().navigate(Globals.Pages.LANDING_PAGE_STUDENT_VIEW);
+        if(userDTO.getRole().equals(Globals.Roles.UNTERNEHMEN))
+            UI.getCurrent().navigate(Globals.Pages.LANDING_PAGE_COMPANY_VIEW);
     }
 
     private void navigateToRegistrationPage() {
