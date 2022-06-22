@@ -19,9 +19,9 @@ public class RegistrationControl {
 
     UserDAO userDAO = new UserDAO();
 
-    private static final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8}.*$";
+    private static final String PWD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8}.*$";
 
-    private static final Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
+    private static final Pattern pattern = Pattern.compile(PWD_PATTERN);
 
     public boolean createUser( UserDTO userDTO ) throws DatabaseLayerException, NoSuchAlgorithmException {
 
