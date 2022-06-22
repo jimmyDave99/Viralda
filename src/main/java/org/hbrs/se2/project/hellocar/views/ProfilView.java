@@ -115,6 +115,7 @@ public class ProfilView extends Div {
             content.add(createFormLayoutShowUserAttributes());
 
         } else if (tab.equals(securitySettings)) {
+            content.add(createButtonLayoutTabSecuritySettings());
             content.add(createFormLayoutChangePassword());
 
         } else if (tab.equals(notifications)) {
@@ -222,6 +223,19 @@ public class ProfilView extends Div {
     }
 
     //ToDo: Buttonlayout
+    private Component createButtonLayoutTabSecuritySettings() {
+        content.removeAll();
+
+        HorizontalLayout buttonLayout = new HorizontalLayout();
+        buttonLayout.add(save);
+        buttonLayout.add(cancel);
+
+        //cancel.addClickListener(event -> );
+        // ToDo: Popup bei erfolgreichem ändern
+        //save.addClickListener(event -> );
+
+        return buttonLayout;
+    }
 
     private void setFieldsEditUserPassword() {
         oldPassword = new TextField("Altes Passwort");
