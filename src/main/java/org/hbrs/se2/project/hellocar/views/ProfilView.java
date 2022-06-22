@@ -90,6 +90,7 @@ public class ProfilView extends Div {
         add(tabs, content);
     }
 
+    // creates the title with the last- and first name of a person or the company name if the user is a company
     private Component createTitle() {
         H2 title = new H2();
 
@@ -104,13 +105,14 @@ public class ProfilView extends Div {
         return title;
     }
 
+    // function to produce the clicked tab
     private void setContent(Tab tab) {
         content.removeAll();
 
         if (tab.equals(profile)) {
-            content.add(createButtonLayoutShowProfile());
+            content.add(createButtonLayoutShowUserAttributes());
             //ToDo: add context for button editProfile, idea: Split Layout, Upload
-            content.add(createFormLayoutShowProfile());
+            content.add(createFormLayoutShowUserAttributes());
 
         } else if (tab.equals(securitySettings)) {
             content.add(createFormLayoutChangePassword());
@@ -123,30 +125,18 @@ public class ProfilView extends Div {
     }
 
 
-    private Component createButtonLayoutShowProfile() {
+    // --------------------  functions for tab "Profil" with current attributes of a user  --------------------
+    private Component createButtonLayoutShowUserAttributes() {
         content.removeAll();
 
         HorizontalLayout buttonLayout = new HorizontalLayout();
         buttonLayout.add(editProfil);
-        editProfil.addClickListener(event -> navigateToSubBarEditProfile());
+        editProfil.addClickListener(event -> navigateToSubBarEditUserAttributes());
 
         return buttonLayout;
     }
 
-    private Component createButtonLayoutTabProfileEdit() {
-        content.removeAll();
-
-        HorizontalLayout buttonLayout = new HorizontalLayout();
-        buttonLayout.add(save);
-        buttonLayout.add(cancel);
-
-        cancel.addClickListener(event -> navigateToSubBarShowProfilWithoutSave());
-        save.addClickListener(event -> navigateToSubBarShowProfilWithSave());
-
-        return buttonLayout;
-    }
-
-    private Component createFormLayoutShowProfile() {
+    private Component createFormLayoutShowUserAttributes() {
 
         setFieldsShowUserAttributes();
         firstName.setPrefixComponent(new Div(new Text(getCurrentUser().getFirstName())));
@@ -173,7 +163,30 @@ public class ProfilView extends Div {
         return formLayout;
     }
 
-    private Component createFormLayoutEditProfile() {
+    private void setFieldsShowUserAttributes() {
+        firstName = new TextField("Vorname");
+        lastName = new TextField("Name");
+        email = new EmailField("E-Mail-Adresse");
+        dateOfBirth = new DatePicker("Geburtsdatum");
+        role = new TextField("Rolle");
+    }
+
+
+    // --------------------  functions for tab "Profil" with the ability to change the attributes  --------------------
+    private Component createButtonLayoutTabProfileEditUserAttributes() {
+        content.removeAll();
+
+        HorizontalLayout buttonLayout = new HorizontalLayout();
+        buttonLayout.add(save);
+        buttonLayout.add(cancel);
+
+        cancel.addClickListener(event -> navigateToSubBarShowUserAttributesWithoutSave());
+        save.addClickListener(event -> navigateToSubBarShowUserAttributesWithSave());
+
+        return buttonLayout;
+    }
+
+    private Component createFormLayoutEditUserAttributes() {
         setFieldsEditUserAttributes();
 
         firstName.setPlaceholder(getCurrentUser().getFirstName());
@@ -188,6 +201,15 @@ public class ProfilView extends Div {
         return formLayout;
     }
 
+    private void setFieldsEditUserAttributes() {
+        firstName = new TextField("Vorname");
+        lastName = new TextField("Name");
+        email = new EmailField("E-Mail");
+        dateOfBirth = new DatePicker("Geburtsdatum");
+    }
+
+
+    // --------------------  functions for tab "Sicherheitseinstellungen"  --------------------
     private Component createFormLayoutChangePassword() {
         setFieldsEditUserPassword();
 
@@ -199,21 +221,31 @@ public class ProfilView extends Div {
         return formLayout;
     }
 
-    private void navigateToSubBarEditProfile() {
-        content.removeAll();
+    //ToDo: Buttonlayout
 
-        content.add(createButtonLayoutTabProfileEdit());
-        content.add(createFormLayoutEditProfile());
+    private void setFieldsEditUserPassword() {
+        oldPassword = new TextField("Altes Passwort");
+        newPassword = new TextField("Passwort");
+        newPasswordAgain = new TextField("Passwort wiederholen");
     }
 
-    private void navigateToSubBarShowProfilWithoutSave() {
+
+    // --------------------  functions to navigate between the tabs  --------------------
+    private void navigateToSubBarEditUserAttributes() {
         content.removeAll();
 
-        content.add(createButtonLayoutShowProfile());
-        content.add(createFormLayoutShowProfile());
+        content.add(createButtonLayoutTabProfileEditUserAttributes());
+        content.add(createFormLayoutEditUserAttributes());
     }
 
-    private void navigateToSubBarShowProfilWithSave() {
+    private void navigateToSubBarShowUserAttributesWithoutSave() {
+        content.removeAll();
+
+        content.add(createButtonLayoutShowUserAttributes());
+        content.add(createFormLayoutShowUserAttributes());
+    }
+
+    private void navigateToSubBarShowUserAttributesWithSave() {
         //ToDo: save new input
         if (firstName != null) {
             binder.forField(firstName)
@@ -233,33 +265,14 @@ public class ProfilView extends Div {
 
         content.removeAll();
 
-        content.add(createButtonLayoutShowProfile());
-        content.add(createFormLayoutShowProfile());
+        content.add(createButtonLayoutShowUserAttributes());
+        content.add(createFormLayoutShowUserAttributes());
     }
 
+
+    // --------------------  other necessary functions  --------------------
     private void clearForm() {
         binder.setBean((UserDTOImpl) getCurrentUser());
-    }
-
-    private void setFieldsShowUserAttributes() {
-        firstName = new TextField("Vorname");
-        lastName = new TextField("Name");
-        email = new EmailField("E-Mail-Adresse");
-        dateOfBirth = new DatePicker("Geburtsdatum");
-        role = new TextField("Rolle");
-    }
-
-    private void setFieldsEditUserAttributes() {
-        firstName = new TextField("Vorname");
-        lastName = new TextField("Name");
-        email = new EmailField("E-Mail");
-        dateOfBirth = new DatePicker("Geburtsdatum");
-    }
-
-    private void setFieldsEditUserPassword() {
-        oldPassword = new TextField("Altes Passwort");
-        newPassword = new TextField("Passwort");
-        newPasswordAgain = new TextField("Passwort wiederholen");
     }
 
     private UserDTO getCurrentUser() {
