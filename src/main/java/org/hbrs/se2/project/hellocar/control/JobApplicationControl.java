@@ -21,4 +21,20 @@ public class JobApplicationControl {
         stellenAnzeigeDAO.insertStellenanzeige(stellenanzeigeDTO, userDTO);
     }
 
+    public void createJobApplication(StellenanzeigeDTO stellenanzeigeDTO, UserDTO userDTO, String status) throws DatabaseLayerException {
+        stellenAnzeigeDAO.insertOrUpdateJobApplication(stellenanzeigeDTO, userDTO, status);
+    }
+
+    public List<StellenanzeigeDTO> findJob(int jobId) throws DatabaseLayerException {
+        return stellenAnzeigeDAO.findJobWithId(jobId);
+    }
+
+    public void updateJobApplicationStatus(StellenanzeigeDTO stellenanzeigeDTO, UserDTO userDTO, String status) throws DatabaseLayerException {
+         stellenAnzeigeDAO.updateStatusByJobId(stellenanzeigeDTO, userDTO, status);
+    }
+
+    public String getJobStatus(StellenanzeigeDTO stellenanzeigeDTO , UserDTO userDTO) throws DatabaseLayerException {
+        return stellenAnzeigeDAO.findStatusByJobIdAndStudentId(stellenanzeigeDTO, userDTO);
+    }
+
 }
