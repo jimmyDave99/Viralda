@@ -76,6 +76,7 @@ public class ProfilView extends Div {
     private void setFieldsCompanyAttributes() {
         companyName = new TextField("Unternehmensname");
         email = new EmailField("E-Mail-Adresse");
+        role = new TextField("Rolle");
         // ToDo: fehleden Attribute einfügen
     }
 
@@ -404,7 +405,13 @@ public class ProfilView extends Div {
     }
     // ToDo
     private void navigateToSubBarShowCompanyAttributesWithSaving() {
+        // ToDo: Pop-up einfügen für erfolgreiches ändern
+        // ToDo: ManageExistingUserControl einbinden
 
+        content.removeAll();
+
+        content.add(createButtonLayoutShowCompanyAttributes());
+        content.add(createFormLayoutShowCompanyAttributes());
     }
 
     private void navigateToSubBarShowCompanyAttributesWithoutSaving() {
