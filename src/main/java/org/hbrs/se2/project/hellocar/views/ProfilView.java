@@ -15,13 +15,18 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.TabVariant;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.EmailField;
+import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.*;
 //import org.hbrs.se2.project.hellocar.control.AuthorizationControl;
+import org.hbrs.se2.project.hellocar.control.ManageExistingUserControl;
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 import org.hbrs.se2.project.hellocar.dtos.impl.UserDTOImpl;
+import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
 import org.hbrs.se2.project.hellocar.util.Globals;
+
+import java.security.NoSuchAlgorithmException;
 
 @Route(value = Globals.Pages.PROFIL_VIEW, layout = AppView.class)
 @PageTitle("Profil")
@@ -57,11 +62,12 @@ public class ProfilView extends Div {
     private TextField companyName;
     private TextField branch;
 
-    private TextField oldPassword;
-    private TextField newPassword;
-    private TextField newPasswordAgain;
+    private PasswordField oldPassword;
+    private PasswordField newPassword;
+    private PasswordField newPasswordAgain;
 
     private final Binder<UserDTOImpl> binder = new Binder(UserDTOImpl.class);
+    ManageExistingUserControl userService;
 
     // ------  functions for all fields  ------
     private void setFieldsStudentAttributes() {
@@ -81,15 +87,16 @@ public class ProfilView extends Div {
     }
 
     private void setFieldsEditUserPassword() {
-        oldPassword = new TextField("Altes Passwort");
-        newPassword = new TextField("Passwort");
-        newPasswordAgain = new TextField("Passwort wiederholen");
+        oldPassword = new PasswordField("Altes Passwort");
+        newPassword = new PasswordField("Passwort");
+        newPasswordAgain = new PasswordField("Passwort wiederholen");
     }
 
 
 
-    public ProfilView() {
+    public ProfilView(ManageExistingUserControl userService) {
         addClassName("profile");
+        this.userService = userService;
 
         add(createTitle());
 
@@ -226,7 +233,14 @@ public class ProfilView extends Div {
         buttonLayout.add(save);
         buttonLayout.add(cancel);
 
-        save.addClickListener(event -> navigateToSubBarShowStudentAttributesWithSave());
+        save.addClickListener(event -> {
+            try{
+                navigateToSubBarShowStudentAttributesWithSave();
+                userService.updateUser(binder.getBean(), this.getCurrentUser());
+            } catch (DatabaseLayerException e) {
+                e.printStackTrace();
+            }
+        });
         cancel.addClickListener(event -> navigateToSubBarShowStudentAttributesWithoutSave());
 
         return buttonLayout;
@@ -300,7 +314,9 @@ public class ProfilView extends Div {
         buttonLayout.add(save);
         buttonLayout.add(cancel);
 
-        save.addClickListener(event -> navigateToSubBarShowCompanyAttributesWithSaving());
+        save.addClickListener(event -> {
+            navigateToSubBarShowCompanyAttributesWithSaving();
+        });
         cancel.addClickListener(event -> navigateToSubBarShowCompanyAttributesWithoutSaving());
 
         return buttonLayout;
@@ -348,9 +364,18 @@ public class ProfilView extends Div {
         buttonLayout.add(save);
         buttonLayout.add(cancel);
 
-        cancel.addClickListener(event -> navigateToSubBarSecuritySettingsWithoutSaving());
+        cancel.addClickListener(event -> {
+            navigateToSubBarSecuritySettingsWithoutSaving();
+        });
         // ToDo: Popup bei erfolgreichem ändern
-        save.addClickListener(event -> navigateToSubBarSecuritySettingsWithSaving());
+        save.addClickListener(event -> {
+            try{
+                userService.updateUserPassword(binder.getBean(), this.getCurrentUser());
+                navigateToSubBarSecuritySettingsWithSaving();
+            } catch (DatabaseLayerException | NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+        });
 
         return buttonLayout;
     }
@@ -376,7 +401,8 @@ public class ProfilView extends Div {
             binder.forField(email)
                     .bind(UserDTOImpl::getEmail, UserDTOImpl::setEmail);
         } else if (dateOfBirth != null) {
-            //ToDo: sobald Geburtsdatum in Datenbank vorhanden ist anpassen, dass BDay geändert weden kann
+            binder.forField(dateOfBirth)
+                    .bind(UserDTOImpl::getDateOfBirth, UserDTOImpl::setDateOfBirth);
         }
 
         binder.readBean((UserDTOImpl) getCurrentUser());
@@ -432,8 +458,8 @@ public class ProfilView extends Div {
 
     // ToDo
     private void navigateToSubBarSecuritySettingsWithSaving() {
-        // ToDo: Pop-up einfügen für erfolgreiches ändern
-        // ToDo: Passwort ändern einfügen
+        binder.forField(newPassword)
+                .bind(UserDTOImpl::getPassword, UserDTOImpl::setPassword);
 
         content.removeAll();
 
