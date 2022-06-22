@@ -32,13 +32,11 @@ public class ProfilView extends Div {
     private final Tab securitySettings;
     private final Tab notifications;
 
-    private VerticalLayout content;
+    private final VerticalLayout content;
 
-    private Button cancel = new Button("Abbrechen");
-    private Button save = new Button("Speichern");
-    private Button editProfil = new Button("Profil bearbeiten");
-
-    private Label empty = new Label("");
+    private final Button cancel = new Button("Abbrechen");
+    private final Button save = new Button("Speichern");
+    private final Button editProfil = new Button("Profil bearbeiten");
 
     private TextField firstName;
     private TextField lastName;
