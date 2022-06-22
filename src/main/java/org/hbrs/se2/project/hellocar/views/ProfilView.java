@@ -48,7 +48,7 @@ public class ProfilView extends Div {
     private TextField newPassword;
     private TextField newPasswordAgain;
 
-    private Binder<UserDTOImpl> binder = new Binder(UserDTOImpl.class);
+    private final Binder<UserDTOImpl> binder = new Binder(UserDTOImpl.class);
 
     public ProfilView() {
         addClassName("profile");
