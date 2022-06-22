@@ -187,11 +187,9 @@ public class UserDAO {
             PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement(
                     "UPDATE collathbrs.user " +
                             "SET email = ? " +
-                            ", passwort = ? " +
                             "WHERE id = ?");
             statement.setString(1, userDTO.getEmail());
-            statement.setString(2, userDTO.getPassword());
-            statement.setInt(3, userId);
+            statement.setInt(2, userId);
             statement.executeUpdate();
 
             //Update Student or Unternehmen
@@ -216,6 +214,29 @@ public class UserDAO {
                 unternehmenStatement.setInt(3, userId);
                 unternehmenStatement.executeUpdate();
             }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    /**
+     * Method for updating Users
+     *
+     * @param email, password
+     * @return
+     * @throws DatabaseLayerException
+     */
+    public void updateUserPasswordByEmail(String email, String password) throws DatabaseLayerException {
+        try {
+            //Update User
+            PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement(
+                    "UPDATE collathbrs.user " +
+                            "SET passwort = ? " +
+                            "WHERE id = ?");
+            statement.setString(1, password);
+            statement.setString(2, email);
+            statement.executeUpdate();
+
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
