@@ -4,7 +4,6 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -30,7 +29,7 @@ import org.hbrs.se2.project.hellocar.util.Globals;
 public class ProfilView extends Div {
 
     private final Tab profile;
-    private final Tab settings;
+    private final Tab securitySettings;
     private final Tab notifications;
 
     private VerticalLayout content;
@@ -51,9 +50,6 @@ public class ProfilView extends Div {
     private TextField newPassword;
     private TextField newPasswordAgain;
 
-    private Checkbox savestOptions = new Checkbox("Die besten Sicherheitseinstellungen verwenden.");
-    private Checkbox getNotifications = new Checkbox("Benachrichtigungen erhalten.");
-
     private Binder<UserDTOImpl> binder = new Binder(UserDTOImpl.class);
 
     public ProfilView() {
@@ -67,9 +63,9 @@ public class ProfilView extends Div {
                 new Span("Profil")
         );
 
-        settings = new Tab(
+        securitySettings = new Tab(
                 VaadinIcon.COG.create(),
-                new Span("Einstellungen")
+                new Span("Sicherheitseinstellungen")
         );
 
         notifications = new Tab(
@@ -78,13 +74,13 @@ public class ProfilView extends Div {
         );
 
         // Set the icon on top
-        for (Tab tab : new Tab[] { profile, settings, notifications }) {
+        for (Tab tab : new Tab[]{profile, securitySettings, notifications}) {
             tab.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
         }
 
-        Tabs tabs = new Tabs(profile, settings, notifications);
+        Tabs tabs = new Tabs(profile, securitySettings, notifications);
 
-        tabs.addSelectedChangeListener( event -> setContent( event.getSelectedTab() ) );
+        tabs.addSelectedChangeListener(event -> setContent(event.getSelectedTab()));
 
         // Content for the tabs
         content = new VerticalLayout();
@@ -97,7 +93,7 @@ public class ProfilView extends Div {
     private Component createTitle() {
         H2 title = new H2();
 
-        if(getCurrentUser().getRole().equals("Student")) {
+        if (getCurrentUser().getRole().equals("Student")) {
             title = new H2("Studentenprofil von " + getCurrentUser().getFirstName() + " " + getCurrentUser().getLastName());
         } else if (getCurrentUser().getRole().equals("Unternehmen")) {
             title = new H2("Unternehmensprofil " + getCurrentUser().getCompanyName());
@@ -108,22 +104,18 @@ public class ProfilView extends Div {
         return title;
     }
 
-    private void setContent( Tab tab ) {
+    private void setContent(Tab tab) {
         content.removeAll();
 
-        if ( tab.equals( profile ) ) {
+        if (tab.equals(profile)) {
             content.add(createButtonLayoutShowProfile());
             //ToDo: add context for button editProfile, idea: Split Layout, Upload
             content.add(createFormLayoutShowProfile());
 
-        } else if ( tab.equals( settings ) ) {
-            content.add(new H4("Sicherheitseinstellungen"));
-            content.add(savestOptions);
-            content.add(new H4("Privatssphäreeinstellungen"));
-            content.add(getNotifications);
-            content.add(new H4("Sonstiges"));
+        } else if (tab.equals(securitySettings)) {
+            content.add(createFormLayoutChangePassword());
 
-        } else if ( tab.equals( notifications ) ) {
+        } else if (tab.equals(notifications)) {
             content.add(new Paragraph("Du hast keine neuen Benachrichtigungen!"));
             content.add(new Text("Möchtest du dich nicht bewerben um das zu ändern?"));
             content.add(new Text(" Besser wäre es."));
@@ -131,13 +123,12 @@ public class ProfilView extends Div {
     }
 
 
-
     private Component createButtonLayoutShowProfile() {
         content.removeAll();
 
         HorizontalLayout buttonLayout = new HorizontalLayout();
         buttonLayout.add(editProfil);
-        editProfil.addClickListener(event  -> navigateToSubBarEditProfile());
+        editProfil.addClickListener(event -> navigateToSubBarEditProfile());
 
         return buttonLayout;
     }
@@ -149,7 +140,7 @@ public class ProfilView extends Div {
         buttonLayout.add(save);
         buttonLayout.add(cancel);
 
-        cancel.addClickListener(event -> navigateToSubBarShowProfilWithoutSave() );
+        cancel.addClickListener(event -> navigateToSubBarShowProfilWithoutSave());
         save.addClickListener(event -> navigateToSubBarShowProfilWithSave());
 
         return buttonLayout;
@@ -157,7 +148,7 @@ public class ProfilView extends Div {
 
     private Component createFormLayoutShowProfile() {
 
-        setFieldsShow();
+        setFieldsShowUserAttributes();
         firstName.setPrefixComponent(new Div(new Text(getCurrentUser().getFirstName())));
         firstName.setEnabled(false);
 
@@ -183,8 +174,8 @@ public class ProfilView extends Div {
     }
 
     private Component createFormLayoutEditProfile() {
+        setFieldsEditUserAttributes();
 
-        setFieldsEdit();
         firstName.setPlaceholder(getCurrentUser().getFirstName());
         lastName.setPlaceholder(getCurrentUser().getLastName());
         email.setPlaceholder(getCurrentUser().getEmail());
@@ -193,8 +184,15 @@ public class ProfilView extends Div {
 
         FormLayout formLayout = new FormLayout();
         formLayout.add(firstName, lastName,
-                email, dateOfBirth,
-                new H4("Passwort ändern"), new H4(""),
+                email, dateOfBirth);
+        return formLayout;
+    }
+
+    private Component createFormLayoutChangePassword() {
+        setFieldsEditUserPassword();
+
+        FormLayout formLayout = new FormLayout();
+        formLayout.add(new H4("Passwort ändern"), new H4(""),
                 oldPassword, new H4(""),
                 newPassword, new H4(""),
                 newPasswordAgain);
@@ -239,9 +237,11 @@ public class ProfilView extends Div {
         content.add(createFormLayoutShowProfile());
     }
 
-    private void clearForm() { binder.setBean((UserDTOImpl) getCurrentUser());}
+    private void clearForm() {
+        binder.setBean((UserDTOImpl) getCurrentUser());
+    }
 
-    private void setFieldsShow() {
+    private void setFieldsShowUserAttributes() {
         firstName = new TextField("Vorname");
         lastName = new TextField("Name");
         email = new EmailField("E-Mail-Adresse");
@@ -249,11 +249,14 @@ public class ProfilView extends Div {
         role = new TextField("Rolle");
     }
 
-    public void setFieldsEdit() {
-        firstName = new TextField( "Vorname");
-        lastName = new TextField( "Name");
+    private void setFieldsEditUserAttributes() {
+        firstName = new TextField("Vorname");
+        lastName = new TextField("Name");
         email = new EmailField("E-Mail");
-        dateOfBirth= new DatePicker("Geburtsdatum");
+        dateOfBirth = new DatePicker("Geburtsdatum");
+    }
+
+    private void setFieldsEditUserPassword() {
         oldPassword = new TextField("Altes Passwort");
         newPassword = new TextField("Passwort");
         newPasswordAgain = new TextField("Passwort wiederholen");
