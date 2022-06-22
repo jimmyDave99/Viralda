@@ -284,7 +284,10 @@ public class ProfilView extends Div {
     }
 
     private void navigateToSubBarSecuritySettingsWithoutSaving() {
+        content.removeAll();
 
+        content.add(createButtonLayoutTabSecuritySettings());
+        content.add(createFormLayoutChangePassword());
     }
 
     private void navigateToSubBarSecuritySettingsWithSaving() {
