@@ -230,9 +230,9 @@ public class ProfilView extends Div {
         buttonLayout.add(save);
         buttonLayout.add(cancel);
 
-        //cancel.addClickListener(event -> );
+        cancel.addClickListener(event -> navigateToSubBarSecuritySettingsWithoutSaving());
         // ToDo: Popup bei erfolgreichem ändern
-        //save.addClickListener(event -> );
+        save.addClickListener(event -> navigateToSubBarSecuritySettingsWithSaving());
 
         return buttonLayout;
     }
@@ -281,6 +281,14 @@ public class ProfilView extends Div {
 
         content.add(createButtonLayoutShowUserAttributes());
         content.add(createFormLayoutShowUserAttributes());
+    }
+
+    private void navigateToSubBarSecuritySettingsWithoutSaving() {
+
+    }
+
+    private void navigateToSubBarSecuritySettingsWithSaving() {
+
     }
 
 
