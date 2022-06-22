@@ -1,6 +1,8 @@
 package org.hbrs.se2.builder;
 
 import org.hbrs.se2.project.hellocar.dtos.impl.StellenanzeigeDTOImpl;
+
+import java.time.LocalDate;
 import java.util.Date;
 
 public class JobBuilder {
@@ -16,22 +18,32 @@ public class JobBuilder {
         return this;
     }
 
+    public JobBuilder withStellenID(int stellenID) {
+        this.jobDTO.setStellenId(stellenID);
+        return this;
+    }
+
+    public JobBuilder withUnternehmenID(int unternehmenID) {
+        this.jobDTO.setUnternehmenId(unternehmenID);
+        return this;
+    }
+
     public JobBuilder withTitle(String title) {
         this.jobDTO.setTitel(title);
         return this;
     }
 
-    public JobBuilder withSalary(float salary ) {
+    public JobBuilder withSalary(double salary ) {
         this.jobDTO.setGehalt(salary);
         return this;
     }
 
-    public JobBuilder withWeeklyHours(float weeklyHours ) {
+    public JobBuilder withWeeklyHours(double weeklyHours ) {
         this.jobDTO.setWochenstunden(weeklyHours);
         return this;
     }
 
-    public JobBuilder withStartDate(Date startDate ) {
+    public JobBuilder withStartDate(LocalDate startDate ) {
         this.jobDTO.setEinstellungsdatum(startDate);
         return this;
     }
@@ -43,6 +55,12 @@ public class JobBuilder {
 
     public JobBuilder withDescription(String description ) {
         this.jobDTO.setBeschreibung(description);
+        return this;
+    }
+
+
+    public JobBuilder withStatus(String status ) {
+        this.jobDTO.setStatus(status);
         return this;
     }
 

@@ -2,11 +2,11 @@ package org.hbrs.se2.project.hellocar.control;
 
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 import org.hbrs.se2.project.hellocar.util.Globals;
+import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
-import java.util.List;
 
-// @Component
+@Component
 public class AuthorizationControl {
 
     /**
@@ -14,9 +14,8 @@ public class AuthorizationControl {
      * 
      */
    public boolean isUserInRole(UserDTO user , String role  ) {
-        if ( user.getRole().equals(role) ) return true;
-        return false;
-    }
+       return user.getRole().equals(role);
+   }
 
     /**
      * Erweiterte Methode zur Bestimmung, ob ein User mit einer bestimmten Rolle ein
@@ -26,19 +25,17 @@ public class AuthorizationControl {
     public boolean isUserisAllowedToAccessThisFeature(UserDTO user , String role , String feature , String[] context  ) {
         String userRole = user.getRole();
         // Check, ob ein Benutzer eine Rolle besitzt:
+        // Check, ob context erfüllt ist, bleibt hier noch aus, kann man nachziehen
         if ( userRole.equals(role) )
             // Einfache (!) Kontrolle,  ob die Rolle auf ein Feature zugreifen kann
-            if (checkRolleWithFeature(userRole, feature)) {
-                // Check, ob context erfüllt ist, bleibt hier noch aus, kann man nachziehen
-                return true;
-            }
+            return checkRolleWithFeature(userRole, feature);
 
         return false;
     }
 
     private boolean checkRolleWithFeature(String rolle, String feature) {
         String[] rolles = getRollesForFeature(feature);
-        if  ( rolles.length == 0 || rolles == null ) return false;
+        if  ( rolles.length == 0 ) return false;
         return Arrays.asList(rolles).contains(rolle);
 
 
@@ -48,8 +45,8 @@ public class AuthorizationControl {
      * Methode zur Bestimmung, welche Rollen ein Feature (hier: View) verwenden dürfen
      * Diese Zuordnung sollte man natürlich in Praxis in einer Datenbank hinterlegen, so dass man
      * die Zuordnungen flexibel anpassen kann.
-     * @param feature
-     * @return
+     * @param feature beschreibt eine View der Webseite
+     * @return die Rolle des angefragten Features
      */
     private String[] getRollesForFeature(String feature) {
         // Da im Framework nur zwei Views unterstützt werden, werden auch diese nur unterschieden

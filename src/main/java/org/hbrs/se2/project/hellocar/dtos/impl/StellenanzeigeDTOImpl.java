@@ -3,18 +3,40 @@ package org.hbrs.se2.project.hellocar.dtos.impl;
 import org.hbrs.se2.project.hellocar.dtos.StellenanzeigeDTO;
 
 import java.awt.image.BufferedImage;
+import java.time.LocalDate;
 import java.util.Date;
 // TODO: Eventuell eine weitere Variable um ein Firmenlogo/Bild abzuspeichern
-// TODO: 15.06.22 Eine weitere Variable fuer den Status der Stellenanzeige (Aktiv/Inaktiv) 
 public class StellenanzeigeDTOImpl implements StellenanzeigeDTO {
 
+    private int stellenId;
+    private int unternehmenId;
     private String titel;
     private String bereich;
     private String beschreibung;
-    private Date einstellungsdatum;
-    private float gehalt;
-    private float wochenstunden;
+    private LocalDate einstellungsdatum;
+    private double gehalt;
+    private double wochenstunden;
+    private String status;
 
+    @Override
+    public int getStellenId() {
+        return stellenId;
+    }
+
+    @Override
+    public void setStellenId(int stellenId) {
+        this.stellenId = stellenId;
+    }
+
+    @Override
+    public int getUnternehmenId() {
+        return unternehmenId;
+    }
+
+    @Override
+    public void setUnternehmenId(int unternehmenId) {
+        this.unternehmenId = unternehmenId;
+    }
 
     @Override
     public String getTitel() {
@@ -47,33 +69,43 @@ public class StellenanzeigeDTOImpl implements StellenanzeigeDTO {
     }
 
     @Override
-    public Date getEinstellungsdatum() {
+    public LocalDate getEinstellungsdatum() {
         return einstellungsdatum;
     }
 
     @Override
-    public void setEinstellungsdatum(Date einstellungsdatum) {
+    public void setEinstellungsdatum(LocalDate einstellungsdatum) {
         this.einstellungsdatum = einstellungsdatum;
     }
 
     @Override
-    public float getGehalt() {
+    public double getGehalt() {
         return gehalt;
     }
 
     @Override
-    public void setGehalt(float gehalt) {
+    public void setGehalt(double gehalt) {
         this.gehalt = gehalt;
     }
 
     @Override
-    public float getWochenstunden() {
+    public double getWochenstunden() {
         return wochenstunden;
     }
 
     @Override
-    public void setWochenstunden(float wochenstunden) {
+    public void setWochenstunden(double wochenstunden) {
         this.wochenstunden = wochenstunden;
+    }
+
+    @Override
+    public String getStatus() {
+        return this.status;
+    }
+
+    @Override
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     @Override

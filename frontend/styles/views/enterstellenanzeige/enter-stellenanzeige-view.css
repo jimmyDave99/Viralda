@@ -1,10 +1,11 @@
-.enter-car-view {
+.enter-stellenanzeige-view {
   display: block;
+  height: 100%;
   margin: 0 auto;
   max-width: 1024px;
   padding: 0 var(--lumo-space-l);
 }
-.enter-car-view .button-layout {
+.enter-stellenanzeige-view .button-layout {
   margin-bottom: var(--lumo-space-l);
   margin-top: var(--lumo-space-m);
 }
