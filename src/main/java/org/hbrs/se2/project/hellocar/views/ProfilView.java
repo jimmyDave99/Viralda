@@ -41,19 +41,15 @@ public class ProfilView extends Div {
 
     private Label empty = new Label("");
 
-    private TextField firstNameShow;
-    private TextField lastNameShow;
-    private EmailField emailShow;
-    private DatePicker dateOfBirthShow;
-    private TextField roleShow;
+    private TextField firstName;
+    private TextField lastName;
+    private EmailField email;
+    private DatePicker dateOfBirth;
+    private TextField role;
 
-    private TextField firstNameEdit;
-    private TextField lastNameEdit;
-    private EmailField emailEdit;
-    private DatePicker dateOfBirthEdit;
-    private TextField oldPasswordEdit;
-    private TextField newPasswordEdit;
-    private TextField newPasswordAgainEdit;
+    private TextField oldPassword;
+    private TextField newPassword;
+    private TextField newPasswordAgain;
 
     private Checkbox savestOptions = new Checkbox("Die besten Sicherheitseinstellungen verwenden.");
     private Checkbox getNotifications = new Checkbox("Benachrichtigungen erhalten.");
@@ -162,46 +158,46 @@ public class ProfilView extends Div {
     private Component createFormLayoutShowProfile() {
 
         setFieldsShow();
-        firstNameShow.setPrefixComponent(new Div(new Text(getCurrentUser().getFirstName())));
-        firstNameShow.setEnabled(false);
+        firstName.setPrefixComponent(new Div(new Text(getCurrentUser().getFirstName())));
+        firstName.setEnabled(false);
 
-        lastNameShow.setPrefixComponent(new Div(new Text(getCurrentUser().getLastName())));
-        lastNameShow.setEnabled(false);
+        lastName.setPrefixComponent(new Div(new Text(getCurrentUser().getLastName())));
+        lastName.setEnabled(false);
 
-        emailShow.setPrefixComponent(new Div(new Text(getCurrentUser().getEmail())));
-        emailShow.setEnabled(false);
+        email.setPrefixComponent(new Div(new Text(getCurrentUser().getEmail())));
+        email.setEnabled(false);
 
         //ToDo: sobald Geburtsdatum in Datenbank vorhanden ist BDay abfragen
-        dateOfBirthShow.setPlaceholder("'Platzhalter Geburtstag'");
-        dateOfBirthShow.setEnabled(false);
+        dateOfBirth.setPlaceholder("'Platzhalter Geburtstag'");
+        dateOfBirth.setEnabled(false);
 
-        roleShow.setPrefixComponent(new Div(new Text(getCurrentUser().getRole())));
-        roleShow.setEnabled(false);
+        role.setPrefixComponent(new Div(new Text(getCurrentUser().getRole())));
+        role.setEnabled(false);
 
         FormLayout formLayout = new FormLayout();
         formLayout.add(
-                firstNameShow, lastNameShow,
-                emailShow, dateOfBirthShow,
-                roleShow);
+                firstName, lastName,
+                email, dateOfBirth,
+                role);
         return formLayout;
     }
 
     private Component createFormLayoutEditProfile() {
 
         setFieldsEdit();
-        firstNameEdit.setPlaceholder(getCurrentUser().getFirstName());
-        lastNameEdit.setPlaceholder(getCurrentUser().getLastName());
-        emailEdit.setPlaceholder(getCurrentUser().getEmail());
+        firstName.setPlaceholder(getCurrentUser().getFirstName());
+        lastName.setPlaceholder(getCurrentUser().getLastName());
+        email.setPlaceholder(getCurrentUser().getEmail());
         //ToDo: sobald Geburtsdatum in Datenbank vorhanden ist BDay abfragen
-        dateOfBirthEdit.setPlaceholder("'Platzhalter Geburtsdatum'");
+        dateOfBirth.setPlaceholder("'Platzhalter Geburtsdatum'");
 
         FormLayout formLayout = new FormLayout();
-        formLayout.add(firstNameEdit, lastNameEdit,
-                emailEdit, dateOfBirthEdit,
+        formLayout.add(firstName, lastName,
+                email, dateOfBirth,
                 new H4("Passwort ändern"), new H4(""),
-                oldPasswordEdit, new H4(""),
-                newPasswordEdit, new H4(""),
-                newPasswordAgainEdit);
+                oldPassword, new H4(""),
+                newPassword, new H4(""),
+                newPasswordAgain);
         return formLayout;
     }
 
@@ -221,16 +217,16 @@ public class ProfilView extends Div {
 
     private void navigateToSubBarShowProfilWithSave() {
         //ToDo: save new input
-        if (firstNameEdit != null) {
-            binder.forField(firstNameEdit)
+        if (firstName != null) {
+            binder.forField(firstName)
                     .bind(UserDTOImpl::getFirstName, UserDTOImpl::setFirstName);
-        } else if (lastNameEdit != null) {
-            binder.forField(lastNameEdit)
+        } else if (lastName != null) {
+            binder.forField(lastName)
                     .bind(UserDTOImpl::getLastName, UserDTOImpl::setLastName);
-        } else if (emailEdit != null) {
-            binder.forField(emailEdit)
+        } else if (email != null) {
+            binder.forField(email)
                     .bind(UserDTOImpl::getEmail, UserDTOImpl::setEmail);
-        } else if (dateOfBirthEdit != null) {
+        } else if (dateOfBirth != null) {
             //ToDo: sobald Geburtsdatum in Datenbank vorhanden ist anpassen, dass BDay geändert weden kann
         }
 
@@ -246,21 +242,21 @@ public class ProfilView extends Div {
     private void clearForm() { binder.setBean((UserDTOImpl) getCurrentUser());}
 
     private void setFieldsShow() {
-        firstNameShow = new TextField("Vorname");
-        lastNameShow = new TextField("Name");
-        emailShow = new EmailField("E-Mail-Adresse");
-        dateOfBirthShow = new DatePicker("Geburtsdatum");
-        roleShow = new TextField("Rolle");
+        firstName = new TextField("Vorname");
+        lastName = new TextField("Name");
+        email = new EmailField("E-Mail-Adresse");
+        dateOfBirth = new DatePicker("Geburtsdatum");
+        role = new TextField("Rolle");
     }
 
     public void setFieldsEdit() {
-        firstNameEdit = new TextField( "Vorname");
-        lastNameEdit = new TextField( "Name");
-        emailEdit = new EmailField("E-Mail");
-        dateOfBirthEdit = new DatePicker("Geburtsdatum");
-        oldPasswordEdit = new TextField("Altes Passwort");
-        newPasswordEdit = new TextField("Passwort");
-        newPasswordAgainEdit = new TextField("Passwort wiederholen");
+        firstName = new TextField( "Vorname");
+        lastName = new TextField( "Name");
+        email = new EmailField("E-Mail");
+        dateOfBirth= new DatePicker("Geburtsdatum");
+        oldPassword = new TextField("Altes Passwort");
+        newPassword = new TextField("Passwort");
+        newPasswordAgain = new TextField("Passwort wiederholen");
     }
 
     private UserDTO getCurrentUser() {
