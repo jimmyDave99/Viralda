@@ -25,7 +25,6 @@ public class StellenAnzeigeDAO {
      * @throws DatabaseLayerException
      */
     public List<StellenanzeigeDTO> findAllJobs() throws DatabaseLayerException {
-        // TODO: 21.06.22 SELECT-Befehl nach status einschraenken
 
         try {
             List<StellenanzeigeDTO> list = new ArrayList<>();
@@ -78,6 +77,7 @@ public class StellenAnzeigeDAO {
                 StellenanzeigeDTOImpl currentJob = JobBuilder
                         .getInstance()
                         .createNewJob()
+                        .withStellenID(rs.getInt("stellen_id"))
                         .withTitle(rs.getString("titel"))
                         .withBranche(rs.getString("bereich"))
                         .withDescription(rs.getString("beschreibung"))
@@ -100,25 +100,92 @@ public class StellenAnzeigeDAO {
     /**
      * Method for updating status
      *
-     * @param jobId
+     * @param stellenanzeigeDTO
      * @param status
      * @return
      * @throws DatabaseLayerException
      */
-    public void updateStatusByJobId(int jobId, String status) throws DatabaseLayerException {
+    public void updateStatusByJobId(StellenanzeigeDTO stellenanzeigeDTO, UserDTO userDTO, String status) throws DatabaseLayerException {
         try {
-            //Update Status
             PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement(
-                    "UPDATE collathbrs.stellenanzeige " +
+                    "UPDATE collathbrs.bewerbung " +
                             "SET status = ? " +
-                            "WHERE stellen_id = ?");
+                            "WHERE stellen_id = ? AND student_id = ?");
+
             statement.setString(1, status);
-            statement.setInt(2, jobId);
+            statement.setInt(2, stellenanzeigeDTO.getStellenId());
+            statement.setInt(3, userDTO.getStudentId());
             statement.executeUpdate();
 
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
+        }
+    }
+
+    /**
+     * Method for finding Job status
+     *
+     * @param stellenanzeigeDTO
+     * @param userDTO
+     * @return
+     * @throws DatabaseLayerException
+     */
+    public String findStatusByJobIdAndStudentId(StellenanzeigeDTO stellenanzeigeDTO, UserDTO userDTO) throws DatabaseLayerException {
+        try {
+            String status = "";
+            PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement(
+                    "SELECT status FROM collathbrs.bewerbung WHERE stellen_id = ? AND student_id = ?");
+            statement.setInt(1, stellenanzeigeDTO.getStellenId());
+            statement.setInt(2, userDTO.getStudentId());
+            ResultSet rs = statement.executeQuery();
+            while (rs.next())
+                status = rs.getString(1);
+
+            return status;
+
+        } catch (SQLException ex) {
+            DatabaseLayerException e = new DatabaseLayerException("Probleme mit der Datenbank");
+            e.setReason(Globals.Errors.DATABASE);
+            throw e;
+        }
+    }
+
+    /**
+     * Method to insert job Application
+     *
+     * @param stellenanzeigeDTO
+     * @param userDTO
+     * @param status
+     * @throws DatabaseLayerException
+     */
+    public void insertOrUpdateJobApplication(StellenanzeigeDTO stellenanzeigeDTO, UserDTO userDTO, String status) throws DatabaseLayerException {
+        try {
+            PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement(
+                    "UPDATE collathbrs.bewerbung " +
+                            "SET status = ? " +
+                            "WHERE student_id = ? AND stellen_id = ?; " +
+                    "INSERT " +
+                            "INTO collathbrs.bewerbung (student_id, stellen_id, bewerbungsdatum, status ) " +
+                            "SELECT ?, ?, ?, ? " +
+                            "WHERE NOT EXISTS " +
+                            "(SELECT student_id, stellen_id FROM collathbrs.bewerbung WHERE student_id = ? AND stellen_id = ?)" );
+
+            statement.setString(1, status);
+            statement.setInt(2, userDTO.getStudentId());
+            statement.setInt(3, stellenanzeigeDTO.getStellenId());
+            statement.setInt(4, userDTO.getStudentId());
+            statement.setInt(5, stellenanzeigeDTO.getStellenId());
+            statement.setDate(6, Date.valueOf(LocalDate.now()));
+            statement.setString(7, status);
+            statement.setInt(8, userDTO.getStudentId());
+            statement.setInt(9, stellenanzeigeDTO.getStellenId());
+
+            statement.executeUpdate();
+        } catch (SQLException ex) {
+            DatabaseLayerException e = new DatabaseLayerException("Probleme mit der Datenbank");
+            e.setReason(Globals.Errors.DATABASE);
+            throw e;
         }
     }
 
