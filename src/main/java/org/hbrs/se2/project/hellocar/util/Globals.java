@@ -1,7 +1,5 @@
 package org.hbrs.se2.project.hellocar.util;
 
-import com.vaadin.flow.component.Component;
-
 public class Globals {
     public static String CURRENT_USER = "current_User";
 
@@ -27,6 +25,13 @@ public class Globals {
         public static final String NOUSERFOUND = "nouser";
         public static final String SQLERROR = "sql";
         public static final String DATABASE = "database";
+    }
+
+    public static class JobStatus {
+        public static final String BEWORBEN = "Beworben";
+        public static final String ZURUCKGEZOGEN = "Zurückgezogen";
+        public static final String ABGELEHNT = "Abgelehnt";
+        public static final String ANGENOMMEN = "Angenommen";
     }
 
 }
