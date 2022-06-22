@@ -47,8 +47,7 @@ public class LoginControl {
             String reason = e.getReason();
 
             if (reason.equals(Globals.Errors.NOUSERFOUND)) {
-                return userDTO = null;
-                // throw new DatabaseUserException("No User could be found! Please check your credentials!");
+                throw new DatabaseUserException("No User could be found! Please check your credentials!");
             }
             else if ( reason.equals((Globals.Errors.SQLERROR))) {
                 throw new DatabaseUserException("There were problems with the SQL code. Please contact the developer!");

@@ -1,0 +1,39 @@
+package org.hbrs.se2.project.hellocar.test;
+
+import org.hbrs.se2.project.hellocar.control.LoginControl;
+import org.hbrs.se2.project.hellocar.control.exception.DatabaseUserException;
+import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
+import org.hbrs.se2.project.hellocar.util.Globals;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import javax.validation.constraints.AssertTrue;
+import java.security.NoSuchAlgorithmException;
+
+public class LoginControlTest {
+    LoginControl  loginControl;
+    @BeforeEach
+    public void init(){
+      loginControl = new  LoginControl();
+    }
+
+    @Test
+    void CorrectUsernameAndfalsePasswortTest() throws DatabaseUserException, NoSuchAlgorithmException {
+        // Bei unexistierte username und passwort
+        DatabaseUserException thrown = Assertions.assertThrows(
+                DatabaseUserException.class, () -> loginControl.authentificate("mmuster@student.de","dfd")
+        );
+//        Assertions.assertThrows(DatabaseUserException.class, () ->{
+//            loginControl.authentificate("testusername","testpasswort");
+//        });
+        Assertions.assertEquals("A failure occured while", thrown.getReason());
+
+    }
+
+    @Test
+    void authentificateTest() throws DatabaseUserException, NoSuchAlgorithmException {
+        // Bei Existierte username und passwort
+        Assertions.assertTrue(loginControl.authentificate("mmuster@student.de","Hallo123"));
+    }
+}
