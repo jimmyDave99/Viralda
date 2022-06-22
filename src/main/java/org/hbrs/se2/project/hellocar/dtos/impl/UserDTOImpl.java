@@ -3,6 +3,7 @@ package org.hbrs.se2.project.hellocar.dtos.impl;
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 
 import java.awt.image.BufferedImage;
+import java.time.LocalDate;
 
 public class UserDTOImpl implements UserDTO {
 
@@ -25,6 +26,7 @@ public class UserDTOImpl implements UserDTO {
     private int studentId;
     private String firstName;
     private String lastName;
+    private LocalDate dateOfBirth;
 
     //Unternehmen
     private int unternehmenId;
@@ -58,6 +60,9 @@ public class UserDTOImpl implements UserDTO {
     public void setProfilePicture(BufferedImage profilePicture) {
         this.profilePicture = profilePicture;
     }
+
+    @Override
+    public void setDateOfBirth(LocalDate dateOfBirth){ this.dateOfBirth = dateOfBirth; }
 
     @Override
     public void setPlz(int plz) {
@@ -145,6 +150,9 @@ public class UserDTOImpl implements UserDTO {
     public BufferedImage getProfilePicture() {
         return profilePicture;
     }
+
+    @Override
+    public LocalDate getDateOfBirth(){ return dateOfBirth; }
 
     @Override
     public int getPlz() {
