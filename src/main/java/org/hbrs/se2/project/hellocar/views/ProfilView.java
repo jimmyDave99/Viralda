@@ -196,9 +196,13 @@ public class ProfilView extends Div {
         //ToDo: sobald Geburtsdatum in Datenbank vorhanden ist BDay abfragen
         dateOfBirth.setPlaceholder("'Platzhalter Geburtsdatum'");
 
+        role.setPrefixComponent(new Div(new Text(getCurrentUser().getRole())));
+        role.setEnabled(false);
+
         FormLayout formLayout = new FormLayout();
         formLayout.add(firstName, lastName,
-                email, dateOfBirth);
+                email, dateOfBirth,
+                role);
         return formLayout;
     }
 
