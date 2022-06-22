@@ -2,8 +2,8 @@ package org.hbrs.se2.project.hellocar.views;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -16,8 +16,11 @@ import com.vaadin.flow.component.tabs.TabVariant;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.*;
 //import org.hbrs.se2.project.hellocar.control.AuthorizationControl;
+import org.hbrs.se2.project.hellocar.dtos.UserDTO;
+import org.hbrs.se2.project.hellocar.dtos.impl.UserDTOImpl;
 import org.hbrs.se2.project.hellocar.util.Globals;
 
 @Route(value = Globals.Pages.PROFIL_VIEW, layout = AppView.class)
@@ -26,33 +29,26 @@ import org.hbrs.se2.project.hellocar.util.Globals;
 public class ProfilView extends Div {
 
     private final Tab profile;
-    private final Tab settings;
+    private final Tab securitySettings;
     private final Tab notifications;
 
     private final VerticalLayout content;
 
-    private Button cancel = new Button("Abbrechen");
-    private Button save = new Button("Speichern");
-    private Button editProfil = new Button("Profil bearbeiten");
+    private final Button cancel = new Button("Abbrechen");
+    private final Button save = new Button("Speichern");
+    private final Button editProfil = new Button("Profil bearbeiten");
 
-    private Label empty = new Label("");
+    private TextField firstName;
+    private TextField lastName;
+    private EmailField email;
+    private DatePicker dateOfBirth;
+    private TextField role;
 
-    private TextField firstNameShow = new TextField("Vorname");
-    private TextField lastNameShow = new TextField("Name");
-    private EmailField emailShow = new EmailField("E-Mail-Adresse");
-    private DatePicker dateOfBirthShow = new DatePicker("Geburtsdatum");
-    private TextField roleShow = new TextField("Rolle");
+    private TextField oldPassword;
+    private TextField newPassword;
+    private TextField newPasswordAgain;
 
-    private TextField firstNameEdit = new TextField( "Vorname");
-    private TextField lastNameEdit = new TextField( "Name");
-    private EmailField emailEdit = new EmailField("E-Mail");
-    private DatePicker dateOfBirthEdit = new DatePicker("Geburtsdatum");
-    private TextField oldPasswordEdit = new TextField("Altes Passwort");
-    private TextField newPasswordEdit = new TextField("Passwort");
-    private TextField newPasswordAgainEdit = new TextField("Passwort wiederholen");
-
-    private Checkbox savestOptions = new Checkbox("Die besten Sicherheitseinstellungen verwenden.");
-    private Checkbox getNotifications = new Checkbox("Benachrichtigungen erhalten.");
+    private final Binder<UserDTOImpl> binder = new Binder(UserDTOImpl.class);
 
     public ProfilView() {
         addClassName("profile");
@@ -65,9 +61,9 @@ public class ProfilView extends Div {
                 new Span("Profil")
         );
 
-        settings = new Tab(
+        securitySettings = new Tab(
                 VaadinIcon.COG.create(),
-                new Span("Einstellungen")
+                new Span("Sicherheitseinstellungen")
         );
 
         notifications = new Tab(
@@ -76,13 +72,13 @@ public class ProfilView extends Div {
         );
 
         // Set the icon on top
-        for (Tab tab : new Tab[] { profile, settings, notifications }) {
+        for (Tab tab : new Tab[]{profile, securitySettings, notifications}) {
             tab.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
         }
 
-        Tabs tabs = new Tabs(profile, settings, notifications);
+        Tabs tabs = new Tabs(profile, securitySettings, notifications);
 
-        tabs.addSelectedChangeListener( event -> setContent( event.getSelectedTab() ) );
+        tabs.addSelectedChangeListener(event -> setContent(event.getSelectedTab()));
 
         // Content for the tabs
         content = new VerticalLayout();
@@ -92,25 +88,35 @@ public class ProfilView extends Div {
         add(tabs, content);
     }
 
-    private Component createTitle() { return new H2("Profil von 'Name' 'Nachname' ");
+    // creates the title with the last- and first name of a person or the company name if the user is a company
+    private Component createTitle() {
+        H2 title = new H2();
+
+        if (getCurrentUser().getRole().equals("Student")) {
+            title = new H2("Studentenprofil von " + getCurrentUser().getFirstName() + " " + getCurrentUser().getLastName());
+        } else if (getCurrentUser().getRole().equals("Unternehmen")) {
+            title = new H2("Unternehmensprofil " + getCurrentUser().getCompanyName());
+        } else {
+            System.out.println("Error: User is not a student or a company.");
+        }
+
+        return title;
     }
 
-    private void setContent( Tab tab ) {
+    // function to produce the clicked tab
+    private void setContent(Tab tab) {
         content.removeAll();
 
-        if ( tab.equals( profile ) ) {
-            content.add(createButtonLayoutShowProfile());
+        if (tab.equals(profile)) {
+            content.add(createButtonLayoutShowUserAttributes());
             //ToDo: add context for button editProfile, idea: Split Layout, Upload
-            content.add(createFormLayoutShowProfile());
+            content.add(createFormLayoutShowUserAttributes());
 
-        } else if ( tab.equals( settings ) ) {
-            content.add(new H4("Sicherheitseinstellungen"));
-            content.add(savestOptions);
-            content.add(new H4("Privatssphäreeinstellungen"));
-            content.add(getNotifications);
-            content.add(new H4("Sonstiges"));
+        } else if (tab.equals(securitySettings)) {
+            content.add(createButtonLayoutTabSecuritySettings());
+            content.add(createFormLayoutChangePassword());
 
-        } else if ( tab.equals( notifications ) ) {
+        } else if (tab.equals(notifications)) {
             content.add(new Paragraph("Du hast keine neuen Benachrichtigungen!"));
             content.add(new Text("Möchtest du dich nicht bewerben um das zu ändern?"));
             content.add(new Text(" Besser wäre es."));
@@ -118,92 +124,185 @@ public class ProfilView extends Div {
     }
 
 
-
-    private Component createButtonLayoutShowProfile() {
+    // --------------------  functions for tab "Profil" with current attributes of a user  --------------------
+    private Component createButtonLayoutShowUserAttributes() {
         content.removeAll();
 
         HorizontalLayout buttonLayout = new HorizontalLayout();
         buttonLayout.add(editProfil);
-        editProfil.addClickListener(event  -> navigateToSubBarEditProfile());
+        editProfil.addClickListener(event -> navigateToSubBarEditUserAttributes());
 
         return buttonLayout;
     }
 
-    private Component createButtonLayoutTabProfileEdit() {
+    private Component createFormLayoutShowUserAttributes() {
+
+        setFieldsShowUserAttributes();
+        firstName.setPrefixComponent(new Div(new Text(getCurrentUser().getFirstName())));
+        firstName.setEnabled(false);
+
+        lastName.setPrefixComponent(new Div(new Text(getCurrentUser().getLastName())));
+        lastName.setEnabled(false);
+
+        email.setPrefixComponent(new Div(new Text(getCurrentUser().getEmail())));
+        email.setEnabled(false);
+
+        //ToDo: sobald Geburtsdatum in Datenbank vorhanden ist BDay abfragen
+        dateOfBirth.setPlaceholder("'Platzhalter Geburtstag'");
+        dateOfBirth.setEnabled(false);
+
+        role.setPrefixComponent(new Div(new Text(getCurrentUser().getRole())));
+        role.setEnabled(false);
+
+        FormLayout formLayout = new FormLayout();
+        formLayout.add(
+                firstName, lastName,
+                email, dateOfBirth,
+                role);
+        return formLayout;
+    }
+
+    private void setFieldsShowUserAttributes() {
+        firstName = new TextField("Vorname");
+        lastName = new TextField("Name");
+        email = new EmailField("E-Mail-Adresse");
+        dateOfBirth = new DatePicker("Geburtsdatum");
+        role = new TextField("Rolle");
+    }
+
+
+    // --------------------  functions for tab "Profil" with the ability to change the attributes  --------------------
+    private Component createButtonLayoutTabProfileEditUserAttributes() {
         content.removeAll();
 
         HorizontalLayout buttonLayout = new HorizontalLayout();
         buttonLayout.add(save);
         buttonLayout.add(cancel);
 
-        cancel.addClickListener(event -> navigateToSubBarShowProfilWithoutSave() );
-        save.addClickListener(event -> navigateToSubBarShowProfilWithSave());
+        cancel.addClickListener(event -> navigateToSubBarShowUserAttributesWithoutSave());
+        save.addClickListener(event -> navigateToSubBarShowUserAttributesWithSave());
 
         return buttonLayout;
     }
 
-    private Component createFormLayoutShowProfile() {
+    private Component createFormLayoutEditUserAttributes() {
+        setFieldsEditUserAttributes();
 
-        firstNameShow.setPrefixComponent(new Div(new Text("'Platzhalter Vorname'")));
-        firstNameShow.setEnabled(false);
+        firstName.setPlaceholder(getCurrentUser().getFirstName());
+        lastName.setPlaceholder(getCurrentUser().getLastName());
+        email.setPlaceholder(getCurrentUser().getEmail());
+        //ToDo: sobald Geburtsdatum in Datenbank vorhanden ist BDay abfragen
+        dateOfBirth.setPlaceholder("'Platzhalter Geburtsdatum'");
 
-        lastNameShow.setPrefixComponent(new Div(new Text("'Platzhalter Name'")));
-        lastNameShow.setEnabled(false);
-
-        emailShow.setPrefixComponent(new Div(new Text("'Platzhalter E-Mail-Adresse'")));
-        emailShow.setEnabled(false);
-
-        dateOfBirthShow.setPlaceholder("'Platzhalter Geburtstag'");
-        dateOfBirthShow.setEnabled(false);
-
-        roleShow.setPrefixComponent(new Div(new Text("'Platzhalter Rolle'")));
-        roleShow.setEnabled(false);
+        role.setPrefixComponent(new Div(new Text(getCurrentUser().getRole())));
+        role.setEnabled(false);
 
         FormLayout formLayout = new FormLayout();
-        formLayout.add(
-                firstNameShow, lastNameShow,
-                emailShow, dateOfBirthShow,
-                roleShow);
+        formLayout.add(firstName, lastName,
+                email, dateOfBirth,
+                role);
         return formLayout;
     }
 
-    private Component createFormLayoutEditProfile() {
+    private void setFieldsEditUserAttributes() {
+        firstName = new TextField("Vorname");
+        lastName = new TextField("Name");
+        email = new EmailField("E-Mail");
+        dateOfBirth = new DatePicker("Geburtsdatum");
+    }
 
-        firstNameEdit.setPlaceholder("'Platzhalter Vorname'");
-        lastNameEdit.setPlaceholder("'Platzhalter Name'");
-        emailEdit.setPlaceholder("'Platzhalter E-Mail-Adresse'");
-        dateOfBirthEdit.setPlaceholder("'Platzhalter Geburtsdatum'");
+
+    // --------------------  functions for tab "Sicherheitseinstellungen"  --------------------
+    private Component createFormLayoutChangePassword() {
+        setFieldsEditUserPassword();
 
         FormLayout formLayout = new FormLayout();
-        formLayout.add(firstNameEdit, lastNameEdit,
-                emailEdit, dateOfBirthEdit,
-                new H4("Passwort ändern"), new H4(""),
-                oldPasswordEdit, new H4(""),
-                newPasswordEdit, new H4(""),
-                newPasswordAgainEdit);
+        formLayout.add(new H4("Passwort ändern"), new H4(""),
+                oldPassword, new H4(""),
+                newPassword, new H4(""),
+                newPasswordAgain);
         return formLayout;
     }
 
-    private void navigateToSubBarEditProfile() {
+    //ToDo: Buttonlayout
+    private Component createButtonLayoutTabSecuritySettings() {
         content.removeAll();
 
-        content.add(createButtonLayoutTabProfileEdit());
-        content.add(createFormLayoutEditProfile());
+        HorizontalLayout buttonLayout = new HorizontalLayout();
+        buttonLayout.add(save);
+        buttonLayout.add(cancel);
+
+        cancel.addClickListener(event -> navigateToSubBarSecuritySettingsWithoutSaving());
+        // ToDo: Popup bei erfolgreichem ändern
+        save.addClickListener(event -> navigateToSubBarSecuritySettingsWithSaving());
+
+        return buttonLayout;
     }
 
-    private void navigateToSubBarShowProfilWithoutSave() {
-        content.removeAll();
-
-        content.add(createButtonLayoutShowProfile());
-        content.add(createFormLayoutShowProfile());
+    private void setFieldsEditUserPassword() {
+        oldPassword = new TextField("Altes Passwort");
+        newPassword = new TextField("Passwort");
+        newPasswordAgain = new TextField("Passwort wiederholen");
     }
 
-    private void navigateToSubBarShowProfilWithSave() {
+
+    // --------------------  functions to navigate between the tabs  --------------------
+    private void navigateToSubBarEditUserAttributes() {
         content.removeAll();
 
+        content.add(createButtonLayoutTabProfileEditUserAttributes());
+        content.add(createFormLayoutEditUserAttributes());
+    }
+
+    private void navigateToSubBarShowUserAttributesWithoutSave() {
+        content.removeAll();
+
+        content.add(createButtonLayoutShowUserAttributes());
+        content.add(createFormLayoutShowUserAttributes());
+    }
+
+    private void navigateToSubBarShowUserAttributesWithSave() {
         //ToDo: save new input
+        if (firstName != null) {
+            binder.forField(firstName)
+                    .bind(UserDTOImpl::getFirstName, UserDTOImpl::setFirstName);
+        } else if (lastName != null) {
+            binder.forField(lastName)
+                    .bind(UserDTOImpl::getLastName, UserDTOImpl::setLastName);
+        } else if (email != null) {
+            binder.forField(email)
+                    .bind(UserDTOImpl::getEmail, UserDTOImpl::setEmail);
+        } else if (dateOfBirth != null) {
+            //ToDo: sobald Geburtsdatum in Datenbank vorhanden ist anpassen, dass BDay geändert weden kann
+        }
 
-        content.add(createButtonLayoutShowProfile());
-        content.add(createFormLayoutShowProfile());
+        binder.readBean((UserDTOImpl) getCurrentUser());
+        clearForm();
+
+        content.removeAll();
+
+        content.add(createButtonLayoutShowUserAttributes());
+        content.add(createFormLayoutShowUserAttributes());
+    }
+
+    private void navigateToSubBarSecuritySettingsWithoutSaving() {
+        content.removeAll();
+
+        content.add(createButtonLayoutTabSecuritySettings());
+        content.add(createFormLayoutChangePassword());
+    }
+
+    private void navigateToSubBarSecuritySettingsWithSaving() {
+
+    }
+
+
+    // --------------------  other necessary functions  --------------------
+    private void clearForm() {
+        binder.setBean((UserDTOImpl) getCurrentUser());
+    }
+
+    private UserDTO getCurrentUser() {
+        return (UserDTO) UI.getCurrent().getSession().getAttribute(Globals.CURRENT_USER);
     }
 }
