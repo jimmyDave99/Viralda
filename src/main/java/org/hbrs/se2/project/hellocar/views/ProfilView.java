@@ -174,6 +174,7 @@ public class ProfilView extends Div {
         content.removeAll();
 
         HorizontalLayout buttonLayout = new HorizontalLayout();
+
         buttonLayout.add(editProfil);
         editProfil.addClickListener(event -> navigateToSubBarEditStudentAttributes());
 
@@ -183,6 +184,7 @@ public class ProfilView extends Div {
     private Component createFormLayoutShowStudentAttributes() {
 
         setFieldsStudentAttributes();
+
         firstName.setPrefixComponent(new Div(new Text(getCurrentUser().getFirstName())));
         firstName.setEnabled(false);
 
@@ -199,11 +201,15 @@ public class ProfilView extends Div {
         role.setPrefixComponent(new Div(new Text(getCurrentUser().getRole())));
         role.setEnabled(false);
 
+        // ToDo: fehlende Attribute einbiden
+
         FormLayout formLayout = new FormLayout();
+
         formLayout.add(
                 firstName, lastName,
                 email, dateOfBirth,
                 role);
+
         return formLayout;
     }
 
@@ -213,11 +219,12 @@ public class ProfilView extends Div {
         content.removeAll();
 
         HorizontalLayout buttonLayout = new HorizontalLayout();
+
         buttonLayout.add(save);
         buttonLayout.add(cancel);
 
-        cancel.addClickListener(event -> navigateToSubBarShowStudentAttributesWithoutSave());
         save.addClickListener(event -> navigateToSubBarShowStudentAttributesWithSave());
+        cancel.addClickListener(event -> navigateToSubBarShowStudentAttributesWithoutSave());
 
         return buttonLayout;
     }
@@ -231,57 +238,89 @@ public class ProfilView extends Div {
         //ToDo: sobald Geburtsdatum in Datenbank vorhanden ist BDay abfragen
         dateOfBirth.setPlaceholder("'Platzhalter Geburtsdatum'");
 
+        // ToDo: fehlende Attribute einbinden
+
         role.setPrefixComponent(new Div(new Text(getCurrentUser().getRole())));
         role.setEnabled(false);
 
         FormLayout formLayout = new FormLayout();
+
         formLayout.add(firstName, lastName,
                 email, dateOfBirth,
                 role);
+
         return formLayout;
     }
 
 
     // ------  functions for tab "Profil" with Role "Student" with current attributes of a user  ------
     private Component createButtonLayoutShowCompanyAttributes() {
+        content.removeAll();
 
+        HorizontalLayout buttonLayout = new HorizontalLayout();
+
+        buttonLayout.add(editProfil);
+        editProfil.addClickListener(event -> navigateToSubBarEditCompanyAttributes());
+
+        return buttonLayout;
     }
 
     private Component createFormLayoutShowCompanyAttributes() {
+        setFieldsCompanyAttributes();
 
+        companyName.setPrefixComponent(new Div(new Text(getCurrentUser().getCompanyName())));
+        companyName.setEnabled(false);
+
+        email.setPrefixComponent(new Div(new Text(getCurrentUser().getEmail())));
+        email.setEnabled(false);
+
+        role.setPrefixComponent(new Div(new Text(getCurrentUser().getRole())));
+        role.setEnabled(false);
+
+        // ToDo: fehlende Attribute einbinden
+
+        FormLayout formLayout = new FormLayout();
+
+        formLayout.add(companyName, email,
+                role);
+
+        return formLayout;
     }
 
 
     // ------  functions for tab "Profil" with role "Student" with the ability to change the attributes  ------
     private Component createButtonLayoutEditCompanyAttributes() {
+        content.removeAll();
 
+        HorizontalLayout buttonLayout = new HorizontalLayout();
+
+        buttonLayout.add(save);
+        buttonLayout.add(cancel);
+
+        save.addClickListener(event -> navigateToSubBarShowCompanyAttributesWithSaving());
+        cancel.addClickListener(event -> navigateToSubBarShowCompanyAttributesWithoutSaving());
+
+        return buttonLayout;
     }
 
     private Component createFormLayoutEditCompanyAttributes() {
+        setFieldsCompanyAttributes();
 
+        companyName.setPlaceholder(getCurrentUser().getCompanyName());
+        email.setPlaceholder(getCurrentUser().getEmail());
+
+        // ToDo: fehlende Attribute einbinden
+
+        role.setPrefixComponent(new Div(new Text(getCurrentUser().getRole())));
+        role.setEnabled(false);
+
+        FormLayout formLayout = new FormLayout();
+
+        formLayout.add(companyName, email,
+                role);
+
+        return formLayout;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     // ------  functions for tab "Sicherheitseinstellungen"  ------
@@ -289,10 +328,12 @@ public class ProfilView extends Div {
         setFieldsEditUserPassword();
 
         FormLayout formLayout = new FormLayout();
+
         formLayout.add(new H4("Passwort ändern"), new H4(""),
                 oldPassword, new H4(""),
                 newPassword, new H4(""),
                 newPasswordAgain);
+
         return formLayout;
     }
 
