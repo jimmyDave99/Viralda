@@ -18,6 +18,8 @@ import org.hbrs.se2.project.hellocar.dtos.StellenanzeigeDTO;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
 import org.hbrs.se2.project.hellocar.util.Globals;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -30,6 +32,8 @@ import java.util.List;
 public class LandingPageStudentView extends Div {
 
     protected static volatile int jobId = 0;
+    // ToDo: aldanative Datumsformate
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy");
 
     private List<StellenanzeigeDTO> jobList;
 
@@ -43,7 +47,7 @@ public class LandingPageStudentView extends Div {
         add(createGridTable());
     }
 
-    private Component createGridTable(){
+    private Component createGridTable() {
 
         Grid<StellenanzeigeDTO> grid = new Grid<>(StellenanzeigeDTO.class, false);
         grid.setHeightByRows(true);
@@ -54,35 +58,57 @@ public class LandingPageStudentView extends Div {
         ListDataProvider<StellenanzeigeDTO> dataProvider = new ListDataProvider<>(jobList);
         grid.setDataProvider(dataProvider);
 
+        // ToDo: Unternehmensname über UnternehmensID bekommen
+        Grid.Column<StellenanzeigeDTO> companyNameColumn = grid
+                .addColumn(StellenanzeigeDTO::getUnternehmenId)
+                .setHeader("Unternehmen");
+
         Grid.Column<StellenanzeigeDTO> titleColumn = grid
                 .addColumn(StellenanzeigeDTO::getTitel)
                 .setHeader("Titel");
 
-         grid.addColumn(StellenanzeigeDTO::getBeschreibung)
-                 .setHeader("Beschreibung der Stelle").setWidth("450px").setFlexGrow(0);
+        grid.addColumn(StellenanzeigeDTO::getBeschreibung)
+                .setHeader("Beschreibung der Stelle").setWidth("450px").setFlexGrow(0);
 
-         grid.addColumn(StellenanzeigeDTO::getEinstellungsdatum)
+        Grid.Column<StellenanzeigeDTO> dateOfDeploymentColumn = grid
+                .addColumn(StellenanzeigeDTO::getEinstellungsdatum)
                 .setHeader("Einstieg");
 
         Grid.Column<StellenanzeigeDTO> salaryColumn = grid
                 .addColumn(StellenanzeigeDTO::getGehalt)
                 .setHeader("Gehalt");
 
-        grid.addColumn(StellenanzeigeDTO::getWochenstunden)
+        Grid.Column<StellenanzeigeDTO> hoursPerWeekColumn = grid
+                .addColumn(StellenanzeigeDTO::getWochenstunden)
                 .setHeader("Wochenstunden");
 
-        grid.addComponentColumn( job -> {
-                    Button saveButton = new Button("Bewerben");
-                    saveButton.addClickListener(e -> {
-                        jobId = job.getStellenId();
-                        navigateToJobApplicationView(jobId);
-                    });
-                    return saveButton;
-                }).setWidth("150px").setFlexGrow(0);
+        grid.addComponentColumn(job -> {
+            Button applyButton = new Button("Bewerben");
+
+            applyButton.addClickListener(e -> {
+                jobId = job.getStellenId();
+                navigateToJobApplicationView(jobId);
+            });
+
+            return applyButton;
+        }).setWidth("150px").setFlexGrow(0);
 
         HeaderRow filterRow = grid.appendHeaderRow();
 
-        // First filter
+
+        // companyNameColumn filter
+        TextField companyNameField = new TextField();
+        companyNameField.addValueChangeListener(event -> dataProvider.addFilter(
+                job -> StringUtils.containsIgnoreCase(String.valueOf(job.getUnternehmenId()),
+                        companyNameField.getValue())));
+
+        companyNameField.setValueChangeMode(ValueChangeMode.EAGER);
+
+        filterRow.getCell(companyNameColumn).setComponent(companyNameField);
+        companyNameField.setSizeFull();
+        companyNameField.setPlaceholder("Filter");
+
+        // titleColumn filter
         TextField titleField = new TextField();
         titleField.addValueChangeListener(event -> dataProvider.addFilter(
                 job -> StringUtils.containsIgnoreCase(job.getTitel(),
@@ -94,11 +120,23 @@ public class LandingPageStudentView extends Div {
         titleField.setSizeFull();
         titleField.setPlaceholder("Filter");
 
-        // Second filter
+        // dateOfDeploymentColumn filter
+        TextField dateOfDeploymentField = new TextField();
+        dateOfDeploymentField.addValueChangeListener(event -> dataProvider.addFilter(
+                job -> StringUtils.containsIgnoreCase(job.getEinstellungsdatum().format(formatter),
+                        dateOfDeploymentField.getValue())));
+
+        dateOfDeploymentField.setValueChangeMode(ValueChangeMode.EAGER);
+
+        filterRow.getCell(dateOfDeploymentColumn).setComponent(dateOfDeploymentField);
+        dateOfDeploymentField.setSizeFull();
+        dateOfDeploymentField.setPlaceholder("Filter");
+
+        // salary filter
         TextField salaryField = new TextField();
-        salaryField.addValueChangeListener(event -> dataProvider
-                .addFilter(job -> StringUtils.containsIgnoreCase(
-                        String.valueOf(job.getGehalt()), salaryField.getValue())));
+        salaryField.addValueChangeListener(event -> dataProvider.addFilter(
+                job -> StringUtils.containsIgnoreCase(String.valueOf(job.getGehalt()),
+                        salaryField.getValue())));
 
         salaryField.setValueChangeMode(ValueChangeMode.EAGER);
 
@@ -106,14 +144,29 @@ public class LandingPageStudentView extends Div {
         salaryField.setSizeFull();
         salaryField.setPlaceholder("Filter");
 
+        // hoursPerWeekColumn filter
+        TextField hoursPerWeekField = new TextField();
+        hoursPerWeekField.addValueChangeListener(event -> dataProvider.addFilter(
+                job -> StringUtils.containsIgnoreCase(String.valueOf(job.getWochenstunden()),
+                        hoursPerWeekField.getValue())));
+
+        hoursPerWeekField.setValueChangeMode(ValueChangeMode.EAGER);
+
+        filterRow.getCell(hoursPerWeekColumn).setComponent(hoursPerWeekField);
+        hoursPerWeekField.setSizeFull();
+        hoursPerWeekField.setPlaceholder("Filter");
+
+
         grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.addThemeVariants(GridVariant.LUMO_WRAP_CELL_CONTENT);
 
-         return grid;
+        return grid;
     }
 
-    private Component createTitle() { return new H2("Stellenanzeigen"); }
+    private Component createTitle() {
+        return new H2("Stellenanzeigen");
+    }
 
     private void navigateToJobApplicationView(int jobId) {
         UI.getCurrent().navigate(Globals.Pages.JOB_APPLICATION_VIEW + jobId);
