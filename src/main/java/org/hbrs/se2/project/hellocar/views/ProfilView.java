@@ -76,6 +76,7 @@ public class ProfilView extends Div {
     private void setFieldsCompanyAttributes() {
         companyName = new TextField("Unternehmensname");
         email = new EmailField("E-Mail-Adresse");
+        // ToDo: fehleden Attribute einfügen
     }
 
     private void setFieldsEditUserPassword() {
@@ -253,7 +254,7 @@ public class ProfilView extends Div {
     }
 
 
-    // ------  functions for tab "Profil" with Role "Student" with current attributes of a user  ------
+    // ------  functions for tab "Profil" with Role "Unternehmen" with current attributes of a user  ------
     private Component createButtonLayoutShowCompanyAttributes() {
         content.removeAll();
 
@@ -288,7 +289,7 @@ public class ProfilView extends Div {
     }
 
 
-    // ------  functions for tab "Profil" with role "Student" with the ability to change the attributes  ------
+    // ------  functions for tab "Profil" with role "Unternehmen" with the ability to change the attributes  ------
     private Component createButtonLayoutEditCompanyAttributes() {
         content.removeAll();
 
