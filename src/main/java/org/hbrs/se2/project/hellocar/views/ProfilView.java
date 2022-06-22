@@ -425,6 +425,12 @@ public class ProfilView extends Div {
     // ToDo
     private void navigateToSubBarSecuritySettingsWithSaving() {
         // ToDo: Pop-up einfügen für erfolgreiches ändern
+        // ToDo: Passwort ändern einfügen
+
+        content.removeAll();
+
+        content.add(createButtonLayoutTabSecuritySettings());
+        content.add(createFormLayoutChangePassword());
     }
 
 
