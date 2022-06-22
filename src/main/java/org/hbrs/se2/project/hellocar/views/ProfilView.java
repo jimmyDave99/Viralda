@@ -131,8 +131,10 @@ public class ProfilView extends Div {
 
         if (getCurrentUser().getRole().equals("Student")) {
             title = new H2("Studentenprofil von " + getCurrentUser().getFirstName() + " " + getCurrentUser().getLastName());
+
         } else if (getCurrentUser().getRole().equals("Unternehmen")) {
             title = new H2("Unternehmensprofil von " + getCurrentUser().getCompanyName());
+
         } else {
             System.out.println("Error: User is not a student or a company.");
         }
@@ -183,7 +185,6 @@ public class ProfilView extends Div {
     }
 
     private Component createFormLayoutShowStudentAttributes() {
-
         setFieldsStudentAttributes();
 
         firstName.setPrefixComponent(new Div(new Text(getCurrentUser().getFirstName())));
