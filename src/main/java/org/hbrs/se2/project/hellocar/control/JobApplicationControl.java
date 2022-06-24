@@ -2,7 +2,6 @@ package org.hbrs.se2.project.hellocar.control;
 
 import org.hbrs.se2.project.hellocar.dao.BewerbungDAO;
 import org.hbrs.se2.project.hellocar.dao.StellenAnzeigeDAO;
-import org.hbrs.se2.project.hellocar.dtos.BewerbungDTO;
 import org.hbrs.se2.project.hellocar.dtos.StellenanzeigeDTO;
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
@@ -38,8 +37,8 @@ public class JobApplicationControl {
     public String getJobStatus(StellenanzeigeDTO stellenanzeigeDTO , UserDTO userDTO) throws DatabaseLayerException {
         return stellenAnzeigeDAO.findStatusByJobIdAndStudentId(stellenanzeigeDTO, userDTO);
     }
-    public List<BewerbungDTO> readAllJobApplications2() throws DatabaseLayerException {
-        return bewerbungDAO.findAllJobApplication();
+    public List<UserDTO> readAllApplicant(UserDTO userDTO) throws DatabaseLayerException {
+        return bewerbungDAO.findAllJobApplicant(userDTO);
     }
 
     }

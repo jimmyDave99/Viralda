@@ -2,7 +2,6 @@ package org.hbrs.se2.project.hellocar.test;
 
 import org.hbrs.se2.builder.UserBuilder;
 import org.hbrs.se2.project.hellocar.control.RegistrationControl;
-import org.hbrs.se2.project.hellocar.dao.BewerbungDAO;
 import org.hbrs.se2.project.hellocar.dao.UserDAO;
 import org.hbrs.se2.project.hellocar.dtos.impl.UserDTOImpl;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
@@ -18,7 +17,6 @@ import static org.hbrs.se2.project.hellocar.util.Globals.Roles.UNTERNEHMEN;
 public class RegistrationControlTest {
 
     private RegistrationControl registrationControl = null;
-//    private BewerbungDAO bewerbungDAO  = null;
     private UserDAO userDAO = null;
 
     @BeforeEach
@@ -161,9 +159,4 @@ public class RegistrationControlTest {
         Assertions.assertTrue(registrationControl.createUser(student));
         Assertions.assertTrue(registrationControl.createUser(company));
     }
-
-//    @Test
-//    void dao() throws DatabaseLayerException {
-//        bewerbungDAO.findAllJobApplication();
-//    }
 }

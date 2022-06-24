@@ -1,11 +1,15 @@
 package org.hbrs.se2.project.hellocar.dtos;
 
 import java.awt.image.BufferedImage;
+import java.util.Date;
 
 public interface UserDTO {
     //Setter
     void setUserId(int userId);
     void setEmail(String email);
+    void setStatus(String status);
+    void setStelleId(int stelleId);
+    void setBewerbungsdatum(Date bewerbungsdatum);
     void setRole(String role);
     void setPassword(String password);
     void setConfirmPassword(String confirmPassword);
@@ -26,6 +30,9 @@ public interface UserDTO {
     //Getter
     int getUserId();
     String getEmail();
+    String getStatus();
+    int getStelleId();
+    Date getbewerbungsDatum();
     String getRole();
     String getPassword();
     String getConfirmPassword();
