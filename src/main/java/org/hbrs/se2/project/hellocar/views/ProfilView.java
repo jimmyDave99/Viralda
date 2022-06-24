@@ -38,17 +38,55 @@ public class ProfilView extends Div {
     private final Button save = new Button("Speichern");
     private final Button editProfil = new Button("Profil bearbeiten");
 
+    private final TextField empty = new TextField();
+
+    // user attributes
+    private EmailField email;
+    private TextField role;
+    // ToDo: Bild und Beschreibung hinzufügen
+
+    // student attributes
     private TextField firstName;
     private TextField lastName;
-    private EmailField email;
     private DatePicker dateOfBirth;
-    private TextField role;
+    private TextField faculty;
+    private TextField semester;
+    private TextField specialization;
+
+    // company attributes
+    private TextField companyName;
+    private TextField branch;
 
     private TextField oldPassword;
     private TextField newPassword;
     private TextField newPasswordAgain;
 
     private final Binder<UserDTOImpl> binder = new Binder(UserDTOImpl.class);
+
+    // ------  functions for all fields  ------
+    private void setFieldsStudentAttributes() {
+        firstName = new TextField("Vorname");
+        lastName = new TextField("Name");
+        email = new EmailField("E-Mail-Adresse");
+        dateOfBirth = new DatePicker("Geburtsdatum");
+        role = new TextField("Rolle");
+        // ToDo: faculty, semester und specialization hinzufügen
+    }
+
+    private void setFieldsCompanyAttributes() {
+        companyName = new TextField("Unternehmensname");
+        email = new EmailField("E-Mail-Adresse");
+        role = new TextField("Rolle");
+        // ToDo: fehleden Attribute einfügen
+    }
+
+    private void setFieldsEditUserPassword() {
+        oldPassword = new TextField("Altes Passwort");
+        newPassword = new TextField("Passwort");
+        newPasswordAgain = new TextField("Passwort wiederholen");
+    }
+
+
 
     public ProfilView() {
         addClassName("profile");
@@ -94,8 +132,10 @@ public class ProfilView extends Div {
 
         if (getCurrentUser().getRole().equals("Student")) {
             title = new H2("Studentenprofil von " + getCurrentUser().getFirstName() + " " + getCurrentUser().getLastName());
+
         } else if (getCurrentUser().getRole().equals("Unternehmen")) {
-            title = new H2("Unternehmensprofil " + getCurrentUser().getCompanyName());
+            title = new H2("Unternehmensprofil von " + getCurrentUser().getCompanyName());
+
         } else {
             System.out.println("Error: User is not a student or a company.");
         }
@@ -108,9 +148,18 @@ public class ProfilView extends Div {
         content.removeAll();
 
         if (tab.equals(profile)) {
-            content.add(createButtonLayoutShowUserAttributes());
-            //ToDo: add context for button editProfile, idea: Split Layout, Upload
-            content.add(createFormLayoutShowUserAttributes());
+
+            if (getCurrentUser().getRole().equals("Student")) {
+
+                content.add(createButtonLayoutShowStudentAttributes());
+                //ToDo: add context for button editProfile, idea: Split Layout, Upload
+                content.add(createFormLayoutShowStudentAttributes());
+
+            } else if (getCurrentUser().getRole().equals("Unternehmen")) {
+
+                content.add(createButtonLayoutShowCompanyAttributes());
+                content.add(createFormLayoutShowCompanyAttributes());
+            }
 
         } else if (tab.equals(securitySettings)) {
             content.add(createButtonLayoutTabSecuritySettings());
@@ -124,20 +173,21 @@ public class ProfilView extends Div {
     }
 
 
-    // --------------------  functions for tab "Profil" with current attributes of a user  --------------------
-    private Component createButtonLayoutShowUserAttributes() {
+    // ------  functions for tab "Profil" with Role "Student" with current attributes of a user  ------
+    private Component createButtonLayoutShowStudentAttributes() {
         content.removeAll();
 
         HorizontalLayout buttonLayout = new HorizontalLayout();
+
         buttonLayout.add(editProfil);
-        editProfil.addClickListener(event -> navigateToSubBarEditUserAttributes());
+        editProfil.addClickListener(event -> navigateToSubBarEditStudentAttributes());
 
         return buttonLayout;
     }
 
-    private Component createFormLayoutShowUserAttributes() {
+    private Component createFormLayoutShowStudentAttributes() {
+        setFieldsStudentAttributes();
 
-        setFieldsShowUserAttributes();
         firstName.setPrefixComponent(new Div(new Text(getCurrentUser().getFirstName())));
         firstName.setEnabled(false);
 
@@ -154,39 +204,36 @@ public class ProfilView extends Div {
         role.setPrefixComponent(new Div(new Text(getCurrentUser().getRole())));
         role.setEnabled(false);
 
+        // ToDo: fehlende Attribute einbiden
+
         FormLayout formLayout = new FormLayout();
+
         formLayout.add(
                 firstName, lastName,
                 email, dateOfBirth,
                 role);
+
         return formLayout;
     }
 
-    private void setFieldsShowUserAttributes() {
-        firstName = new TextField("Vorname");
-        lastName = new TextField("Name");
-        email = new EmailField("E-Mail-Adresse");
-        dateOfBirth = new DatePicker("Geburtsdatum");
-        role = new TextField("Rolle");
-    }
 
-
-    // --------------------  functions for tab "Profil" with the ability to change the attributes  --------------------
-    private Component createButtonLayoutTabProfileEditUserAttributes() {
+    // ------  functions for tab "Profil" with role "Student" with the ability to change the attributes  ------
+    private Component createButtonLayoutTabProfileEditStudentAttributes() {
         content.removeAll();
 
         HorizontalLayout buttonLayout = new HorizontalLayout();
+
         buttonLayout.add(save);
         buttonLayout.add(cancel);
 
-        cancel.addClickListener(event -> navigateToSubBarShowUserAttributesWithoutSave());
-        save.addClickListener(event -> navigateToSubBarShowUserAttributesWithSave());
+        save.addClickListener(event -> navigateToSubBarShowStudentAttributesWithSave());
+        cancel.addClickListener(event -> navigateToSubBarShowStudentAttributesWithoutSave());
 
         return buttonLayout;
     }
 
-    private Component createFormLayoutEditUserAttributes() {
-        setFieldsEditUserAttributes();
+    private Component createFormLayoutEditStudentAttributes() {
+        setFieldsStudentAttributes();
 
         firstName.setPlaceholder(getCurrentUser().getFirstName());
         lastName.setPlaceholder(getCurrentUser().getLastName());
@@ -194,33 +241,102 @@ public class ProfilView extends Div {
         //ToDo: sobald Geburtsdatum in Datenbank vorhanden ist BDay abfragen
         dateOfBirth.setPlaceholder("'Platzhalter Geburtsdatum'");
 
+        // ToDo: fehlende Attribute einbinden
+
         role.setPrefixComponent(new Div(new Text(getCurrentUser().getRole())));
         role.setEnabled(false);
 
         FormLayout formLayout = new FormLayout();
+
         formLayout.add(firstName, lastName,
                 email, dateOfBirth,
                 role);
+
         return formLayout;
     }
 
-    private void setFieldsEditUserAttributes() {
-        firstName = new TextField("Vorname");
-        lastName = new TextField("Name");
-        email = new EmailField("E-Mail");
-        dateOfBirth = new DatePicker("Geburtsdatum");
+
+    // ------  functions for tab "Profil" with Role "Unternehmen" with current attributes of a user  ------
+    private Component createButtonLayoutShowCompanyAttributes() {
+        content.removeAll();
+
+        HorizontalLayout buttonLayout = new HorizontalLayout();
+
+        buttonLayout.add(editProfil);
+        editProfil.addClickListener(event -> navigateToSubBarEditCompanyAttributes());
+
+        return buttonLayout;
+    }
+
+    private Component createFormLayoutShowCompanyAttributes() {
+        setFieldsCompanyAttributes();
+
+        companyName.setPrefixComponent(new Div(new Text(getCurrentUser().getCompanyName())));
+        companyName.setEnabled(false);
+
+        email.setPrefixComponent(new Div(new Text(getCurrentUser().getEmail())));
+        email.setEnabled(false);
+
+        role.setPrefixComponent(new Div(new Text(getCurrentUser().getRole())));
+        role.setEnabled(false);
+
+        // ToDo: fehlende Attribute einbinden
+
+        FormLayout formLayout = new FormLayout();
+
+        formLayout.add(companyName, email,
+                role);
+
+        return formLayout;
     }
 
 
-    // --------------------  functions for tab "Sicherheitseinstellungen"  --------------------
+    // ------  functions for tab "Profil" with role "Unternehmen" with the ability to change the attributes  ------
+    private Component createButtonLayoutEditCompanyAttributes() {
+        content.removeAll();
+
+        HorizontalLayout buttonLayout = new HorizontalLayout();
+
+        buttonLayout.add(save);
+        buttonLayout.add(cancel);
+
+        save.addClickListener(event -> navigateToSubBarShowCompanyAttributesWithSaving());
+        cancel.addClickListener(event -> navigateToSubBarShowCompanyAttributesWithoutSaving());
+
+        return buttonLayout;
+    }
+
+    private Component createFormLayoutEditCompanyAttributes() {
+        setFieldsCompanyAttributes();
+
+        companyName.setPlaceholder(getCurrentUser().getCompanyName());
+        email.setPlaceholder(getCurrentUser().getEmail());
+
+        // ToDo: fehlende Attribute einbinden
+
+        role.setPrefixComponent(new Div(new Text(getCurrentUser().getRole())));
+        role.setEnabled(false);
+
+        FormLayout formLayout = new FormLayout();
+
+        formLayout.add(companyName, email,
+                role);
+
+        return formLayout;
+    }
+
+
+    // ------  functions for tab "Sicherheitseinstellungen"  ------
     private Component createFormLayoutChangePassword() {
         setFieldsEditUserPassword();
 
         FormLayout formLayout = new FormLayout();
+
         formLayout.add(new H4("Passwort ändern"), new H4(""),
                 oldPassword, new H4(""),
                 newPassword, new H4(""),
                 newPasswordAgain);
+
         return formLayout;
     }
 
@@ -239,29 +355,16 @@ public class ProfilView extends Div {
         return buttonLayout;
     }
 
-    private void setFieldsEditUserPassword() {
-        oldPassword = new TextField("Altes Passwort");
-        newPassword = new TextField("Passwort");
-        newPasswordAgain = new TextField("Passwort wiederholen");
-    }
 
-
-    // --------------------  functions to navigate between the tabs  --------------------
-    private void navigateToSubBarEditUserAttributes() {
+    // ------  functions to navigate between the tabs for student attributes  ------
+    private void navigateToSubBarEditStudentAttributes() {
         content.removeAll();
 
-        content.add(createButtonLayoutTabProfileEditUserAttributes());
-        content.add(createFormLayoutEditUserAttributes());
+        content.add(createButtonLayoutTabProfileEditStudentAttributes());
+        content.add(createFormLayoutEditStudentAttributes());
     }
 
-    private void navigateToSubBarShowUserAttributesWithoutSave() {
-        content.removeAll();
-
-        content.add(createButtonLayoutShowUserAttributes());
-        content.add(createFormLayoutShowUserAttributes());
-    }
-
-    private void navigateToSubBarShowUserAttributesWithSave() {
+    private void navigateToSubBarShowStudentAttributesWithSave() {
         //ToDo: save new input
         if (firstName != null) {
             binder.forField(firstName)
@@ -281,10 +384,45 @@ public class ProfilView extends Div {
 
         content.removeAll();
 
-        content.add(createButtonLayoutShowUserAttributes());
-        content.add(createFormLayoutShowUserAttributes());
+        content.add(createButtonLayoutShowStudentAttributes());
+        content.add(createFormLayoutShowStudentAttributes());
     }
 
+    private void navigateToSubBarShowStudentAttributesWithoutSave() {
+        content.removeAll();
+
+        content.add(createButtonLayoutShowStudentAttributes());
+        content.add(createFormLayoutShowStudentAttributes());
+    }
+
+
+    // ------  functions to navigate between the tabs for company attributes  ------
+    private void navigateToSubBarEditCompanyAttributes() {
+        content.removeAll();
+
+        content.add(createButtonLayoutEditCompanyAttributes());
+        content.add(createFormLayoutEditCompanyAttributes());
+    }
+    // ToDo
+    private void navigateToSubBarShowCompanyAttributesWithSaving() {
+        // ToDo: Pop-up einfügen für erfolgreiches ändern
+        // ToDo: ManageExistingUserControl einbinden
+
+        content.removeAll();
+
+        content.add(createButtonLayoutShowCompanyAttributes());
+        content.add(createFormLayoutShowCompanyAttributes());
+    }
+
+    private void navigateToSubBarShowCompanyAttributesWithoutSaving() {
+        content.removeAll();
+
+        content.add(createButtonLayoutShowCompanyAttributes());
+        content.add(createFormLayoutShowCompanyAttributes());
+    }
+
+
+    // ------  functions to navigate between the tabs for password changes  ------
     private void navigateToSubBarSecuritySettingsWithoutSaving() {
         content.removeAll();
 
@@ -292,12 +430,19 @@ public class ProfilView extends Div {
         content.add(createFormLayoutChangePassword());
     }
 
+    // ToDo
     private void navigateToSubBarSecuritySettingsWithSaving() {
+        // ToDo: Pop-up einfügen für erfolgreiches ändern
+        // ToDo: Passwort ändern einfügen
 
+        content.removeAll();
+
+        content.add(createButtonLayoutTabSecuritySettings());
+        content.add(createFormLayoutChangePassword());
     }
 
 
-    // --------------------  other necessary functions  --------------------
+    // ------  other necessary functions  ------
     private void clearForm() {
         binder.setBean((UserDTOImpl) getCurrentUser());
     }

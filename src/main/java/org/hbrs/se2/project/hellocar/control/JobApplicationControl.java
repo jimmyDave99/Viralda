@@ -1,8 +1,6 @@
 package org.hbrs.se2.project.hellocar.control;
 
-import org.hbrs.se2.project.hellocar.dao.BewerbungDAO;
 import org.hbrs.se2.project.hellocar.dao.StellenAnzeigeDAO;
-import org.hbrs.se2.project.hellocar.dtos.BewerbungDTO;
 import org.hbrs.se2.project.hellocar.dtos.StellenanzeigeDTO;
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
@@ -14,7 +12,7 @@ import java.util.List;
 public class JobApplicationControl {
 
     StellenAnzeigeDAO stellenAnzeigeDAO = new StellenAnzeigeDAO();
-    BewerbungDAO bewerbungDAO = new BewerbungDAO();
+
     public List<StellenanzeigeDTO> readAllJobApplications() throws DatabaseLayerException {
         return stellenAnzeigeDAO.findAllJobs();
     }
@@ -23,8 +21,20 @@ public class JobApplicationControl {
         stellenAnzeigeDAO.insertStellenanzeige(stellenanzeigeDTO, userDTO);
     }
 
-    public List<BewerbungDTO> readAllJobApplications2() throws DatabaseLayerException {
-        return bewerbungDAO.findAllJobApplication();
+    public void createJobApplication(StellenanzeigeDTO stellenanzeigeDTO, UserDTO userDTO, String status) throws DatabaseLayerException {
+        stellenAnzeigeDAO.insertOrUpdateJobApplication(stellenanzeigeDTO, userDTO, status);
+    }
+
+    public List<StellenanzeigeDTO> findJob(int jobId) throws DatabaseLayerException {
+        return stellenAnzeigeDAO.findJobWithId(jobId);
+    }
+
+    public void updateJobApplicationStatus(StellenanzeigeDTO stellenanzeigeDTO, UserDTO userDTO, String status) throws DatabaseLayerException {
+         stellenAnzeigeDAO.updateStatusByJobId(stellenanzeigeDTO, userDTO, status);
+    }
+
+    public String getJobStatus(StellenanzeigeDTO stellenanzeigeDTO , UserDTO userDTO) throws DatabaseLayerException {
+        return stellenAnzeigeDAO.findStatusByJobIdAndStudentId(stellenanzeigeDTO, userDTO);
     }
 
 }
