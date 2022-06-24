@@ -31,25 +31,7 @@ public class StellenAnzeigeDAO {
             PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement(
                     "SELECT * FROM collathbrs.stellenanzeige");
 
-            ResultSet rs = statement.executeQuery();
-            while (rs.next()){
-                StellenanzeigeDTOImpl job = JobBuilder
-                        .getInstance()
-                        .createNewJob()
-                        .withStellenID(rs.getInt("stellen_id"))
-                        .withTitle(rs.getString("titel"))
-                        .withBranche(rs.getString("bereich"))
-                        .withDescription(rs.getString("beschreibung"))
-                        .withStartDate(rs.getDate("einstellungsdatum").toLocalDate())
-                        .withSalary(rs.getFloat("gehalt"))
-                        .withWeeklyHours(rs.getFloat("wochenstunden"))
-                        .withStatus(rs.getString("status"))
-                        .build();
-
-                list.add(job);
-            }
-
-            return list;
+            return getStellenanzeigeDTOS(list, statement);
 
         } catch (SQLException ex) {
             DatabaseLayerException e = new DatabaseLayerException("Probleme mit der Datenbank");
@@ -218,5 +200,50 @@ public class StellenAnzeigeDAO {
             e.setReason(Globals.Errors.DATABASE);
             throw e;
         }
+    }
+
+    /**
+     * Method to find current companyJob
+     *
+     * @param userDTO
+     * @throws DatabaseLayerException
+     */
+    public List<StellenanzeigeDTO> findCurrentCompanyJob(UserDTO userDTO) throws DatabaseLayerException {
+
+        try {
+            List<StellenanzeigeDTO> list = new ArrayList<>();
+            PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement(
+                    "SELECT * FROM collathbrs.stellenanzeige WHERE unternehmer_id = ? ");
+            statement.setInt(1, userDTO.getUnternehmenId() );
+
+            return getStellenanzeigeDTOS(list, statement);
+
+        }catch (SQLException ex) {
+            DatabaseLayerException e = new DatabaseLayerException("Probleme mit der Datenbank");
+            e.setReason(Globals.Errors.DATABASE);
+            throw e;
+        }
+    }
+
+    private List<StellenanzeigeDTO> getStellenanzeigeDTOS(List<StellenanzeigeDTO> list, PreparedStatement statement) throws SQLException {
+        ResultSet result = statement.executeQuery();
+        while (result.next()){
+            StellenanzeigeDTOImpl currentCompanyJob = JobBuilder
+                    .getInstance()
+                    .createNewJob()
+                    .withStellenID(result.getInt("stellen_id"))
+                    .withTitle(result.getString("titel"))
+                    .withBranche(result.getString("bereich"))
+                    .withDescription(result.getString("beschreibung"))
+                    .withStartDate(result.getDate("einstellungsdatum").toLocalDate())
+                    .withSalary(result.getFloat("gehalt"))
+                    .withWeeklyHours(result.getFloat("wochenstunden"))
+                    .withStatus(result.getString("status"))
+                    .build();
+
+            list.add(currentCompanyJob);
+        }
+
+        return list;
     }
 }

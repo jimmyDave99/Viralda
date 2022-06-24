@@ -37,4 +37,7 @@ public class JobApplicationControl {
         return stellenAnzeigeDAO.findStatusByJobIdAndStudentId(stellenanzeigeDTO, userDTO);
     }
 
+    public List<StellenanzeigeDTO> readCurrentCompanyJob(UserDTO userDTO) throws DatabaseLayerException {
+        return stellenAnzeigeDAO.findCurrentCompanyJob(userDTO);
+    }
 }
