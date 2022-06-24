@@ -3,6 +3,7 @@ package org.hbrs.se2.builder;
 import org.hbrs.se2.project.hellocar.dtos.impl.UserDTOImpl;
 
 import java.awt.image.BufferedImage;
+import java.util.Date;
 
 public class UserBuilder {
 
@@ -24,6 +25,18 @@ public class UserBuilder {
 
     public UserBuilder withEmail(String email) {
         this.userDTO.setEmail(email);
+        return this;
+    }
+    public UserBuilder withStatus(String status) {
+        this.userDTO.setStatus(status);
+        return this;
+    }
+    public UserBuilder withJobId(int siteId) {
+        this.userDTO.setStelleId(siteId);
+        return this;
+    }
+    public UserBuilder withApplicationDate(Date applicationDate) {
+        this.userDTO.setBewerbungsdatum(applicationDate);
         return this;
     }
     public UserBuilder withRole( String role ) {
