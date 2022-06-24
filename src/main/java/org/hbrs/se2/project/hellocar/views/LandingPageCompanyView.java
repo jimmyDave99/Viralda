@@ -89,21 +89,17 @@ public class LandingPageCompanyView extends Div {
                 .addColumn(BewerbungDTO::getStellenId)
                 .setHeader("StelleID");
 
-        Grid.Column<BewerbungDTO> bewerberIdColumn = grid
-                .addColumn(BewerbungDTO::getBewerberId)
-                .setHeader("BewerberId");
+        grid.addColumn(BewerbungDTO::getstudentvorname)
+                .setHeader("Vorname");
 
-        grid.addColumn(BewerbungDTO::getAnschreiben)
-                .setHeader("Anschreiben").setWidth("250px").setFlexGrow(0);
+        grid.addColumn(BewerbungDTO::getstudentnachname)
+                .setHeader("Nachname");
 
-        grid.addColumn(BewerbungDTO::getLebenslauf)
-                .setHeader("Lebenslauf").setWidth("250px").setFlexGrow(0);
-
-        grid.addColumn(BewerbungDTO::getWeitereUnterlagen)
-                .setHeader("WeitererUnterlagen").setWidth("250px").setFlexGrow(0);
+        grid.addColumn(BewerbungDTO::getstudentemail)
+                .setHeader("Email").setWidth("250px").setFlexGrow(0);
 
         grid.addColumn(BewerbungDTO::getBewerbungsdatum)
-                .setHeader("Datum");
+                .setHeader("BewerbungsDatum");
 
         Grid.Column<BewerbungDTO> submitColumn = grid.addComponentColumn( job -> {
             Button saveButton = new Button("Bearbeiten");
@@ -135,10 +131,6 @@ public class LandingPageCompanyView extends Div {
                         String.valueOf(job.getBewerberId()), bewerberIdField.getValue())));
 
         bewerberIdField.setValueChangeMode(ValueChangeMode.EAGER);
-
-        filterRow.getCell(bewerberIdColumn).setComponent(bewerberIdField);
-        bewerberIdField.setSizeFull();
-        bewerberIdField.setPlaceholder("Filter");
 
         grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);

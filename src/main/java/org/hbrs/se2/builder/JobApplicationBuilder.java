@@ -27,7 +27,18 @@ public class JobApplicationBuilder {
         this.jobAppliDTO.setBewerberId(bewerberId);
         return this;
     }
-
+    public JobApplicationBuilder mitStudentVorname(String studentVorname ) {
+        this.jobAppliDTO.setstudentvorname(studentVorname);
+        return this;
+    }
+    public JobApplicationBuilder mitStudentNachname(String studentNachname ) {
+        this.jobAppliDTO.setstudentvorname(studentNachname);
+        return this;
+    }
+    public JobApplicationBuilder mitStudentEmail(String studentEmail ) {
+        this.jobAppliDTO.setstudentvorname(studentEmail);
+        return this;
+    }
     public JobApplicationBuilder mitAnschreiben(String anschreiben ) {
         this.jobAppliDTO.setAnschreiben(anschreiben);
         return this;
@@ -47,6 +58,7 @@ public class JobApplicationBuilder {
         this.jobAppliDTO.setBewerbungsdatum(bewerbungsdatum);
         return this;
     }
+
 
     public BewerbungDTOImpl build() {
         return this.jobAppliDTO;

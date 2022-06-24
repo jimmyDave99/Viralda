@@ -9,6 +9,9 @@ public class BewerbungDTOImpl implements BewerbungDTO {
     private int studentId;
     private int stellenId;
     private int bewerberId;
+    private String studentVorname;
+    private String studentnachname;
+    private String studentemail;
     private String anschreiben;
     private String lebenslauf;
     private String weitereUnterlagen;
@@ -41,8 +44,38 @@ public class BewerbungDTOImpl implements BewerbungDTO {
     }
 
     @Override
+    public String getstudentvorname() {
+        return studentVorname;
+    }
+
+    @Override
+    public String getstudentnachname() {
+        return studentnachname;
+    }
+
+    @Override
+    public String getstudentemail() {
+        return studentemail;
+    }
+
+    @Override
     public void setBewerberId(int bewerberId) {
         this.bewerberId = bewerberId;
+    }
+
+    @Override
+    public String setstudentvorname(String studentvorname) {
+        return null;
+    }
+
+    @Override
+    public String setstudentnachname(String studentnachname) {
+        return null;
+    }
+
+    @Override
+    public String setstudentemail(String studentemail) {
+        return null;
     }
 
     @Override

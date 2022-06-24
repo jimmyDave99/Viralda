@@ -31,17 +31,22 @@ public class BewerbungDAO {
             List<BewerbungDTO> list = new ArrayList<>();
             PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement(
                     "SELECT * FROM collathbrs.bewerbung");
+            PreparedStatement statement2 = JDBCConnection.getInstance().getPreparedStatement(
+                    "SELECT collathbrs.student, collathbrs.user FROM collathbrs.student INNER JOIN collathbrs.user ON collathbrs.student.student_id=collathbrs.user.id");
+            PreparedStatement statement3 = JDBCConnection.getInstance().getPreparedStatement(
+                    "SELECT * FROM collathbrs.student INNER JOIN collathbrs.student ON collathbrs.student.student_id=collathbrs.bewerbung.student_id");
 
             ResultSet rs = statement.executeQuery();
+//            ResultSet rs2 = statement2.executeQuery();
+//            ResultSet rs3 = statement3.executeQuery();
             while (rs.next()){
                 BewerbungDTOImpl userDTO = JobApplicationBuilder
                         .getInstance()
                         .createNewJobApli()
                         .mitStellenID(rs.getInt("stellen_id"))
-                        .mitBewerberId(rs.getInt("bewerber_id"))
-                        .mitAnschreiben(rs.getString("anschreiben"))
-                        .mitLebenslauf(rs.getString("lebenslauf"))
-                        .mitWeitereUnterlagen(rs.getString("weitere_unterlagen"))
+//                        .mitStudentVorname(rs3.getString("vorname"))
+//                        .mitStudentNachname(rs3.getString("nachname"))
+//                        .mitStudentEmail(rs2.getString("email"))
                         .mitBewerbungsdatum(rs.getDate("bewerbungsdatum"))
                         .build();
 
