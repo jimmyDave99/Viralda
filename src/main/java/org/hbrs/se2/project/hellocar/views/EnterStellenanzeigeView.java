@@ -13,6 +13,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.textfield.NumberField;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
@@ -32,6 +33,9 @@ import com.vaadin.flow.component.customfield.CustomField;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.H3;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+
 
 //import javax.management.Notification;
 
@@ -44,6 +48,7 @@ public class EnterStellenanzeigeView extends Div {
     private TextField bereich = new TextField("Bereich");
     private TextArea beschreibung = new TextArea("Beschreibung");
     private DatePicker einstellungsdatum = new DatePicker("Einstellungsdatum");
+    private LocalDate now = LocalDate.now(ZoneId.systemDefault());
     private NumberField gehalt = new NumberField("Gehalt");
     private NumberField wochenstunden = new NumberField("Wochenstunden");
 
@@ -57,25 +62,63 @@ public class EnterStellenanzeigeView extends Div {
         addClassName("enter-stellenanzeige-view");
 
         add(createTitle());
+        gehalt.setValue(8.50);
+        Div euroSuffix = new Div();
+        euroSuffix.setText("€");
+        gehalt.setMin(8.50);
+        gehalt.setPrefixComponent(euroSuffix);
+        gehalt.setHasControls(true);
+//        gehalt.setStep(0.10);
+
+        einstellungsdatum.setMin(now);
+        einstellungsdatum.setMax(now.plusDays(180));
 
         add(createFormLayout());
         add(createButtonLayout());
 
+
+        binder.forField(titel)
+                .asRequired("Geben Sie bitte einen Titel ein.")
+                .bind(StellenanzeigeDTOImpl::getTitel, StellenanzeigeDTOImpl::setTitel);
+
+        binder.forField(bereich)
+                .asRequired("Geben Sie bitte einen Bereich ein.")
+                .bind(StellenanzeigeDTOImpl::getBereich, StellenanzeigeDTOImpl::setBereich);
+
+        binder.forField(beschreibung)
+                .asRequired("Geben Sie bitte eine Beschreibung ein.")
+                .bind(StellenanzeigeDTOImpl::getBeschreibung, StellenanzeigeDTOImpl::setBeschreibung);
+
+        binder.forField(beschreibung)
+                .asRequired("Geben Sie bitte eine Beschreibung ein.")
+                .bind(StellenanzeigeDTOImpl::getBeschreibung, StellenanzeigeDTOImpl::setBeschreibung);
+
         // Binder
         binder.bindInstanceFields(this);
+        binder.readBean(new StellenanzeigeDTOImpl());
         clearForm();
 
         cancel.addClickListener(event -> clearForm());
 
         save.addClickListener(e -> {
             UserDTO userDTO = (UserDTO) UI.getCurrent().getSession().getAttribute(Globals.CURRENT_USER);
-            // TODO: 17.06.22 create-method in jobApplicationControl
+            // TODO: 17.06.22 clearForm()
             try {
+                if(binder.getBean().getTitel() == null){
+                    Notification.show("Titel ist noch leer");
+                }
+                if(binder.getBean().getBereich().equals("")) {
+                    Notification.show("Bereich ist noch leer");
+                }
+                if(binder.getBean().getBeschreibung().equals("")){
+                    Notification.show("Beschreibung ist noch leer");
+                }
+                System.out.println(binder.getBean().getTitel());
                 jobApplicationControl.createStellenanzeige(binder.getBean(), userDTO);
             } catch (DatabaseLayerException ex) {
                 throw new RuntimeException(ex);
             }
-
+            clearForm();
             Notification.show("Stellenanzeige mit den Angegebenen Details wurden gespeichert!");
         });
     }
