@@ -31,14 +31,13 @@ import java.util.List;
 import static org.hbrs.se2.project.hellocar.util.Globals.JobStatus.BEWORBEN;
 import static org.hbrs.se2.project.hellocar.util.Globals.JobStatus.ZURUCKGEZOGEN;
 import static org.hbrs.se2.project.hellocar.util.Globals.Pages.JOB_APPLICATION_VIEW;
-import static org.hbrs.se2.project.hellocar.util.Globals.Pages.LANDING_PAGE_STUDENT_VIEW;
 
 @Route(value = JOB_APPLICATION_VIEW, layout = AppView.class)
 @PageTitle("Bewerben")
 @CssImport("./styles/views/landingpage/landing-page.css")
 public class JobApplictionView extends VerticalLayout implements HasUrlParameter<String>{
 
-    UserDTO currentUser = (UserDTO) UI.getCurrent().getSession().getAttribute(Globals.CURRENT_USER);
+    UserDTO currentUser = this.getCurrentUser();
 
     int jobId = 0;
     @Override
@@ -109,6 +108,7 @@ public class JobApplictionView extends VerticalLayout implements HasUrlParameter
             UI.getCurrent().getPage().reload();
         });
         Button cancelButton = new Button("Zurückziehen");
+        cancelButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
         cancelButton.addClickListener(e -> {
             try {
                 jobApplicationControl.updateJobApplicationStatus(currentJob.get(0).getStellenId(), currentUser.getStudentId() ,ZURUCKGEZOGEN);
@@ -123,7 +123,6 @@ public class JobApplictionView extends VerticalLayout implements HasUrlParameter
         buttonLayout.setPadding(true);
         buttonLayout.addClassName("button-layout");
         add(buttonLayout);
-
     }
 
     private Component createGridTable(){
@@ -158,4 +157,8 @@ public class JobApplictionView extends VerticalLayout implements HasUrlParameter
     private Component createJobStatus(String status) { return new H4("Status der Bewerbung: " + status); }
 
     private Component createsubTitle() { return new H3("Bewerbung Unterlagen"); }
+
+    private UserDTO getCurrentUser() {
+        return (UserDTO) UI.getCurrent().getSession().getAttribute(Globals.CURRENT_USER);
+    }
 }
