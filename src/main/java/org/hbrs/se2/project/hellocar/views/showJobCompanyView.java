@@ -66,6 +66,9 @@ public class showJobCompanyView extends Div {
         ListDataProvider<StellenanzeigeDTO> dataProvider = new ListDataProvider<>(jobList);
         grid.setDataProvider(dataProvider);
 
+        Grid.Column<StellenanzeigeDTO> idColumn = grid.addColumn(StellenanzeigeDTO::getStellenId)
+                .setHeader("Stellen ID");
+
         Grid.Column<StellenanzeigeDTO> titleColumn = grid
                 .addColumn(StellenanzeigeDTO::getTitel)
                 .setHeader("Titel");
@@ -107,6 +110,18 @@ public class showJobCompanyView extends Div {
         filterRow.getCell(titleColumn).setComponent(titleField);
         titleField.setSizeFull();
         titleField.setPlaceholder("Filter");
+
+        // filter
+        TextField idField = new TextField();
+        idField.addValueChangeListener(event -> dataProvider.addFilter(
+                job -> StringUtils.containsIgnoreCase(String.valueOf(job.getStellenId()),
+                        idField.getValue())));
+
+        idField.setValueChangeMode(ValueChangeMode.EAGER);
+
+        filterRow.getCell(idColumn).setComponent(idField);
+        idField.setSizeFull();
+        idField.setPlaceholder("Filter");
 
         grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);

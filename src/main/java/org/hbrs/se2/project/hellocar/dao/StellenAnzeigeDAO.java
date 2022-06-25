@@ -292,10 +292,13 @@ public class StellenAnzeigeDAO {
     public void deleteJob(StellenanzeigeDTO stellenanzeigeDTO) throws DatabaseLayerException {
         try {
             PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement(
+                    "DELETE FROM collathbrs.bewerbung " +
+                            "WHERE stellen_id = ?;" +
                     "DELETE FROM collathbrs.stellenanzeige " +
                             "WHERE stellen_id = ?");
 
             statement.setInt(1, stellenanzeigeDTO.getStellenId());
+            statement.setInt(2, stellenanzeigeDTO.getStellenId());
             statement.executeUpdate();
 
 

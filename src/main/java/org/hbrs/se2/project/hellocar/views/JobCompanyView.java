@@ -146,6 +146,10 @@ public class JobCompanyView extends VerticalLayout implements HasUrlParameter<St
         TextArea descriptionField = new TextArea();
         descriptionField.setWidthFull();
         binder.forField(descriptionField).asRequired("Beschreibung eingeben")
+                .withValidator(
+                        description -> description.length() >= 50,
+                        "Beschreibung muss mindestens 50 Zeichen haben!"
+                )
                 .bind(StellenanzeigeDTO::getBeschreibung, StellenanzeigeDTO::setBeschreibung);
         descriptionColumn.setEditorComponent(descriptionField);
 
@@ -163,7 +167,7 @@ public class JobCompanyView extends VerticalLayout implements HasUrlParameter<St
         dateColumn.setEditorComponent(dateField);
 
         NumberField priceField = new NumberField();
-        priceField.setMin(0);
+        priceField.setMin(8.5);
         priceField.setStep(0.5);
         binder.forField(priceField).asRequired()
                 .bind(StellenanzeigeDTO::getGehalt, StellenanzeigeDTO::setGehalt);
