@@ -3,7 +3,6 @@ package org.hbrs.se2.project.hellocar.views;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
@@ -18,7 +17,7 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.apache.commons.lang3.StringUtils;
-import org.hbrs.se2.project.hellocar.control.JobApplicationControl;
+import org.hbrs.se2.project.hellocar.control.JobControl;
 import org.hbrs.se2.project.hellocar.dtos.StellenanzeigeDTO;
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
@@ -41,10 +40,10 @@ public class showJobCompanyView extends Div {
 
     private List<StellenanzeigeDTO> jobList;
 
-    public showJobCompanyView(JobApplicationControl jobApplicationControl) throws DatabaseLayerException {
+    public showJobCompanyView(JobControl jobControl) throws DatabaseLayerException {
         addClassName("show-job-company");
 
-        jobList = jobApplicationControl.readCurrentCompanyJob(currentUser);
+        jobList = jobControl.readCurrentCompanyJob(currentUser);
 
         add(createTitle());
 

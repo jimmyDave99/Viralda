@@ -20,6 +20,7 @@ import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.*;
 import org.hbrs.se2.project.hellocar.control.JobApplicationControl;
+import org.hbrs.se2.project.hellocar.control.JobControl;
 import org.hbrs.se2.project.hellocar.dtos.StellenanzeigeDTO;
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
@@ -48,11 +49,11 @@ public class JobApplictionView extends VerticalLayout implements HasUrlParameter
 
     private List<StellenanzeigeDTO> currentJob;
 
-    public  JobApplictionView(JobApplicationControl jobApplicationControl) throws DatabaseLayerException {
+    public  JobApplictionView(JobApplicationControl jobApplicationControl, JobControl jobControl) throws DatabaseLayerException {
 
         addClassName("job-application");
 
-        currentJob = jobApplicationControl.findJob(LandingPageStudentView.jobId);
+        currentJob = jobControl.findJob(LandingPageStudentView.jobId);
 
         add(createTitle(currentJob.get(0).getTitel()));
 

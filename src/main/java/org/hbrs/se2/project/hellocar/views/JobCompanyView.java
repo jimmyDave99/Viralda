@@ -19,7 +19,7 @@ import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.*;
-import org.hbrs.se2.project.hellocar.control.JobApplicationControl;
+import org.hbrs.se2.project.hellocar.control.JobControl;
 import org.hbrs.se2.project.hellocar.dtos.StellenanzeigeDTO;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
 import org.hbrs.se2.project.hellocar.util.Globals;
@@ -46,11 +46,11 @@ public class JobCompanyView extends VerticalLayout implements HasUrlParameter<St
 
     private List<StellenanzeigeDTO> currentJob;
 
-    public JobCompanyView(JobApplicationControl jobApplicationControl) throws DatabaseLayerException {
+    public JobCompanyView(JobControl jobControl) throws DatabaseLayerException {
 
         addClassName("job-company");
 
-        currentJob = jobApplicationControl.findJob(showJobCompanyView.jobId);
+        currentJob = jobControl.findJob(showJobCompanyView.jobId);
 
         add(createTitle(currentJob.get(0).getTitel()));
 
@@ -58,7 +58,7 @@ public class JobCompanyView extends VerticalLayout implements HasUrlParameter<St
         publishButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS, ButtonVariant.LUMO_PRIMARY);
         publishButton.addClickListener(event -> {
             try {
-                jobApplicationControl.updateJobStatus(currentJob.get(0), AKTIV);
+                jobControl.updateJobStatus(currentJob.get(0), AKTIV);
             } catch (DatabaseLayerException e) {
                 e.printStackTrace();
             }
@@ -70,7 +70,7 @@ public class JobCompanyView extends VerticalLayout implements HasUrlParameter<St
         Button retrieveButton = new Button("Zurückziehen");
         retrieveButton.addClickListener(event -> {
             try {
-                jobApplicationControl.updateJobStatus(currentJob.get(0), INAKTIV);
+                jobControl.updateJobStatus(currentJob.get(0), INAKTIV);
             } catch (DatabaseLayerException e) {
                 e.printStackTrace();
             }
@@ -84,7 +84,7 @@ public class JobCompanyView extends VerticalLayout implements HasUrlParameter<St
         deleteButton.addClickListener(e -> {
             navigateToshowJobCompanyView();
             try {
-                jobApplicationControl.deleteAnnouncement(currentJob.get(0));
+                jobControl.deleteAnnouncement(currentJob.get(0));
             } catch (DatabaseLayerException ex) {
                 ex.printStackTrace();
             }
@@ -183,7 +183,7 @@ public class JobCompanyView extends VerticalLayout implements HasUrlParameter<St
         Button saveButton = new Button("Save", e -> {
             editor.save();
             try {
-                jobApplicationControl.updateAnnouncement(currentJob.get(0));
+                jobControl.updateAnnouncement(currentJob.get(0));
             } catch (DatabaseLayerException ex) {
                 ex.printStackTrace();
             }

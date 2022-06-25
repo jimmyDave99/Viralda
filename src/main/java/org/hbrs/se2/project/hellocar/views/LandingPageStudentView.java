@@ -13,7 +13,7 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.*;
 import org.apache.commons.lang3.StringUtils;
-import org.hbrs.se2.project.hellocar.control.JobApplicationControl;
+import org.hbrs.se2.project.hellocar.control.JobControl;
 import org.hbrs.se2.project.hellocar.dtos.StellenanzeigeDTO;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
 import org.hbrs.se2.project.hellocar.util.Globals;
@@ -34,10 +34,10 @@ public class LandingPageStudentView extends Div {
     private List<StellenanzeigeDTO> jobList;
 
 
-    public LandingPageStudentView(JobApplicationControl jobApplicationControl) throws DatabaseLayerException {
+    public LandingPageStudentView(JobControl jobControl) throws DatabaseLayerException {
         addClassName("landing-page");
 
-        jobList = jobApplicationControl.readAllJobApplications();
+        jobList = jobControl.readAllJobApplications();
 
         add(createTitle());
 

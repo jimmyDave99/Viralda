@@ -16,7 +16,7 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.component.notification.Notification;
-import org.hbrs.se2.project.hellocar.control.JobApplicationControl;
+import org.hbrs.se2.project.hellocar.control.JobControl;
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 import org.hbrs.se2.project.hellocar.dtos.impl.StellenanzeigeDTOImpl;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
@@ -47,7 +47,7 @@ public class EnterStellenanzeigeView extends Div {
 
     private Binder<StellenanzeigeDTOImpl> binder = new Binder(StellenanzeigeDTOImpl.class);
 
-    public EnterStellenanzeigeView(JobApplicationControl jobApplicationControl) {
+    public EnterStellenanzeigeView(JobControl jobControl) {
         addClassName("enter-stellenanzeige-view");
 
         add(createTitle());
@@ -112,7 +112,7 @@ public class EnterStellenanzeigeView extends Div {
             UserDTO userDTO = (UserDTO) UI.getCurrent().getSession().getAttribute(Globals.CURRENT_USER);
             try {
                 System.out.println(binder.getBean().getTitel());
-                jobApplicationControl.createStellenanzeige(binder.getBean(), userDTO);
+                jobControl.createStellenanzeige(binder.getBean(), userDTO);
             } catch (DatabaseLayerException ex) {
                 throw new RuntimeException(ex);
             }
