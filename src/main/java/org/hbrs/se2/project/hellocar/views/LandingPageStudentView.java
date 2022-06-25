@@ -40,7 +40,11 @@ public class LandingPageStudentView extends Div {
 
         add(createTitle());
 
-        add(createGridTable());
+        if(jobList.isEmpty()){
+            add(NotJobFound());
+        }else {
+            add(createGridTable());
+        }
     }
 
     private Component createGridTable(){
@@ -118,4 +122,6 @@ public class LandingPageStudentView extends Div {
     private void navigateToJobApplicationView(int jobId) {
         UI.getCurrent().navigate(Globals.Pages.JOB_APPLICATION_VIEW + jobId);
     }
+
+    private Component NotJobFound() { return new H4("   keine Stellenanzeigen gefunden"); }
 }

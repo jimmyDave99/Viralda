@@ -11,10 +11,8 @@ import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
@@ -37,7 +35,9 @@ import java.util.List;
 @CssImport(value = "./styles/views/landingpage/landing-page.css", themeFor = "vaadin-grid")
 public class showJobCompanyView extends Div {
 
-    UserDTO currentUser = (UserDTO) UI.getCurrent().getSession().getAttribute(Globals.CURRENT_USER);
+    protected static volatile int jobId = 0;
+
+    UserDTO currentUser = this.getCurrentUser();
 
     private List<StellenanzeigeDTO> jobList;
 
@@ -48,7 +48,11 @@ public class showJobCompanyView extends Div {
 
         add(createTitle());
 
-        add(createGridTable());
+        if(jobList.isEmpty()){
+            add(NotJobFound());
+        }else {
+            add(createGridTable());
+        }
     }
 
     private Component createGridTable(){
@@ -82,18 +86,13 @@ public class showJobCompanyView extends Div {
                 .setHeader("Status");
 
         grid.addComponentColumn( job -> {
-                    Button saveButton = new Button("Edit");
+                    Button saveButton = new Button("Bearbeiten");
                     saveButton.addClickListener(e -> {
-                        if(editor.isOpen())
-                            editor.cancel();
-                        StellenanzeigeDTO t = null;
-                        grid.getEditor().editItem(t);
+                        jobId = job.getStellenId();
+                        navigateToJobApplicationView(jobId);
                     });
                     return saveButton;
                 }).setWidth("150px").setFlexGrow(0);
-        Binder<StellenanzeigeDTO> binder=new Binder<>(StellenanzeigeDTO.class);
-        editor.setBinder(binder);
-        editor.setBuffered(true);
 
         HeaderRow filterRow = grid.appendHeaderRow();
 
@@ -108,16 +107,6 @@ public class showJobCompanyView extends Div {
         filterRow.getCell(titleColumn).setComponent(titleField);
         titleField.setSizeFull();
         titleField.setPlaceholder("Filter");
-        Button saveButton = new Button("Save", e -> editor.save());
-        Button cancelButton = new Button(VaadinIcon.CLOSE.create(),
-                e -> editor.cancel());
-        cancelButton.addThemeVariants(ButtonVariant.LUMO_ICON,
-                ButtonVariant.LUMO_ERROR);
-        HorizontalLayout actions = new HorizontalLayout(saveButton,
-                cancelButton);
-        actions.setPadding(false);
-        Grid.Column<Object> editColumn = null;
-        editColumn.setEditorComponent(actions);
 
         grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
@@ -128,7 +117,13 @@ public class showJobCompanyView extends Div {
 
     private Component createTitle() { return new H2("Meine Stellenanzeigen"); }
 
-//    private void navigateToJobApplicationView() {
-//        UI.getCurrent().navigate(Globals.Pages.JOB_APPLICATION_VIEW);
-//    }
+    private Component NotJobFound() { return new H4("   keine Stellenanzeigen gefunden"); }
+
+    private void navigateToJobApplicationView(int jobId) {
+        UI.getCurrent().navigate(Globals.Pages.JOB_COMPANY_VIEW + jobId);
+    }
+
+    private UserDTO getCurrentUser() {
+        return (UserDTO) UI.getCurrent().getSession().getAttribute(Globals.CURRENT_USER);
+    }
 }
