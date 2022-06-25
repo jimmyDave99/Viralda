@@ -30,8 +30,8 @@ public class JobApplicationControl {
         return stellenAnzeigeDAO.findJobWithId(jobId);
     }
 
-    public void updateJobApplicationStatus(StellenanzeigeDTO stellenanzeigeDTO, UserDTO userDTO, String status) throws DatabaseLayerException {
-         stellenAnzeigeDAO.updateStatusByJobId(stellenanzeigeDTO, userDTO, status);
+    public void updateJobApplicationStatus(int stellenId, int studentId, String status) throws DatabaseLayerException {
+         stellenAnzeigeDAO.updateStatusByJobId(stellenId, studentId, status);
     }
 
     public String getJobStatus(StellenanzeigeDTO stellenanzeigeDTO , UserDTO userDTO) throws DatabaseLayerException {

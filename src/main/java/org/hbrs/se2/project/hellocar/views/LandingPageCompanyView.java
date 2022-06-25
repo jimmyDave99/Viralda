@@ -3,6 +3,7 @@ package org.hbrs.se2.project.hellocar.views;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
@@ -20,6 +21,8 @@ import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerExcepti
 import org.hbrs.se2.project.hellocar.util.Globals;
 
 import java.util.List;
+
+import static org.hbrs.se2.project.hellocar.util.Globals.JobStatus.*;
 
 /**
  * The LandingPageCompanyView is the home page for user with the role 'employer'.
@@ -40,10 +43,6 @@ public class LandingPageCompanyView extends Div {
 
         add(createTitle());
 
-        add(createGridTable());
-
-    }
-    private Component createGridTable(){
 
         Grid<UserDTO> grid = new Grid<>();
         grid.setHeight("800px");
@@ -71,10 +70,33 @@ public class LandingPageCompanyView extends Div {
         grid.addColumn(UserDTO::getStatus)
                 .setHeader("Status");
 
+
         grid.addComponentColumn( job -> {
             Button saveButton = new Button("Annehmen");
+            saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
             saveButton.addClickListener(e -> {
-                Notification.show("Sollte bearbeiten werden");
+                try {
+                    jobApplicationControl.updateJobApplicationStatus(job.getStelleId(), job.getStudentId(), ANGENOMMEN);
+                } catch (DatabaseLayerException ex) {
+                    ex.printStackTrace();
+                }
+                Notification.show("Bewerbung angenommen");
+                UI.getCurrent().getPage().reload();
+            });
+            return saveButton;
+        }).setWidth("150px").setFlexGrow(0);
+
+        grid.addComponentColumn( job -> {
+            Button saveButton = new Button("Ablehnen");
+            saveButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+            saveButton.addClickListener(e -> {
+                try {
+                    jobApplicationControl.updateJobApplicationStatus(job.getStelleId(), job.getStudentId(), ABGELEHNT);
+                } catch (DatabaseLayerException ex) {
+                    ex.printStackTrace();
+                }
+                Notification.show("Bewerbung Abgelehnt");
+                UI.getCurrent().getPage().reload();
             });
             return saveButton;
         }).setWidth("150px").setFlexGrow(0);
@@ -98,7 +120,7 @@ public class LandingPageCompanyView extends Div {
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.addThemeVariants(GridVariant.LUMO_WRAP_CELL_CONTENT);
 
-        return grid;
+        add(grid);
 
     }
 

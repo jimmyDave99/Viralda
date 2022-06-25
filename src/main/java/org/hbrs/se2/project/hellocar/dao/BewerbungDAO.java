@@ -29,7 +29,7 @@ public class BewerbungDAO {
                     "SELECT collathbrs.bewerbung.stellen_id, collathbrs.bewerbung.status, " +
                             "collathbrs.stellenanzeige.unternehmer_id, " +
                             "collathbrs.bewerbung.bewerbungsdatum, collathbrs.student.nachname, " +
-                            "collathbrs.student.vorname, collathbrs.user.email " +
+                            "collathbrs.student.vorname, collathbrs.student.student_id,  collathbrs.user.email " +
                             "FROM collathbrs.student " +
                             "INNER JOIN collathbrs.bewerbung " +
                             "ON " +
@@ -47,6 +47,7 @@ public class BewerbungDAO {
                         .getInstance()
                         .createNewUser()
                         .withJobId(rs.getInt("stellen_id"))
+                        .withStudentID(rs.getInt("student_id"))
                         .withFirstName(rs.getString("vorname"))
                         .withLastName(rs.getString("nachname"))
                         .withEmail(rs.getString("email"))
