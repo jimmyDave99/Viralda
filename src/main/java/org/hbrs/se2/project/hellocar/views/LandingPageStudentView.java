@@ -33,6 +33,7 @@ public class LandingPageStudentView extends Div {
 
     private List<StellenanzeigeDTO> jobList;
 
+
     public LandingPageStudentView(JobApplicationControl jobApplicationControl) throws DatabaseLayerException {
         addClassName("landing-page");
 

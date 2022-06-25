@@ -3,6 +3,8 @@ package org.hbrs.se2.project.hellocar.dtos.impl;
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 
 import java.awt.image.BufferedImage;
+import java.time.LocalDate;
+import java.util.Date;
 
 public class UserDTOImpl implements UserDTO {
 
@@ -32,6 +34,10 @@ public class UserDTOImpl implements UserDTO {
     private String branche;
     private String description;
 
+    //Stelle
+    private String status;
+    private int stelleId;
+    private Date bewerbungsdatum;
     //Setter
     @Override
     public void setUserId(int userId) {
@@ -42,6 +48,21 @@ public class UserDTOImpl implements UserDTO {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    @Override
+    public void setStatus(String status) {
+        this.status = status;
+    }
+    @Override
+    public void setStelleId(int stelleId) {
+        this.stelleId = stelleId;
+    }
+
+    @Override
+    public void setBewerbungsdatum(Date bewerbungsdatum) {
+        this.bewerbungsdatum = bewerbungsdatum;
+    }
+
 
     @Override
     public void setRole(String role) {
@@ -119,6 +140,8 @@ public class UserDTOImpl implements UserDTO {
         this.description = description;
     }
 
+
+
     //Getter
     @Override
     public int getUserId() {
@@ -130,6 +153,18 @@ public class UserDTOImpl implements UserDTO {
         return email;
     }
 
+    @Override
+    public String getStatus() {
+        return status;
+    }
+    @Override
+    public int getStelleId() {
+        return stelleId;
+    }
+    @Override
+    public Date getbewerbungsDatum() {
+        return bewerbungsdatum;
+    }
     @Override
     public String getRole() {
         return this.role;
@@ -208,8 +243,12 @@ public class UserDTOImpl implements UserDTO {
 
     @Override
     public String toString() {
-        return "UserId: " + userId +
+        return "StelleID: " + stelleId +
+                "UserId: " + userId +
                 ", FirstName: " + firstName +
-                ", LastName: " + lastName;
+                ", LastName: " + lastName +
+                ", email: " + email +
+                ", bewerbungsdatum: " + bewerbungsdatum +
+                ", status: " + status;
     }
 }
