@@ -3,13 +3,18 @@ package org.hbrs.se2.project.hellocar.views;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
+import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
@@ -49,6 +54,7 @@ public class showJobCompanyView extends Div {
     private Component createGridTable(){
 
         Grid<StellenanzeigeDTO> grid = new Grid<>(StellenanzeigeDTO.class, false);
+        Editor<StellenanzeigeDTO> editor=grid.getEditor();
         grid.setHeightByRows(true);
 
         grid.setSelectionMode(Grid.SelectionMode.NONE);
@@ -78,9 +84,16 @@ public class showJobCompanyView extends Div {
         grid.addComponentColumn( job -> {
                     Button saveButton = new Button("Edit");
                     saveButton.addClickListener(e -> {
+                        if(editor.isOpen())
+                            editor.cancel();
+                        StellenanzeigeDTO t = null;
+                        grid.getEditor().editItem(t);
                     });
                     return saveButton;
                 }).setWidth("150px").setFlexGrow(0);
+        Binder<StellenanzeigeDTO> binder=new Binder<>(StellenanzeigeDTO.class);
+        editor.setBinder(binder);
+        editor.setBuffered(true);
 
         HeaderRow filterRow = grid.appendHeaderRow();
 
@@ -95,6 +108,16 @@ public class showJobCompanyView extends Div {
         filterRow.getCell(titleColumn).setComponent(titleField);
         titleField.setSizeFull();
         titleField.setPlaceholder("Filter");
+        Button saveButton = new Button("Save", e -> editor.save());
+        Button cancelButton = new Button(VaadinIcon.CLOSE.create(),
+                e -> editor.cancel());
+        cancelButton.addThemeVariants(ButtonVariant.LUMO_ICON,
+                ButtonVariant.LUMO_ERROR);
+        HorizontalLayout actions = new HorizontalLayout(saveButton,
+                cancelButton);
+        actions.setPadding(false);
+        Grid.Column<Object> editColumn = null;
+        editColumn.setEditorComponent(actions);
 
         grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
