@@ -62,13 +62,13 @@ public class EnterStellenanzeigeView extends Div {
         addClassName("enter-stellenanzeige-view");
 
         add(createTitle());
-        gehalt.setValue(8.50);
+
+        titel.setAutofocus(true);
+
+//        gehalt.setValue(8.0);
         Div euroSuffix = new Div();
         euroSuffix.setText("€");
-        gehalt.setMin(8.50);
-        gehalt.setPrefixComponent(euroSuffix);
-        gehalt.setHasControls(true);
-//        gehalt.setStep(0.10);
+        gehalt.setSuffixComponent(euroSuffix);
 
         einstellungsdatum.setMin(now);
         einstellungsdatum.setMax(now.plusDays(180));
@@ -87,11 +87,31 @@ public class EnterStellenanzeigeView extends Div {
 
         binder.forField(beschreibung)
                 .asRequired("Geben Sie bitte eine Beschreibung ein.")
+                .withValidator(
+                        beschreibung -> beschreibung.length() >= 50,
+                        "Beschreibung muss mindestens 50 Zeichen haben!"
+                )
                 .bind(StellenanzeigeDTOImpl::getBeschreibung, StellenanzeigeDTOImpl::setBeschreibung);
 
-        binder.forField(beschreibung)
-                .asRequired("Geben Sie bitte eine Beschreibung ein.")
-                .bind(StellenanzeigeDTOImpl::getBeschreibung, StellenanzeigeDTOImpl::setBeschreibung);
+        binder.forField(gehalt)
+                .asRequired("Geben Sie bitte ein Gehalt ein.")
+                .withValidator(
+                        gehalt -> 0 <= gehalt,
+                        "Ein negatives Gehalt ist nicht zulässig!"
+                )
+                .withValidator(
+                        gehalt -> 8.50 <= gehalt,
+                        "Gehalt entspricht nicht dem Mindestlohn!"
+                )
+                .bind(StellenanzeigeDTOImpl::getGehalt, StellenanzeigeDTOImpl::setGehalt);
+
+        binder.forField(wochenstunden)
+                .asRequired("Geben Sie bitte eine Wochenstundenanzahl ein.")
+                .withValidator(
+                        wochenstunden -> 0 <= wochenstunden,
+                        "Eine negative Wochenstundenanzahl ist nicht zulässig!"
+                )
+                .bind(StellenanzeigeDTOImpl::getWochenstunden, StellenanzeigeDTOImpl::setWochenstunden);
 
         // Binder
         binder.bindInstanceFields(this);
@@ -102,17 +122,25 @@ public class EnterStellenanzeigeView extends Div {
 
         save.addClickListener(e -> {
             UserDTO userDTO = (UserDTO) UI.getCurrent().getSession().getAttribute(Globals.CURRENT_USER);
-            // TODO: 17.06.22 clearForm()
             try {
-                if(binder.getBean().getTitel() == null){
+                /*if(binder.getBean().getTitel() == null || binder.getBean().getTitel().equals("") ){
                     Notification.show("Titel ist noch leer");
                 }
-                if(binder.getBean().getBereich().equals("")) {
+                if(binder.getBean().getBereich() == null || binder.getBean().getTitel().equals("")) {
                     Notification.show("Bereich ist noch leer");
                 }
-                if(binder.getBean().getBeschreibung().equals("")){
+                if(binder.getBean().getBeschreibung() == null || binder.getBean().getTitel().equals("")){
                     Notification.show("Beschreibung ist noch leer");
                 }
+                if(binder.getBean().getEinstellungsdatum() == null){
+                    Notification.show("Einstellungsdatum ist noch leer");
+                }
+                if(binder.getBean().getGehalt() < 0){
+                    Notification.show("Gehalt darf nicht negativ sein!");
+                }
+                if(0 <= binder.getBean().getGehalt() && binder.getBean().getGehalt() < 8.50){
+                    Notification.show("Ihr Gehalt entspricht nicht dem Mindestlohn!");
+                }*/
                 System.out.println(binder.getBean().getTitel());
                 jobApplicationControl.createStellenanzeige(binder.getBean(), userDTO);
             } catch (DatabaseLayerException ex) {
