@@ -13,9 +13,10 @@ import static org.hbrs.se2.project.hellocar.control.RegistrationControl.hashPass
 public class ManageExistingUserControl {
     UserDAO userDAO = new UserDAO();
 
-    public boolean updateUser(UserDTO userDTO, UserDTO userDTOSession) throws DatabaseLayerException {
-        //if-Abfragen, was muss geupdated werden
-
+    public boolean updateUser(UserDTO userDTO) throws DatabaseLayerException {
+        if(userDTO == null){
+            throw new RuntimeException("DTO ist null!");
+        }
         userDAO.updateUserByEmail(userDTO);
         return true;
     }
@@ -23,8 +24,20 @@ public class ManageExistingUserControl {
     public boolean updateUserPassword(UserDTO userDTO, UserDTO userDTOSession) throws DatabaseLayerException,
                 NoSuchAlgorithmException {
 
-        userDAO.updateUserPasswordByEmail(userDTOSession.getEmail(), hashPassword(userDTO.getPassword()));
-        return true;
+        if(userDTOSession.getPassword().equals(hashPassword(userDTO.getPassword())))
+            throw new DatabaseLayerException("Neues Passwort entsprciht dem alten Passwort!");
+        else if(!userDTO.getPassword().equals(userDTO.getConfirmPassword()))
+            throw new DatabaseLayerException("Neues Passwort und neues Passswort bestätigen stimmen nicht überein!");
+        else if(userDTO.getPassword().equals("") || userDTO.getPassword() == null)
+            throw new DatabaseLayerException("Passwort konnte nicht übertragen werden.");
+        else {
+            userDAO.updateUserPasswordByEmail(userDTOSession.getEmail(), hashPassword(userDTO.getPassword()));
+            return true;
+        }
+    }
+
+    public boolean updateProfilePicture(UserDTO userDTO){
+        return false;
     }
 
     public boolean deleteUser(UserDTO userDTO) throws DatabaseLayerException {
