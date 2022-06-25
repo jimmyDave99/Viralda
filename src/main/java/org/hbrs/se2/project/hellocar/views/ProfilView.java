@@ -14,9 +14,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.TabVariant;
 import com.vaadin.flow.component.tabs.Tabs;
-import com.vaadin.flow.component.textfield.EmailField;
-import com.vaadin.flow.component.textfield.PasswordField;
-import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.*;
 //import org.hbrs.se2.project.hellocar.control.AuthorizationControl;
@@ -48,26 +46,28 @@ public class ProfilView extends Div {
     // user attributes
     private EmailField email;
     private TextField role;
-    // ToDo: Bild und Beschreibung hinzufügen
+    private TextArea description;
+    private Image image;
 
     // student attributes
     private TextField firstName;
     private TextField lastName;
     private DatePicker dateOfBirth;
     private TextField faculty;
-    private TextField semester;
+    private IntegerField semester;
     private TextField specialization;
 
     // company attributes
     private TextField companyName;
     private TextField branch;
 
+    // password fields for resetting the password
     private PasswordField oldPassword;
     private PasswordField newPassword;
     private PasswordField newPasswordAgain;
 
     private final Binder<UserDTOImpl> binder = new Binder(UserDTOImpl.class);
-    ManageExistingUserControl userService;
+    private final ManageExistingUserControl userService;
 
     // ------  functions for all fields  ------
     private void setFieldsStudentAttributes() {
@@ -76,20 +76,27 @@ public class ProfilView extends Div {
         email = new EmailField("E-Mail-Adresse");
         dateOfBirth = new DatePicker("Geburtsdatum");
         role = new TextField("Rolle");
-        // ToDo: faculty, semester und specialization hinzufügen
+        faculty = new TextField("Fakultät");
+        semester = new IntegerField("Semester");
+        semester.setMin(1);
+        semester.setMax(30);
+        specialization = new TextField("Spezialisierung");
+        image = new Image();
     }
 
     private void setFieldsCompanyAttributes() {
         companyName = new TextField("Unternehmensname");
         email = new EmailField("E-Mail-Adresse");
         role = new TextField("Rolle");
-        // ToDo: fehleden Attribute einfügen
     }
 
     private void setFieldsEditUserPassword() {
         oldPassword = new PasswordField("Altes Passwort");
-        newPassword = new PasswordField("Passwort");
-        newPasswordAgain = new PasswordField("Passwort wiederholen");
+        newPassword = new PasswordField("Neues Passwort");
+        newPassword.setHelperText("Ein Passwort besteht aus mind. 8 Zeichen, wovon mind. eines ein Buchstabe und eine Zahl ist.");
+        newPassword.setPattern("^(?=.*[0-9])(?=.*[a-zA-Z]).{8}.*$");
+        newPassword.setErrorMessage("Passwort entspricht nicht der Form.");
+        newPasswordAgain = new PasswordField("Neues Passwort wiederholen");
     }
 
 
@@ -157,13 +164,10 @@ public class ProfilView extends Div {
         if (tab.equals(profile)) {
 
             if (getCurrentUser().getRole().equals("Student")) {
-
                 content.add(createButtonLayoutShowStudentAttributes());
-                //ToDo: add context for button editProfile, idea: Split Layout, Upload
                 content.add(createFormLayoutShowStudentAttributes());
 
             } else if (getCurrentUser().getRole().equals("Unternehmen")) {
-
                 content.add(createButtonLayoutShowCompanyAttributes());
                 content.add(createFormLayoutShowCompanyAttributes());
             }
@@ -195,23 +199,36 @@ public class ProfilView extends Div {
     private Component createFormLayoutShowStudentAttributes() {
         setFieldsStudentAttributes();
 
-        firstName.setPrefixComponent(new Div(new Text(getCurrentUser().getFirstName())));
+        firstName.setValue(getCurrentUser().getFirstName());
         firstName.setEnabled(false);
 
-        lastName.setPrefixComponent(new Div(new Text(getCurrentUser().getLastName())));
+        lastName.setValue(getCurrentUser().getLastName());
         lastName.setEnabled(false);
 
-        email.setPrefixComponent(new Div(new Text(getCurrentUser().getEmail())));
+        email.setValue(getCurrentUser().getEmail());
         email.setEnabled(false);
 
-        //ToDo: sobald Geburtsdatum in Datenbank vorhanden ist BDay abfragen
-        dateOfBirth.setPlaceholder("'Platzhalter Geburtstag'");
+        if(getCurrentUser().getDateOfBirth() == null) dateOfBirth.setPlaceholder("'Platzhalter Geburtstag'");
+        else dateOfBirth.setValue(getCurrentUser().getDateOfBirth());
         dateOfBirth.setEnabled(false);
 
-        role.setPrefixComponent(new Div(new Text(getCurrentUser().getRole())));
+        if(getCurrentUser().getFaculty() == null) faculty.setPlaceholder("Z.B. Informatik");
+        else faculty.setValue(getCurrentUser().getFaculty());
+        faculty.setEnabled(false);
+
+        if(getCurrentUser().getSemester() == 0) semester.setPlaceholder("1");
+        else semester.setValue(getCurrentUser().getSemester());
+        semester.setEnabled(false);
+
+        if(getCurrentUser().getSpecialization() == null) specialization.setPlaceholder("Z.B. Visual Computing");
+        else specialization.setValue(getCurrentUser().getSpecialization());
+        specialization.setEnabled(false);
+
+        image.setAlt("User Bild");
+
+        role.setValue(getCurrentUser().getRole());
         role.setEnabled(false);
 
-        // ToDo: fehlende Attribute einbiden
 
         FormLayout formLayout = new FormLayout();
 
@@ -249,13 +266,14 @@ public class ProfilView extends Div {
     private Component createFormLayoutEditStudentAttributes() {
         setFieldsStudentAttributes();
 
-        firstName.setPlaceholder(getCurrentUser().getFirstName());
-        lastName.setPlaceholder(getCurrentUser().getLastName());
-        email.setPlaceholder(getCurrentUser().getEmail());
-        //ToDo: sobald Geburtsdatum in Datenbank vorhanden ist BDay abfragen
-        dateOfBirth.setPlaceholder("'Platzhalter Geburtsdatum'");
-
-        // ToDo: fehlende Attribute einbinden
+        firstName.setValue(getCurrentUser().getFirstName());
+        lastName.setValue(getCurrentUser().getLastName());
+        email.setValue(getCurrentUser().getEmail());
+        if(getCurrentUser().getDateOfBirth() == null){
+            dateOfBirth.setPlaceholder("'Platzhalter Geburtsdatum'");
+        } else {
+            dateOfBirth.setValue(getCurrentUser().getDateOfBirth());
+        }
 
         role.setPrefixComponent(new Div(new Text(getCurrentUser().getRole())));
         role.setEnabled(false);
@@ -404,7 +422,6 @@ public class ProfilView extends Div {
             binder.forField(dateOfBirth)
                     .bind(UserDTOImpl::getDateOfBirth, UserDTOImpl::setDateOfBirth);
         }
-
         binder.readBean((UserDTOImpl) getCurrentUser());
         clearForm();
 
