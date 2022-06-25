@@ -3,6 +3,7 @@ package org.hbrs.se2.builder;
 import org.hbrs.se2.project.hellocar.dtos.impl.UserDTOImpl;
 
 import java.awt.image.BufferedImage;
+import java.time.LocalDate;
 import java.util.Date;
 
 public class UserBuilder {
@@ -59,6 +60,26 @@ public class UserBuilder {
         return this;
     }
 
+    public UserBuilder withFaculty( String faculty ){
+        this.userDTO.setFaculty(faculty);
+        return this;
+    }
+
+    public UserBuilder withSemester( int semester ){
+        this.userDTO.setSemester(semester);
+        return this;
+    }
+
+    public UserBuilder withSpecialization( String specialization ){
+        this.userDTO.setSpecialization(specialization);
+        return this;
+    }
+
+    public UserBuilder withDateOfBirth( LocalDate dateOfBirth ){
+        this.userDTO.setDateOfBirth(dateOfBirth);
+        return this;
+    }
+
     public UserBuilder withPlz( int plz ) {
         this.userDTO.setPlz(plz);
         return this;
@@ -79,8 +100,8 @@ public class UserBuilder {
         return this;
     }
 
-    public UserBuilder withNummer( int nummer ) {
-        this.userDTO.setNummer(nummer);
+    public UserBuilder withHausnummer( int hausnummer ) {
+        this.userDTO.setHausnummer(hausnummer);
         return this;
     }
 
