@@ -84,12 +84,13 @@ public class StellenAnzeigeDAO {
     /**
      * Method for updating status
      *
-     * @param stellenanzeigeDTO
+     * @param stellenId
+     * @param studentId
      * @param status
      * @return
      * @throws DatabaseLayerException
      */
-    public void updateStatusByJobId(StellenanzeigeDTO stellenanzeigeDTO, UserDTO userDTO, String status) throws DatabaseLayerException {
+    public void updateStatusByJobId(int stellenId, int studentId, String status) throws DatabaseLayerException {
         try {
             PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement(
                     "UPDATE collathbrs.bewerbung " +
@@ -97,8 +98,8 @@ public class StellenAnzeigeDAO {
                             "WHERE stellen_id = ? AND student_id = ?");
 
             statement.setString(1, status);
-            statement.setInt(2, stellenanzeigeDTO.getStellenId());
-            statement.setInt(3, userDTO.getStudentId());
+            statement.setInt(2, stellenId);
+            statement.setInt(3, studentId);
             statement.executeUpdate();
 
 

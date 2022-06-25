@@ -1,5 +1,6 @@
 package org.hbrs.se2.project.hellocar.control;
 
+import org.hbrs.se2.project.hellocar.dao.BewerbungDAO;
 import org.hbrs.se2.project.hellocar.dao.StellenAnzeigeDAO;
 import org.hbrs.se2.project.hellocar.dtos.StellenanzeigeDTO;
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
@@ -12,7 +13,7 @@ import java.util.List;
 public class JobApplicationControl {
 
     StellenAnzeigeDAO stellenAnzeigeDAO = new StellenAnzeigeDAO();
-
+    BewerbungDAO bewerbungDAO = new BewerbungDAO();
     public List<StellenanzeigeDTO> readAllJobApplications() throws DatabaseLayerException {
         return stellenAnzeigeDAO.findAllJobs();
     }
@@ -29,12 +30,15 @@ public class JobApplicationControl {
         return stellenAnzeigeDAO.findJobWithId(jobId);
     }
 
-    public void updateJobApplicationStatus(StellenanzeigeDTO stellenanzeigeDTO, UserDTO userDTO, String status) throws DatabaseLayerException {
-         stellenAnzeigeDAO.updateStatusByJobId(stellenanzeigeDTO, userDTO, status);
+    public void updateJobApplicationStatus(int stellenId, int studentId, String status) throws DatabaseLayerException {
+         stellenAnzeigeDAO.updateStatusByJobId(stellenId, studentId, status);
     }
 
     public String getJobStatus(StellenanzeigeDTO stellenanzeigeDTO , UserDTO userDTO) throws DatabaseLayerException {
         return stellenAnzeigeDAO.findStatusByJobIdAndStudentId(stellenanzeigeDTO, userDTO);
+    }
+    public List<UserDTO> readAllApplicant(UserDTO userDTO) throws DatabaseLayerException {
+        return bewerbungDAO.findAllJobApplicant(userDTO);
     }
 
     public List<StellenanzeigeDTO> readCurrentCompanyJob(UserDTO userDTO) throws DatabaseLayerException {

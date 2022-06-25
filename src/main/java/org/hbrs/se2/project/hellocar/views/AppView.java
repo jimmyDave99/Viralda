@@ -211,7 +211,7 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
 
         //Falls User ein Arbeitgeber ist soll die LandingPageCompanyView angezeigt werden
         if (this.authorizationControl.isUserInRole(this.getCurrentUser(), Globals.Roles.UNTERNEHMEN)) {
-            tabs = Utils.append(tabs, createTab("Startseite", LandingPageCompanyView.class));
+            tabs = Utils.append(tabs, createTab("Bewerbungen", LandingPageCompanyView.class));
             tabs = Utils.append(tabs, createTab("Stellenanzeige erstellen", EnterStellenanzeigeView.class));
             tabs = Utils.append(tabs, createTab("Meine Stellenanzeigen", showJobCompanyView.class));
             System.out.println("User is a Company!");

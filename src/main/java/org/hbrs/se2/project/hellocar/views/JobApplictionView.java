@@ -111,7 +111,7 @@ public class JobApplictionView extends VerticalLayout implements HasUrlParameter
         Button cancelButton = new Button("Zurückziehen");
         cancelButton.addClickListener(e -> {
             try {
-                jobApplicationControl.updateJobApplicationStatus(currentJob.get(0), currentUser ,ZURUCKGEZOGEN);
+                jobApplicationControl.updateJobApplicationStatus(currentJob.get(0).getStellenId(), currentUser.getStudentId() ,ZURUCKGEZOGEN);
             } catch (DatabaseLayerException ex) {
                 ex.printStackTrace();
             }
