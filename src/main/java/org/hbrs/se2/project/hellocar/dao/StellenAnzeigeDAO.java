@@ -29,7 +29,8 @@ public class StellenAnzeigeDAO {
         try {
             List<StellenanzeigeDTO> list = new ArrayList<>();
             PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement(
-                    "SELECT * FROM collathbrs.stellenanzeige");
+                    "SELECT * FROM collathbrs.stellenanzeige " +
+                            "WHERE status = 'AKTIV'");
 
             return getStellenanzeigeDTOS(list, statement);
 
@@ -66,6 +67,7 @@ public class StellenAnzeigeDAO {
                         .withStartDate(rs.getDate("einstellungsdatum").toLocalDate())
                         .withSalary(rs.getDouble("gehalt"))
                         .withWeeklyHours(rs.getDouble("wochenstunden"))
+                        .withStatus(rs.getString("status"))
                         .build();
                  list.add(currentJob);
             }
@@ -222,6 +224,82 @@ public class StellenAnzeigeDAO {
             DatabaseLayerException e = new DatabaseLayerException("Probleme mit der Datenbank");
             e.setReason(Globals.Errors.DATABASE);
             throw e;
+        }
+    }
+
+    /**
+     * Method to update companyJob
+     *
+     * @param stellenanzeigeDTO
+     * @throws DatabaseLayerException
+     */
+    public void updateCompanyJob(StellenanzeigeDTO stellenanzeigeDTO) throws DatabaseLayerException {
+        try {
+            PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement(
+                    "UPDATE collathbrs.stellenanzeige " +
+                            "SET titel = ?, bereich = ?, beschreibung = ?, einstellungsdatum = ?, gehalt = ?, wochenstunden = ? " +
+                            "WHERE stellen_id = ?");
+
+            statement.setString(1, stellenanzeigeDTO.getTitel());
+            statement.setString(2, stellenanzeigeDTO.getBereich());
+            statement.setString(3, stellenanzeigeDTO.getBeschreibung());
+            statement.setDate(4, Date.valueOf(stellenanzeigeDTO.getEinstellungsdatum()));
+            statement.setDouble(5, stellenanzeigeDTO.getGehalt());
+            statement.setDouble(6, stellenanzeigeDTO.getWochenstunden());
+            statement.setInt(7, stellenanzeigeDTO.getStellenId());
+            statement.executeUpdate();
+
+        } catch (SQLException ex) {
+            DatabaseLayerException e = new DatabaseLayerException("Probleme mit der Datenbank");
+            e.setReason(Globals.Errors.DATABASE);
+            throw e;
+        }
+    }
+
+    /**
+     * Method for updating status job
+     *
+     * @param stellenanzeigeDTO
+     * @param status
+     * @return
+     * @throws DatabaseLayerException
+     */
+    public void updateJobStatus(StellenanzeigeDTO stellenanzeigeDTO, String status) throws DatabaseLayerException {
+        try {
+            PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement(
+                    "UPDATE collathbrs.stellenanzeige " +
+                            "SET status = ? " +
+                            "WHERE stellen_id = ?");
+
+            statement.setString(1, status);
+            statement.setInt(2, stellenanzeigeDTO.getStellenId());
+            statement.executeUpdate();
+
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    /**
+     * Method for deleting Announcement
+     *
+     * @param stellenanzeigeDTO
+     * @return
+     * @throws DatabaseLayerException
+     */
+    public void deleteJob(StellenanzeigeDTO stellenanzeigeDTO) throws DatabaseLayerException {
+        try {
+            PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement(
+                    "DELETE FROM collathbrs.stellenanzeige " +
+                            "WHERE stellen_id = ?");
+
+            statement.setInt(1, stellenanzeigeDTO.getStellenId());
+            statement.executeUpdate();
+
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 

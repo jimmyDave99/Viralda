@@ -40,4 +40,16 @@ public class JobApplicationControl {
     public List<StellenanzeigeDTO> readCurrentCompanyJob(UserDTO userDTO) throws DatabaseLayerException {
         return stellenAnzeigeDAO.findCurrentCompanyJob(userDTO);
     }
+
+    public void updateAnnouncement(StellenanzeigeDTO stellenanzeigeDTO) throws DatabaseLayerException {
+        stellenAnzeigeDAO.updateCompanyJob(stellenanzeigeDTO);
+    }
+
+    public void updateJobStatus(StellenanzeigeDTO stellenanzeigeDTO, String status) throws DatabaseLayerException {
+        stellenAnzeigeDAO.updateJobStatus(stellenanzeigeDTO, status);
+    }
+
+    public void deleteAnnouncement(StellenanzeigeDTO stellenanzeigeDTO) throws DatabaseLayerException {
+        stellenAnzeigeDAO.deleteJob(stellenanzeigeDTO);
+    }
 }
