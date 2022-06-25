@@ -228,13 +228,17 @@ public class UserDAO {
      */
     public void updateUserPasswordByEmail(String email, String password) throws DatabaseLayerException {
         try {
+            UserDTO userDTO = new UserDTOImpl();
+            userDTO.setEmail(email);
+            int userId = getUserIdByEmail(userDTO);
+
             //Update User
             PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement(
                     "UPDATE collathbrs.user " +
                             "SET passwort = ? " +
                             "WHERE id = ?");
             statement.setString(1, password);
-            statement.setString(2, email);
+            statement.setInt(2, userId);
             statement.executeUpdate();
 
         } catch (SQLException throwables) {
