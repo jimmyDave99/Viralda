@@ -270,6 +270,7 @@ public class ProfilView extends Div {
                     if(isOK){
                         navigateToSubBarShowStudentAttributesWithSave();
                         Notification.show("Änderungen erfolgreich gespeichert");
+                        UI.getCurrent().getPage().reload();
                     }
                 } catch (DatabaseLayerException | ValidationException e) {
                     e.printStackTrace();
@@ -295,6 +296,7 @@ public class ProfilView extends Div {
         }
         if(!(getCurrentUser().getFaculty() == null)) faculty.setValue(getCurrentUser().getFaculty());
         if(!(getCurrentUser().getSemester() == 0)) semester.setValue(getCurrentUser().getSemester());
+        else semester.setValue(1);
         if(!(getCurrentUser().getSpecialization() == null)) specialization.setValue(getCurrentUser().getSpecialization());
         if(!(getCurrentUser().getDescription() == null)) description.setValue(getCurrentUser().getDescription());
 
@@ -371,6 +373,7 @@ public class ProfilView extends Div {
                     if(isOK){
                         navigateToSubBarShowCompanyAttributesWithSaving();
                         Notification.show("Änderungen erfolgreich gespeichert");
+                        UI.getCurrent().getPage().reload();
                     }
 
                 } catch (DatabaseLayerException | ValidationException e) {
@@ -464,6 +467,8 @@ public class ProfilView extends Div {
     }
 
     private void navigateToSubBarShowStudentAttributesWithSave() {
+        content.removeAll();
+
         content.add(createButtonLayoutShowStudentAttributes());
         content.add(createFormLayoutShowStudentAttributes());
     }
@@ -485,6 +490,8 @@ public class ProfilView extends Div {
     }
 
     private void navigateToSubBarShowCompanyAttributesWithSaving() {
+        content.removeAll();
+
         content.add(createButtonLayoutShowCompanyAttributes());
         content.add(createFormLayoutShowCompanyAttributes());
     }
@@ -507,6 +514,8 @@ public class ProfilView extends Div {
 
 
     private void navigateToSubBarSecuritySettingsWithSaving() {
+        content.removeAll();
+
         content.add(createButtonLayoutTabSecuritySettings());
         content.add(createFormLayoutChangePassword());
     }
@@ -563,7 +572,6 @@ public class ProfilView extends Div {
 
         clearForm();
     }
-
 
     private void clearForm() {
         binder.setBean((UserDTOImpl) getCurrentUser());
