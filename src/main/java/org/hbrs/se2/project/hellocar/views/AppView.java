@@ -5,7 +5,6 @@ import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
@@ -24,9 +23,7 @@ import org.hbrs.se2.project.hellocar.control.AuthorizationControl;
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 import org.hbrs.se2.project.hellocar.util.Globals;
 import org.hbrs.se2.project.hellocar.util.Utils;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 /**
@@ -213,6 +210,7 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
         if (this.authorizationControl.isUserInRole(this.getCurrentUser(), Globals.Roles.UNTERNEHMEN)) {
             tabs = Utils.append(tabs, createTab("Bewerbungen", LandingPageCompanyView.class));
             tabs = Utils.append(tabs, createTab("Stellenanzeige erstellen", EnterStellenanzeigeView.class));
+            tabs = Utils.append(tabs, createTab("Meine Stellenanzeigen", showJobCompanyView.class));
             System.out.println("User is a Company!");
         }
 

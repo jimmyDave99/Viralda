@@ -2,10 +2,7 @@ package org.hbrs.se2.project.hellocar.dtos.impl;
 
 import org.hbrs.se2.project.hellocar.dtos.StellenanzeigeDTO;
 
-import java.awt.image.BufferedImage;
 import java.time.LocalDate;
-import java.util.Date;
-// TODO: Eventuell eine weitere Variable um ein Firmenlogo/Bild abzuspeichern
 public class StellenanzeigeDTOImpl implements StellenanzeigeDTO {
 
     private int stellenId;

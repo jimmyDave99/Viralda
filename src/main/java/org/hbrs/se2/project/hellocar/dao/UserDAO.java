@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
+import static org.hbrs.se2.project.hellocar.util.Globals.Errors.PROBLEM;
 import static org.hbrs.se2.project.hellocar.util.Globals.Roles.STUDENT;
 import static org.hbrs.se2.project.hellocar.util.Globals.Roles.UNTERNEHMEN;
 
@@ -82,7 +83,6 @@ public class UserDAO {
                 throw new DatabaseLayerException("Kein User mit dieser Email und diesem Passwort gefunden");
             }
         } catch (SQLException ex) {
-            System.out.println("test");
             DatabaseLayerException e = new DatabaseLayerException("Fehler im SQL-Befehl!");
             e.setReason(Globals.Errors.SQLERROR);
             throw e;
@@ -105,11 +105,7 @@ public class UserDAO {
      * @throws DatabaseLayerException
      */
     public void insertUser(UserDTO userDTO, String password) throws DatabaseLayerException {
-        System.out.println("--------------------");
-        System.out.println(userDTO.toString());
-        System.out.println("--------------------");
 
-        // Exception für UserDTO leer fehlt noch oder kommt das in RegistrationControl?
 
         try {
             PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement("INSERT " +
@@ -144,7 +140,7 @@ public class UserDAO {
             }
 
         } catch (SQLException ex) {
-            DatabaseLayerException e = new DatabaseLayerException("Probleme mit der Datenbank");
+            DatabaseLayerException e = new DatabaseLayerException(PROBLEM);
             e.setReason(Globals.Errors.DATABASE);
             throw e;
         }
@@ -171,7 +167,7 @@ public class UserDAO {
             return userId;
 
         } catch (SQLException ex) {
-            DatabaseLayerException e = new DatabaseLayerException("Probleme mit der Datenbank");
+            DatabaseLayerException e = new DatabaseLayerException(PROBLEM);
             e.setReason(Globals.Errors.DATABASE);
             throw e;
         }
@@ -227,8 +223,10 @@ public class UserDAO {
                 unternehmenStatement.setInt(3, userId);
                 unternehmenStatement.executeUpdate();
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException ex) {
+            DatabaseLayerException e = new DatabaseLayerException(PROBLEM);
+            e.setReason(Globals.Errors.DATABASE);
+            throw e;
         }
     }
 
@@ -290,8 +288,10 @@ public class UserDAO {
                     "DELETE FROM collathbrs.user WHERE id = ?");
             statement.setInt(1, userId);
             statement.executeUpdate();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException ex) {
+            DatabaseLayerException e = new DatabaseLayerException(PROBLEM);
+            e.setReason(Globals.Errors.DATABASE);
+            throw e;
         }
     }
 

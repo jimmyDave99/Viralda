@@ -6,8 +6,10 @@ public class Globals {
     public static class Pages {
         public static final String REGISTRATION_VIEW = "registration";
         public static final String LANDING_PAGE_COMPANY_VIEW = "landing-page-company";
+        public static final String SHOW_JOB_COMPANY_VIEW = "show-job-company";
         public static final String LANDING_PAGE_STUDENT_VIEW = "landing-page-student";
         public static final String JOB_APPLICATION_VIEW = LANDING_PAGE_STUDENT_VIEW+ "/job/";
+        public static final String JOB_COMPANY_VIEW = SHOW_JOB_COMPANY_VIEW+ "/job/";
         public static final String ENTER_STELLENANZEIGE_VIEW = "enter";
         public static final String PROFIL_VIEW = "profil";
 
@@ -25,13 +27,16 @@ public class Globals {
         public static final String NOUSERFOUND = "nouser";
         public static final String SQLERROR = "sql";
         public static final String DATABASE = "database";
+        public static final String PROBLEM = "Fehler im SQL-Befehl!";
     }
 
     public static class JobStatus {
-        public static final String BEWORBEN = "Beworben";
-        public static final String ZURUCKGEZOGEN = "Zurückgezogen";
-        public static final String ABGELEHNT = "Abgelehnt";
-        public static final String ANGENOMMEN = "Angenommen";
+        public static final String BEWORBEN = "BEWORBEN";
+        public static final String ZURUCKGEZOGEN = "ZURUCKGEZOGEN";
+        public static final String ABGELEHNT = "ABGELEHNT";
+        public static final String ANGENOMMEN = "ANGENOMMEN";
+        public static final String AKTIV = "AKTIV";
+        public static final String INAKTIV = "INAKTIV";
     }
 
 }
