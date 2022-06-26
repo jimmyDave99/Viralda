@@ -165,18 +165,16 @@ public class LandingPageStudentView extends Div {
         grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.addThemeVariants(GridVariant.LUMO_WRAP_CELL_CONTENT);
+        grid.setSelectionMode(Grid.SelectionMode.NONE);
 
         // Einstellungen zum Toggle
-        //grid.addColumn(createToggleDetailsRenderer(grid));
-        grid.setDetailsVisibleOnClick(false);
+        //grid.setDetailsVisibleOnClick(false); // entfernt toggle
         grid.setItemDetailsRenderer(
-                new ComponentRenderer<>(jobList -> {
+                new ComponentRenderer<>(stellenanzeigeDTO -> {
                     VerticalLayout layout = new VerticalLayout();
 
-                    StellenanzeigeDTO an = new StellenanzeigeDTOImpl();
-
-                    layout.add(new H4("Stellenbeschreibung"));
-                    layout.add(new Paragraph(an.getBeschreibung()));
+                    layout.add(new H4("Stellenbeschreibung:"));
+                    layout.add(new Paragraph(stellenanzeigeDTO.getBeschreibung()));
 
                     return layout;
                 })
@@ -185,10 +183,6 @@ public class LandingPageStudentView extends Div {
 
         return grid;
     }
-
-    /* ToDo: verschieben in Toggle
-        grid.addColumn(StellenanzeigeDTO::getBeschreibung)
-            .setHeader("Beschreibung der Stelle").setWidth("450px").setFlexGrow(0);
 
     /*private static Renderer<StellenanzeigeDTO> createToggleDetailsRenderer(Grid<StellenanzeigeDTO> grid) {
         return LitRenderer.<StellenanzeigeDTO>of("<vaadin-button theme=\"tertiary\" @click=\"${handleClick}\">Toggle details</vaadin-button>").with
