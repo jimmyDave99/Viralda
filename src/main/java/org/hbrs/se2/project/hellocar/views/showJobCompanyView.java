@@ -96,6 +96,18 @@ public class showJobCompanyView extends Div {
                     return saveButton;
                 }).setWidth("150px").setFlexGrow(0);
 
+        createFilter(grid, dataProvider, idColumn, titleColumn);
+
+        grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
+        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+        grid.addThemeVariants(GridVariant.LUMO_WRAP_CELL_CONTENT);
+
+         return grid;
+    }
+
+     static void createFilter( Grid<StellenanzeigeDTO> grid, ListDataProvider<StellenanzeigeDTO> dataProvider,
+                               Grid.Column<StellenanzeigeDTO> firstColumn, Grid.Column<StellenanzeigeDTO> secondColumn)
+     {
         HeaderRow filterRow = grid.appendHeaderRow();
 
         // filter
@@ -106,7 +118,7 @@ public class showJobCompanyView extends Div {
 
         titleField.setValueChangeMode(ValueChangeMode.EAGER);
 
-        filterRow.getCell(titleColumn).setComponent(titleField);
+        filterRow.getCell(secondColumn).setComponent(titleField);
         titleField.setSizeFull();
         titleField.setPlaceholder("Filter");
 
@@ -118,15 +130,9 @@ public class showJobCompanyView extends Div {
 
         idField.setValueChangeMode(ValueChangeMode.EAGER);
 
-        filterRow.getCell(idColumn).setComponent(idField);
+        filterRow.getCell(firstColumn).setComponent(idField);
         idField.setSizeFull();
         idField.setPlaceholder("Filter");
-
-        grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
-        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
-        grid.addThemeVariants(GridVariant.LUMO_WRAP_CELL_CONTENT);
-
-         return grid;
     }
 
     private Component createTitle() { return new H2("Meine Stellenanzeigen"); }

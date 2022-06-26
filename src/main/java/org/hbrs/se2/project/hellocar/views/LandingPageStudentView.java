@@ -6,19 +6,17 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
-import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.*;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ListDataProvider;
-import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.*;
-import org.apache.commons.lang3.StringUtils;
 import org.hbrs.se2.project.hellocar.control.JobControl;
 import org.hbrs.se2.project.hellocar.dtos.StellenanzeigeDTO;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
 import org.hbrs.se2.project.hellocar.util.Globals;
 
 import java.util.List;
+
+import static org.hbrs.se2.project.hellocar.views.showJobCompanyView.createFilter;
 
 /**
  * The LandingPageStudent is the home page for users with the role = "Student".
@@ -85,31 +83,7 @@ public class LandingPageStudentView extends Div {
                     return saveButton;
                 }).setWidth("150px").setFlexGrow(0);
 
-        HeaderRow filterRow = grid.appendHeaderRow();
-
-        // First filter
-        TextField titleField = new TextField();
-        titleField.addValueChangeListener(event -> dataProvider.addFilter(
-                job -> StringUtils.containsIgnoreCase(job.getTitel(),
-                        titleField.getValue())));
-
-        titleField.setValueChangeMode(ValueChangeMode.EAGER);
-
-        filterRow.getCell(titleColumn).setComponent(titleField);
-        titleField.setSizeFull();
-        titleField.setPlaceholder("Filter");
-
-        // Second filter
-        TextField salaryField = new TextField();
-        salaryField.addValueChangeListener(event -> dataProvider
-                .addFilter(job -> StringUtils.containsIgnoreCase(
-                        String.valueOf(job.getGehalt()), salaryField.getValue())));
-
-        salaryField.setValueChangeMode(ValueChangeMode.EAGER);
-
-        filterRow.getCell(salaryColumn).setComponent(salaryField);
-        salaryField.setSizeFull();
-        salaryField.setPlaceholder("Filter");
+        createFilter(grid, dataProvider, salaryColumn, titleColumn);
 
         grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
