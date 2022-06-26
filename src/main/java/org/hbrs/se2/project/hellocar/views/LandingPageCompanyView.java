@@ -125,11 +125,11 @@ public class LandingPageCompanyView extends Div {
         }
     }
 
-    private Component createTitle() { return new H2("Bewerbungen Von Studenten"); }
+    private Component createTitle() { return new H2("Bewerbungen von Studenten"); }
 
     private UserDTO getCurrentUser() {
         return (UserDTO) UI.getCurrent().getSession().getAttribute(Globals.CURRENT_USER);
     }
 
-    private Component NotJobFound() { return new H4("   keine Bewerbungen eingegangen"); }
+    private Component NotJobFound() { return new H4("Leider wurden keine Bewerbungen von Studenten gefunden.\nVermutlich wurde sich noch nicht auf eine Stelle beworben."); }
 }

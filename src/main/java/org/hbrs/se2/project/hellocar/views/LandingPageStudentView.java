@@ -39,8 +39,7 @@ import static org.hbrs.se2.project.hellocar.views.showJobCompanyView.createFilte
 public class LandingPageStudentView extends Div {
 
     protected static volatile int jobId = 0;
-    // ToDo: aldanative Datumsformate
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy");
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
 
     private List<StellenanzeigeDTO> jobList;
 
@@ -205,5 +204,5 @@ public class LandingPageStudentView extends Div {
         UI.getCurrent().navigate(Globals.Pages.JOB_APPLICATION_VIEW + jobId);
     }
 
-    private Component NotJobFound() { return new H4("   keine Stellenanzeigen gefunden"); }
+    private Component NotJobFound() { return new H4("Es wurden leider keine Stellenanzeigen gefunden."); }
 }
