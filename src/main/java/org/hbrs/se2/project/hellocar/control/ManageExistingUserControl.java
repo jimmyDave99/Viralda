@@ -23,7 +23,7 @@ public class ManageExistingUserControl {
     }
 
     public boolean updateUserPassword(UserDTO userDTO, String oldPassword, String email) throws DatabaseLayerException,
-            NoSuchAlgorithmException, InvalidKeySpecException {
+            NoSuchAlgorithmException, InvalidKeySpecException, RuntimeException {
 
         if(userDTO == null){
             throw new RuntimeException("DTO ist null!");
@@ -34,7 +34,7 @@ public class ManageExistingUserControl {
         else if(userDTO.getPassword().equals("") || userDTO.getPassword() == null)
             throw new DatabaseLayerException("Passwort konnte nicht übertragen werden.");
         else {
-            userDAO.updateUserPasswordByEmail(email, hashPassword(userDTO.getPassword()));
+            userDAO.updateUserPasswordByEmail(email, RegistrationControl.hashPassword(userDTO.getPassword()));
             return true;
         }
     }
