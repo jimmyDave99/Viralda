@@ -16,6 +16,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hbrs.se2.project.hellocar.util.Globals.Errors.PROBLEM;
+
 public class StellenAnzeigeDAO {
 
     /**
@@ -35,7 +37,7 @@ public class StellenAnzeigeDAO {
             return getStellenanzeigeDTOS(list, statement);
 
         } catch (SQLException ex) {
-            DatabaseLayerException e = new DatabaseLayerException("Probleme mit der Datenbank");
+            DatabaseLayerException e = new DatabaseLayerException(PROBLEM);
             e.setReason(Globals.Errors.DATABASE);
             throw e;
         }
@@ -75,7 +77,7 @@ public class StellenAnzeigeDAO {
             return list;
 
         } catch (SQLException ex) {
-            DatabaseLayerException e = new DatabaseLayerException("Probleme mit der Datenbank");
+            DatabaseLayerException e = new DatabaseLayerException(PROBLEM);
             e.setReason(Globals.Errors.DATABASE);
             throw e;
         }
@@ -107,7 +109,7 @@ public class StellenAnzeigeDAO {
 
             statement.executeUpdate();
         } catch (SQLException ex) {
-            DatabaseLayerException e = new DatabaseLayerException("Probleme mit der Datenbank");
+            DatabaseLayerException e = new DatabaseLayerException(PROBLEM);
             e.setReason(Globals.Errors.DATABASE);
             throw e;
         }
@@ -130,7 +132,7 @@ public class StellenAnzeigeDAO {
             return getStellenanzeigeDTOS(list, statement);
 
         }catch (SQLException ex) {
-            DatabaseLayerException e = new DatabaseLayerException("Probleme mit der Datenbank");
+            DatabaseLayerException e = new DatabaseLayerException(PROBLEM);
             e.setReason(Globals.Errors.DATABASE);
             throw e;
         }
@@ -159,7 +161,7 @@ public class StellenAnzeigeDAO {
             statement.executeUpdate();
 
         } catch (SQLException ex) {
-            DatabaseLayerException e = new DatabaseLayerException("Probleme mit der Datenbank");
+            DatabaseLayerException e = new DatabaseLayerException(PROBLEM);
             e.setReason(Globals.Errors.DATABASE);
             throw e;
         }
@@ -185,8 +187,10 @@ public class StellenAnzeigeDAO {
             statement.executeUpdate();
 
 
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException ex) {
+            DatabaseLayerException e = new DatabaseLayerException(PROBLEM);
+            e.setReason(Globals.Errors.DATABASE);
+            throw e;
         }
     }
 
@@ -210,8 +214,10 @@ public class StellenAnzeigeDAO {
             statement.executeUpdate();
 
 
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException ex) {
+            DatabaseLayerException e = new DatabaseLayerException(PROBLEM);
+            e.setReason(Globals.Errors.DATABASE);
+            throw e;
         }
     }
 
