@@ -252,8 +252,10 @@ public class UserDAO {
             statement.setInt(2, userId);
             statement.executeUpdate();
 
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException ex) {
+            DatabaseLayerException e = new DatabaseLayerException(PROBLEM);
+            e.setReason(Globals.Errors.DATABASE);
+            throw e;
         }
     }
 

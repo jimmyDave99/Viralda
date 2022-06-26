@@ -6,6 +6,7 @@ import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerExcepti
 import org.springframework.stereotype.Component;
 
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 import static org.hbrs.se2.project.hellocar.control.RegistrationControl.hashPassword;
 
@@ -22,7 +23,7 @@ public class ManageExistingUserControl {
     }
 
     public boolean updateUserPassword(UserDTO userDTO, String oldPassword, String email) throws DatabaseLayerException,
-                NoSuchAlgorithmException {
+            NoSuchAlgorithmException, InvalidKeySpecException {
 
         if(userDTO == null){
             throw new RuntimeException("DTO ist null!");

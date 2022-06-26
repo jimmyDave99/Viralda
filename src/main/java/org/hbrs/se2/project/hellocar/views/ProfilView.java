@@ -27,6 +27,7 @@ import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerExcepti
 import org.hbrs.se2.project.hellocar.util.Globals;
 
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 @Route(value = Globals.Pages.PROFIL_VIEW, layout = AppView.class)
 @PageTitle("Profil")
@@ -445,7 +446,7 @@ public class ProfilView extends Div {
                     else Notification.show("Änderungen konnten nicht gespeichert werden.");
                 } else Notification.show("Änderungen konnten nicht gespeichert werden.");
 
-            } catch (DatabaseLayerException | NoSuchAlgorithmException | ValidationException e) {
+            } catch (DatabaseLayerException | NoSuchAlgorithmException | ValidationException | InvalidKeySpecException e) {
                 e.printStackTrace();
             }
 
