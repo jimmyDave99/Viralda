@@ -1,6 +1,7 @@
 package org.hbrs.se2.project.hellocar.views;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -8,16 +9,20 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ListDataProvider;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.*;
 import org.apache.commons.lang3.StringUtils;
 import org.hbrs.se2.project.hellocar.control.JobApplicationControl;
 import org.hbrs.se2.project.hellocar.dtos.StellenanzeigeDTO;
+import org.hbrs.se2.project.hellocar.dtos.impl.StellenanzeigeDTOImpl;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
 import org.hbrs.se2.project.hellocar.util.Globals;
 
+import javax.swing.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -37,13 +42,16 @@ public class LandingPageStudentView extends Div {
 
     private List<StellenanzeigeDTO> jobList;
 
+    private Component createTitle() {
+        return new H2("Stellenanzeigen");
+    }
+
     public LandingPageStudentView(JobApplicationControl jobApplicationControl) throws DatabaseLayerException {
         addClassName("landing-page");
 
         jobList = jobApplicationControl.readAllJobApplications();
 
         add(createTitle());
-
         add(createGridTable());
     }
 
@@ -66,9 +74,6 @@ public class LandingPageStudentView extends Div {
         Grid.Column<StellenanzeigeDTO> titleColumn = grid
                 .addColumn(StellenanzeigeDTO::getTitel)
                 .setHeader("Titel");
-
-        grid.addColumn(StellenanzeigeDTO::getBeschreibung)
-                .setHeader("Beschreibung der Stelle").setWidth("450px").setFlexGrow(0);
 
         Grid.Column<StellenanzeigeDTO> dateOfDeploymentColumn = grid
                 .addColumn(StellenanzeigeDTO::getEinstellungsdatum)
@@ -161,12 +166,33 @@ public class LandingPageStudentView extends Div {
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.addThemeVariants(GridVariant.LUMO_WRAP_CELL_CONTENT);
 
+        // Einstellungen zum Toggle
+        //grid.addColumn(createToggleDetailsRenderer(grid));
+        grid.setDetailsVisibleOnClick(false);
+        grid.setItemDetailsRenderer(
+                new ComponentRenderer<>(jobList -> {
+                    VerticalLayout layout = new VerticalLayout();
+
+                    StellenanzeigeDTO an = new StellenanzeigeDTOImpl();
+
+                    layout.add(new H4("Stellenbeschreibung"));
+                    layout.add(new Paragraph(an.getBeschreibung()));
+
+                    return layout;
+                })
+        );
+        //grid.setItemDetailsRenderer(createGridDetailsRenderer());
+
         return grid;
     }
 
-    private Component createTitle() {
-        return new H2("Stellenanzeigen");
-    }
+    /* ToDo: verschieben in Toggle
+        grid.addColumn(StellenanzeigeDTO::getBeschreibung)
+            .setHeader("Beschreibung der Stelle").setWidth("450px").setFlexGrow(0);
+
+    /*private static Renderer<StellenanzeigeDTO> createToggleDetailsRenderer(Grid<StellenanzeigeDTO> grid) {
+        return LitRenderer.<StellenanzeigeDTO>of("<vaadin-button theme=\"tertiary\" @click=\"${handleClick}\">Toggle details</vaadin-button>").with
+    }*/
 
     private void navigateToJobApplicationView(int jobId) {
         UI.getCurrent().navigate(Globals.Pages.JOB_APPLICATION_VIEW + jobId);
