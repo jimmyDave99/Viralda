@@ -6,6 +6,8 @@ import java.awt.image.BufferedImage;
 import java.time.LocalDate;
 import java.util.Date;
 
+import static org.hbrs.se2.project.hellocar.util.Globals.Roles.UNTERNEHMEN;
+
 public class UserBuilder {
 
     private UserDTOImpl userDTO = null;
@@ -137,6 +139,18 @@ public class UserBuilder {
 
     public UserBuilder withDescription( String description ) {
         this.userDTO.setDescription(description);
+        return this;
+    }
+
+    public UserBuilder createDefaultUserCompany() {
+        userDTO = new UserDTOImpl();
+        this.userDTO.setRole(UNTERNEHMEN);
+        this.userDTO.setEmail("viralda@company.de");
+        this.userDTO.setCompanyName("viralda");
+        this.userDTO.setBranche("IT");
+        this.userDTO.setPassword("2A3Ene3vf");
+        this.userDTO.setConfirmPassword("2A3Ene3vf");
+        this.userDTO.setUnternehmenId(82);
         return this;
     }
 

@@ -17,24 +17,28 @@ public class JobControl {
         return stellenAnzeigeDAO.findAllJobs();
     }
 
-    public void createStellenanzeige(StellenanzeigeDTO stellenanzeigeDTO, UserDTO userDTO) throws DatabaseLayerException {
+    public boolean createStellenanzeige(StellenanzeigeDTO stellenanzeigeDTO, UserDTO userDTO) throws DatabaseLayerException {
         stellenAnzeigeDAO.insertStellenanzeige(stellenanzeigeDTO, userDTO);
+        return true;
     }
 
     public List<StellenanzeigeDTO> readCurrentCompanyJob(UserDTO userDTO) throws DatabaseLayerException {
         return stellenAnzeigeDAO.findCurrentCompanyJob(userDTO);
     }
 
-    public void updateAnnouncement(StellenanzeigeDTO stellenanzeigeDTO) throws DatabaseLayerException {
+    public boolean updateAnnouncement(StellenanzeigeDTO stellenanzeigeDTO) throws DatabaseLayerException {
         stellenAnzeigeDAO.updateCompanyJob(stellenanzeigeDTO);
+        return true;
     }
 
-    public void updateJobStatus(StellenanzeigeDTO stellenanzeigeDTO, String status) throws DatabaseLayerException {
+    public boolean updateJobStatus(StellenanzeigeDTO stellenanzeigeDTO, String status) throws DatabaseLayerException {
         stellenAnzeigeDAO.updateJobStatus(stellenanzeigeDTO, status);
+        return true;
     }
 
-    public void deleteAnnouncement(StellenanzeigeDTO stellenanzeigeDTO) throws DatabaseLayerException {
+    public boolean deleteAnnouncement(StellenanzeigeDTO stellenanzeigeDTO) throws DatabaseLayerException {
         stellenAnzeigeDAO.deleteJob(stellenanzeigeDTO);
+        return true;
     }
 
     public List<StellenanzeigeDTO> findJob(int jobId) throws DatabaseLayerException {

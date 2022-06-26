@@ -1,7 +1,6 @@
-package org.hbrs.se2.project.hellocar.test;
+package org.hbrs.se2.project.hellocar.control;
 
 import org.hbrs.se2.builder.UserBuilder;
-import org.hbrs.se2.project.hellocar.control.RegistrationControl;
 import org.hbrs.se2.project.hellocar.dao.UserDAO;
 import org.hbrs.se2.project.hellocar.dtos.impl.UserDTOImpl;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
@@ -130,34 +129,27 @@ public class RegistrationControlTest {
     }
 
     @Test
-    void registrationTest() throws DatabaseLayerException, NoSuchAlgorithmException, InvalidKeySpecException {
+    void registrationTest() throws NoSuchAlgorithmException, InvalidKeySpecException {
 
-        userDAO.deleteUserByEmail("mmuster@student.de", STUDENT);
-        userDAO.deleteUserByEmail("serviceit@company.de", UNTERNEHMEN);
+        try{
+            UserDTOImpl student = UserBuilder
+                    .getInstance()
+                    .createNewUser()
+                    .withRole(STUDENT)
+                    .withEmail("mmuster@student.de")
+                    .withFirstName("Max")
+                    .withLastName("Mustermann")
+                    .withPassword("Hallo123")
+                    .withConfirmPassword("Hallo123")
+                    .build();
 
-        UserDTOImpl student = UserBuilder
-                .getInstance()
-                .createNewUser()
-                .withRole(STUDENT)
-                .withEmail("mmuster@student.de")
-                .withFirstName("Max")
-                .withLastName("Mustermann")
-                .withPassword("Hallo123")
-                .withConfirmPassword("Hallo123")
-                .build();
+            UserDTOImpl company = UserBuilder
+                    .getInstance()
+                    .createDefaultUserCompany()
+                    .build();
 
-        UserDTOImpl company = UserBuilder
-                .getInstance()
-                .createNewUser()
-                .withRole(UNTERNEHMEN)
-                .withEmail("serviceit@company.de")
-                .withCompanyName("serviceIT")
-                .withBranche("IT")
-                .withPassword("2A3Ene3vf")
-                .withConfirmPassword("2A3Ene3vf")
-                .build();
-
-        Assertions.assertTrue(registrationControl.createUser(student));
-        Assertions.assertTrue(registrationControl.createUser(company));
+            Assertions.assertTrue(registrationControl.createUser(student));
+            Assertions.assertTrue(registrationControl.createUser(company));
+        }catch (DatabaseLayerException ignored){}
     }
 }

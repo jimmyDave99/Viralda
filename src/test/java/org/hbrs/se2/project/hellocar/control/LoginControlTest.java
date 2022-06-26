@@ -1,9 +1,6 @@
-package org.hbrs.se2.project.hellocar.test;
+package org.hbrs.se2.project.hellocar.control;
 
-import org.hbrs.se2.project.hellocar.control.LoginControl;
 import org.hbrs.se2.project.hellocar.control.exception.DatabaseUserException;
-import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
-import org.hbrs.se2.project.hellocar.util.Globals;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
