@@ -35,11 +35,12 @@ import static org.hbrs.se2.project.hellocar.util.Globals.Pages.JOB_COMPANY_VIEW;
 @Route(value = JOB_COMPANY_VIEW, layout = AppView.class)
 @PageTitle("Stellenanzeige des eigenen Unternehmens bearbeiten")
 @CssImport("./styles/views/showjobsfromcompany/show-jobs-from-company-view.css")
-public class JobCompanyView extends VerticalLayout implements HasUrlParameter<String>{
+public class JobCompanyView extends VerticalLayout implements HasUrlParameter<String> {
 
     LocalDate now = LocalDate.now();
 
     int jobId = 0;
+
     @Override
     public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
         Location location = event.getLocation();
@@ -240,7 +241,9 @@ public class JobCompanyView extends VerticalLayout implements HasUrlParameter<St
         add(buttonLayout);
     }
 
-    private Component createTitle(String title) { return new H2("Stelle " + title); }
+    private Component createTitle(String title) {
+        return new H2("Stelle " + title);
+    }
 
     private void navigateToshowJobCompanyView() {
         UI.getCurrent().navigate(Globals.Pages.SHOW_JOB_COMPANY_VIEW);
