@@ -91,6 +91,7 @@ public class ProfilView extends Div {
         companyName = new TextField("Unternehmensname");
         email = new EmailField("E-Mail-Adresse");
         role = new TextField("Rolle");
+        branch = new TextField("Branche");
         description = new TextArea("Beschreibung");
     }
 
@@ -335,13 +336,17 @@ public class ProfilView extends Div {
         role.setValue(getCurrentUser().getRole());
         role.setReadOnly(true);
 
+        if(getCurrentUser().getBranche() == null) description.setPlaceholder("Chemie");
+        else branch.setValue(getCurrentUser().getBranche());
+        branch.setReadOnly(true);
+
         if(getCurrentUser().getDescription() == null) description.setPlaceholder("Beschreibe dein Unternehmen.");
         else description.setValue(getCurrentUser().getDescription());
         description.setReadOnly(true);
 
         FormLayout formLayout = new FormLayout();
 
-        formLayout.add(companyName, email,
+        formLayout.add(companyName, email, branch,
                 role, description);
 
         return formLayout;
@@ -387,12 +392,15 @@ public class ProfilView extends Div {
         if(getCurrentUser().getDescription() == null) description.setPlaceholder("Beschreibe dein Unternehmen");
         else description.setValue(getCurrentUser().getDescription());
 
+        if(getCurrentUser().getBranche() == null) description.setPlaceholder("Chemie");
+        else branch.setValue(getCurrentUser().getBranche());
+
         role.setValue(getCurrentUser().getRole());
         role.setReadOnly(true);
 
         FormLayout formLayout = new FormLayout();
 
-        formLayout.add(companyName, email,
+        formLayout.add(companyName, email, branch,
                 role, description);
 
         return formLayout;
@@ -431,8 +439,8 @@ public class ProfilView extends Div {
                     binderBindPassword();
                     boolean isOK = userService.updateUserPassword(binder.getBean(), oldPassword.getValue(), getCurrentUser().getEmail());
                     if(isOK) {
-                        Notification.show("Änderungen erfolgreich gespeichert.");
                         navigateToSubBarSecuritySettingsWithSaving();
+                        Notification.show("Änderungen erfolgreich gespeichert.");
                     }
                     else Notification.show("Änderungen konnten nicht gespeichert werden.");
                 } else Notification.show("Änderungen konnten nicht gespeichert werden.");
@@ -442,7 +450,6 @@ public class ProfilView extends Div {
             }
 
         });
-
         return buttonLayout;
     }
 
@@ -535,6 +542,8 @@ public class ProfilView extends Div {
                 .bind(UserDTOImpl::getRole, UserDTOImpl::setRole);
         binder.forField(description)
                 .bind(UserDTOImpl::getDescription, UserDTOImpl::setDescription);
+        binder.forField(email)
+                .bind(UserDTOImpl::getEmail, UserDTOImpl::setEmail);
         binder.forField(companyName)
                 .bind(UserDTOImpl::getCompanyName, UserDTOImpl::setCompanyName);
         binder.forField(branch)
