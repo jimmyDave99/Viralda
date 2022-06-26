@@ -4,6 +4,7 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -36,7 +37,6 @@ public class ProfilView extends Div {
 
     private final Tab profile;
     private final Tab securitySettings;
-    private final Tab notifications;
 
     private final VerticalLayout content;
 
@@ -124,17 +124,12 @@ public class ProfilView extends Div {
                 new Span("Sicherheitseinstellungen")
         );
 
-        notifications = new Tab(
-                VaadinIcon.BELL.create(),
-                new Span("Benachrichtigungen")
-        );
-
         // Set the icon on top
-        for (Tab tab : new Tab[]{profile, securitySettings, notifications}) {
+        for (Tab tab : new Tab[]{profile, securitySettings}) {
             tab.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
         }
 
-        Tabs tabs = new Tabs(profile, securitySettings, notifications);
+        Tabs tabs = new Tabs(profile, securitySettings);
 
         tabs.addSelectedChangeListener(event -> setContent(event.getSelectedTab()));
 
@@ -182,10 +177,6 @@ public class ProfilView extends Div {
             content.add(createButtonLayoutTabSecuritySettings());
             content.add(createFormLayoutChangePassword());
 
-        } else if (tab.equals(notifications)) {
-            content.add(new Paragraph("Du hast keine neuen Benachrichtigungen!"));
-            content.add(new Text("Möchtest du dich nicht bewerben um das zu ändern?"));
-            content.add(new Text(" Besser wäre es."));
         }
     }
 
@@ -197,6 +188,7 @@ public class ProfilView extends Div {
         HorizontalLayout buttonLayout = new HorizontalLayout();
 
         buttonLayout.add(editProfil);
+        editProfil.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         editProfil.addClickListener(event -> navigateToSubBarEditStudentAttributes());
 
         return buttonLayout;
@@ -260,7 +252,9 @@ public class ProfilView extends Div {
         HorizontalLayout buttonLayout = new HorizontalLayout();
 
         buttonLayout.add(save);
+        save.addThemeVariants(ButtonVariant.LUMO_SUCCESS, ButtonVariant.LUMO_PRIMARY);
         buttonLayout.add(cancel);
+        cancel.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
 
         save.addClickListener(event -> {
             if(binder.validate().isOk()){
@@ -320,6 +314,7 @@ public class ProfilView extends Div {
         HorizontalLayout buttonLayout = new HorizontalLayout();
 
         buttonLayout.add(editProfil);
+        editProfil.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         editProfil.addClickListener(event -> navigateToSubBarEditCompanyAttributes());
 
         return buttonLayout;
@@ -361,7 +356,9 @@ public class ProfilView extends Div {
         HorizontalLayout buttonLayout = new HorizontalLayout();
 
         buttonLayout.add(save);
+        save.addThemeVariants(ButtonVariant.LUMO_SUCCESS, ButtonVariant.LUMO_PRIMARY);
         buttonLayout.add(cancel);
+        cancel.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
 
         save.addClickListener(event -> {
             if(binder.validate().isOk()){
