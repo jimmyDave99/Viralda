@@ -150,6 +150,7 @@ public class UserBuilder {
         this.userDTO.setBranche("IT");
         this.userDTO.setPassword("2A3Ene3vf");
         this.userDTO.setConfirmPassword("2A3Ene3vf");
+        this.userDTO.setDescription("...");
         this.userDTO.setUnternehmenId(82);
         return this;
     }
