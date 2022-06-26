@@ -31,7 +31,7 @@ import static org.hbrs.se2.project.hellocar.util.Globals.JobStatus.*;
 import static org.hbrs.se2.project.hellocar.util.Globals.Pages.JOB_COMPANY_VIEW;
 
 @Route(value = JOB_COMPANY_VIEW, layout = AppView.class)
-@PageTitle("Stellenanzeige")
+@PageTitle("Stellenanzeigen des eigenen Unternehmens")
 @CssImport("./styles/views/showjobsfromcompany/show-jobs-from-company-view.css")
 public class JobCompanyView extends VerticalLayout implements HasUrlParameter<String>{
 
@@ -68,6 +68,7 @@ public class JobCompanyView extends VerticalLayout implements HasUrlParameter<St
         });
 
         Button retrieveButton = new Button("Zurückziehen");
+        retrieveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         retrieveButton.addClickListener(event -> {
             try {
                 jobControl.updateJobStatus(currentJob.get(0), INAKTIV);
@@ -80,7 +81,7 @@ public class JobCompanyView extends VerticalLayout implements HasUrlParameter<St
         });
 
         Button deleteButton = new Button("Löschen");
-        deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
         deleteButton.addClickListener(e -> {
             navigateToshowJobCompanyView();
             try {
@@ -88,6 +89,11 @@ public class JobCompanyView extends VerticalLayout implements HasUrlParameter<St
             } catch (DatabaseLayerException ex) {
                 ex.printStackTrace();
             }
+        });
+
+        Button cancelButton = new Button("Abbrechen");
+        cancelButton.addClickListener(event -> {
+            UI.getCurrent().navigate(Globals.Pages.SHOW_JOB_COMPANY_VIEW);
         });
 
         Grid<StellenanzeigeDTO> grid = new Grid<>();
@@ -123,7 +129,8 @@ public class JobCompanyView extends VerticalLayout implements HasUrlParameter<St
                 .setHeader("Status");
 
         Grid.Column<StellenanzeigeDTO> editColumn = grid.addComponentColumn(job -> {
-            Button editButton = new Button("Edit");
+            Button editButton = new Button("Bearbeiten");
+            editButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
             editButton.addClickListener(e -> {
                 if (editor.isOpen())
                     editor.cancel();
@@ -180,7 +187,7 @@ public class JobCompanyView extends VerticalLayout implements HasUrlParameter<St
                 .bind(StellenanzeigeDTO::getWochenstunden, StellenanzeigeDTO::setWochenstunden);
         weeklyHoursColumn.setEditorComponent(weeklyHoursField);
 
-        Button saveButton = new Button("Save", e -> {
+        Button saveEditButton = new Button("Speichern", e -> {
             editor.save();
             try {
                 jobControl.updateAnnouncement(currentJob.get(0));
@@ -189,13 +196,14 @@ public class JobCompanyView extends VerticalLayout implements HasUrlParameter<St
             }
             UI.getCurrent().getPage().reload();
         });
+        saveEditButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-        Button cancelButton = new Button(VaadinIcon.CLOSE.create(),
+        Button cancelEditButton = new Button(VaadinIcon.CLOSE.create(),
                 e -> editor.cancel());
-        cancelButton.addThemeVariants(ButtonVariant.LUMO_ICON,
+        cancelEditButton.addThemeVariants(ButtonVariant.LUMO_ICON,
                 ButtonVariant.LUMO_ERROR);
-        HorizontalLayout actions = new HorizontalLayout(saveButton,
-                cancelButton);
+        HorizontalLayout actions = new HorizontalLayout(saveEditButton,
+                cancelEditButton);
         actions.setPadding(false);
         editColumn.setEditorComponent(actions);
 
@@ -206,7 +214,7 @@ public class JobCompanyView extends VerticalLayout implements HasUrlParameter<St
 
         add(grid);
 
-        HorizontalLayout buttonLayout = new HorizontalLayout(publishButton, retrieveButton, deleteButton);
+        HorizontalLayout buttonLayout = new HorizontalLayout(publishButton, retrieveButton, deleteButton, cancelButton);
         buttonLayout.setPadding(true);
         buttonLayout.addClassName("button-layout");
         add(buttonLayout);
