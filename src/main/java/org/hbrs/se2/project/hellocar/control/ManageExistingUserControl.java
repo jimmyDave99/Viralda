@@ -28,7 +28,7 @@ public class ManageExistingUserControl {
         if(userDTO == null){
             throw new RuntimeException("DTO ist null!");
         } else if(oldPassword.equals(userDTO.getPassword()))
-            throw new DatabaseLayerException("Neues Passwort entsprciht dem alten Passwort!");
+            throw new DatabaseLayerException("Neues Passwort entspricht dem alten Passwort!");
         else if(!userDTO.getPassword().equals(userDTO.getConfirmPassword()))
             throw new DatabaseLayerException("Neues Passwort und neues Passswort bestätigen stimmen nicht überein!");
         else if(userDTO.getPassword().equals("") || userDTO.getPassword() == null)
