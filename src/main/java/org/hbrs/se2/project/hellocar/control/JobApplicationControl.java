@@ -13,12 +13,14 @@ public class JobApplicationControl {
 
     BewerbungDAO bewerbungDAO = new BewerbungDAO();
 
-    public void createJobApplication(StellenanzeigeDTO stellenanzeigeDTO, UserDTO userDTO, String status) throws DatabaseLayerException {
+    public boolean createJobApplication(StellenanzeigeDTO stellenanzeigeDTO, UserDTO userDTO, String status) throws DatabaseLayerException {
         bewerbungDAO.insertOrUpdateJobApplication(stellenanzeigeDTO, userDTO, status);
+        return true;
     }
 
-    public void updateJobApplicationStatus(int stellenId, int studentId, String status) throws DatabaseLayerException {
+    public boolean updateJobApplicationStatus(int stellenId, int studentId, String status) throws DatabaseLayerException {
          bewerbungDAO.updateStatusByJobId(stellenId, studentId, status);
+         return true;
     }
 
     public String getJobStatus(StellenanzeigeDTO stellenanzeigeDTO , UserDTO userDTO) throws DatabaseLayerException {

@@ -22,11 +22,11 @@ class JobControlTest {
 
     private StellenAnzeigeDAO stellenAnzeigeDAO = null;
 
-    StellenanzeigeDTOImpl stellenanzeige = null;
+    private StellenanzeigeDTOImpl stellenanzeige = null;
 
-    StellenanzeigeDTOImpl stellenanzeigeUpdated = null;
+    private StellenanzeigeDTOImpl stellenanzeigeUpdated = null;
 
-    UserDTOImpl company = null;
+    private UserDTOImpl company = null;
 
     private final String TITLE = "Werkstudent (m/w/d)";
 
