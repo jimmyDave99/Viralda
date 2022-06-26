@@ -55,7 +55,6 @@ public class ProfilView extends Div {
     // student attributes
     private TextField firstName;
     private TextField lastName;
-    private DatePicker dateOfBirth;
     private TextField faculty;
     private IntegerField semester;
     private TextField specialization;
@@ -77,7 +76,6 @@ public class ProfilView extends Div {
         firstName = new TextField("Vorname");
         lastName = new TextField("Name");
         email = new EmailField("E-Mail-Adresse");
-        dateOfBirth = new DatePicker("Geburtsdatum");
         role = new TextField("Rolle");
         faculty = new TextField("Fakultät");
         semester = new IntegerField("Semester");
@@ -214,10 +212,6 @@ public class ProfilView extends Div {
         email.setValue(getCurrentUser().getEmail());
         email.setReadOnly(true);
 
-        if(getCurrentUser().getDateOfBirth() == null) dateOfBirth.setPlaceholder("'Platzhalter Geburtstag'");
-        else dateOfBirth.setValue(getCurrentUser().getDateOfBirth());
-        dateOfBirth.setReadOnly(true);
-
         if(getCurrentUser().getFaculty() == null) faculty.setPlaceholder("Z.B. Informatik");
         else faculty.setValue(getCurrentUser().getFaculty());
         faculty.setReadOnly(true);
@@ -244,7 +238,7 @@ public class ProfilView extends Div {
 
         formLayout.add(
                 firstName, lastName,
-                email, dateOfBirth,
+                email,
                 faculty, semester,
                 specialization, description,
                 role);
@@ -289,11 +283,6 @@ public class ProfilView extends Div {
         lastName.setValue(getCurrentUser().getLastName());
         email.setValue(getCurrentUser().getEmail());
         email.setReadOnly(true);
-        if(getCurrentUser().getDateOfBirth() == null){
-            dateOfBirth.setPlaceholder("'Platzhalter Geburtsdatum'");
-        } else {
-            dateOfBirth.setValue(getCurrentUser().getDateOfBirth());
-        }
         if(!(getCurrentUser().getFaculty() == null)) faculty.setValue(getCurrentUser().getFaculty());
         if(!(getCurrentUser().getSemester() == 0)) semester.setValue(getCurrentUser().getSemester());
         else semester.setValue(1);
@@ -306,7 +295,7 @@ public class ProfilView extends Div {
         FormLayout formLayout = new FormLayout();
 
         formLayout.add(firstName, lastName,
-                email, dateOfBirth,
+                email,
                 faculty, semester,
                 specialization, description,
                 role);
@@ -532,8 +521,6 @@ public class ProfilView extends Div {
                 .bind(UserDTOImpl::getLastName, UserDTOImpl::setLastName);
         binder.forField(email)
                 .bind(UserDTOImpl::getEmail, UserDTOImpl::setEmail);
-        binder.forField(dateOfBirth)
-                .bind(UserDTOImpl::getDateOfBirth, UserDTOImpl::setDateOfBirth);
         binder.forField(faculty)
                 .bind(UserDTOImpl::getFaculty, UserDTOImpl::setFaculty);
         binder.forField(semester)
