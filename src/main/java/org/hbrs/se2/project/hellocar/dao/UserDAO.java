@@ -46,7 +46,7 @@ public class UserDAO {
                 userDTO.setEmail(set.getString(2));
                 userDTO.setPassword(set.getString(3));
                 userDTO.setRole(set.getString(4));
-                userDTO.setDescription(set.getString(5));
+                userDTO.setDescription(set.getString(6));
 
                 if (userDTO.getRole().equals(STUDENT)) {
                     //Get Student
