@@ -45,6 +45,7 @@ public class UserDAO {
                 userDTO.setEmail(set.getString(2));
                 userDTO.setPassword(set.getString(3));
                 userDTO.setRole(set.getString(4));
+                userDTO.setDescription(set.getString(5));
 
                 if (userDTO.getRole().equals(STUDENT)) {
                     //Get Student
@@ -58,6 +59,9 @@ public class UserDAO {
                         userDTO.setStudentId(set.getInt(1));
                         userDTO.setFirstName(set.getString(3));
                         userDTO.setLastName(set.getString(4));
+                        userDTO.setFaculty(set.getString(5));
+                        userDTO.setSemester(set.getInt(6));
+                        userDTO.setSpecialization(set.getString(7));
                     }
                 } else if (userDTO.getRole().equals(UNTERNEHMEN)) {
                     //Get Unternehmen
@@ -187,9 +191,11 @@ public class UserDAO {
             PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement(
                     "UPDATE collathbrs.user " +
                             "SET email = ? " +
+                            ", beschreibung = ? " +
                             "WHERE id = ?");
             statement.setString(1, userDTO.getEmail());
-            statement.setInt(2, userId);
+            statement.setString(2, userDTO.getDescription());
+            statement.setInt(3, userId);
             statement.executeUpdate();
 
             //Update Student or Unternehmen
@@ -198,10 +204,16 @@ public class UserDAO {
                         "UPDATE collathbrs.student " +
                                 "SET vorname = ? " +
                                 ", nachname = ? " +
+                                ", fachbereich = ? " +
+                                ", semester = ? " +
+                                ", spezialisierung = ? " +
                                 "WHERE user_id = ?");
                 studentStatement.setString(1, userDTO.getFirstName());
                 studentStatement.setString(2, userDTO.getLastName());
-                studentStatement.setInt(3, userId);
+                studentStatement.setString(3, userDTO.getFaculty());
+                studentStatement.setInt(4, userDTO.getSemester());
+                studentStatement.setString(5, userDTO.getSpecialization());
+                studentStatement.setInt(6, userId);
                 studentStatement.executeUpdate();
             } else if (userDTO.getRole().equals(UNTERNEHMEN)) {
                 PreparedStatement unternehmenStatement = JDBCConnection.getInstance().getPreparedStatement(
