@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.validation.constraints.AssertTrue;
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 public class LoginControlTest {
     LoginControl  loginControl;
@@ -32,7 +32,7 @@ public class LoginControlTest {
     }
 
     @Test
-    void authentificateTest() throws DatabaseUserException, NoSuchAlgorithmException {
+    void authentificateTest() throws DatabaseUserException, NoSuchAlgorithmException, InvalidKeySpecException {
         // Bei Existierte username und passwort
         Assertions.assertTrue(loginControl.authentificate("mmuster@student.de","Hallo123"));
     }

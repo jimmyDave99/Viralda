@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 import static org.hbrs.se2.project.hellocar.util.Globals.Roles.STUDENT;
 import static org.hbrs.se2.project.hellocar.util.Globals.Roles.UNTERNEHMEN;
@@ -116,7 +117,7 @@ public class RegistrationControlTest {
                 .withEmail("brich@student.de")
                 .withFirstName("Bob")
                 .withLastName("Rich")
-                .withPassword("Hallo123")
+                .withPassword("Hallo153")
                 .withConfirmPassword("Hallo124")
                 .build();
 
@@ -129,10 +130,10 @@ public class RegistrationControlTest {
     }
 
     @Test
-    void registrationTest() throws DatabaseLayerException, NoSuchAlgorithmException {
+    void registrationTest() throws DatabaseLayerException, NoSuchAlgorithmException, InvalidKeySpecException {
 
         userDAO.deleteUserByEmail("mmuster@student.de", STUDENT);
-        userDAO.deleteUserByEmail("viralda@company.de", UNTERNEHMEN);
+        userDAO.deleteUserByEmail("serviceit@company.de", UNTERNEHMEN);
 
         UserDTOImpl student = UserBuilder
                 .getInstance()
@@ -149,11 +150,11 @@ public class RegistrationControlTest {
                 .getInstance()
                 .createNewUser()
                 .withRole(UNTERNEHMEN)
-                .withEmail("viralda@company.de")
-                .withCompanyName("Viralda")
+                .withEmail("serviceit@company.de")
+                .withCompanyName("serviceIT")
                 .withBranche("IT")
-                .withPassword("QA3Ene3vf")
-                .withConfirmPassword("QA3Ene3vf")
+                .withPassword("2A3Ene3vf")
+                .withConfirmPassword("2A3Ene3vf")
                 .build();
 
         Assertions.assertTrue(registrationControl.createUser(student));

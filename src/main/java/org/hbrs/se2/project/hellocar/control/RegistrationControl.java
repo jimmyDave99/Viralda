@@ -5,9 +5,10 @@ import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
 import org.springframework.stereotype.Component;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,7 +24,7 @@ public class RegistrationControl {
 
     private static final Pattern pattern = Pattern.compile(PATTERN);
 
-    public boolean createUser( UserDTO userDTO ) throws DatabaseLayerException, NoSuchAlgorithmException {
+    public boolean createUser( UserDTO userDTO ) throws DatabaseLayerException, NoSuchAlgorithmException, InvalidKeySpecException {
 
         if ( userDTO.getPassword() == null || userDTO.getPassword().equals("")) {
             throw new DatabaseLayerException("Password missing");
@@ -55,10 +56,16 @@ public class RegistrationControl {
         return matcher.matches();
     }
 
-    protected static String hashPassword(String password) throws NoSuchAlgorithmException {
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+    protected static String hashPassword(String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        int iterations = 1000;
+        char[] chars = password.toCharArray();
+        byte[] salt = new byte[16];
 
-        return bytesToHex(digest.digest(password.getBytes(StandardCharsets.UTF_8)));
+        PBEKeySpec spec = new PBEKeySpec(chars, salt, iterations, 64 * 8);
+        SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+
+        byte[] hash = skf.generateSecret(spec).getEncoded();
+        return iterations + "" + bytesToHex(salt) + "" + bytesToHex(hash);
     }
 
     private static String bytesToHex(byte[] hash) {
