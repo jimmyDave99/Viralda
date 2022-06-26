@@ -27,6 +27,7 @@ public class Globals {
         public static final String NOUSERFOUND = "nouser";
         public static final String SQLERROR = "sql";
         public static final String DATABASE = "database";
+        public static final String PROBLEM = "Fehler im SQL-Befehl!";
     }
 
     public static class JobStatus {
