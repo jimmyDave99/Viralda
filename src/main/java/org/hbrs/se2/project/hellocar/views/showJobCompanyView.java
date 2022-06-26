@@ -3,6 +3,7 @@ package org.hbrs.se2.project.hellocar.views;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
@@ -88,12 +89,13 @@ public class showJobCompanyView extends Div {
                 .setHeader("Status");
 
         grid.addComponentColumn(job -> {
-            Button saveButton = new Button("Bearbeiten");
-            saveButton.addClickListener(e -> {
+            Button editButton = new Button("Bearbeiten");
+            editButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+            editButton.addClickListener(e -> {
                 jobId = job.getStellenId();
                 navigateToJobApplicationView(jobId);
             });
-            return saveButton;
+            return editButton;
         }).setWidth("150px").setFlexGrow(0);
 
         createFilter(grid, dataProvider, idColumn, titleColumn);
