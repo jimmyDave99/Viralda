@@ -2,7 +2,6 @@ package org.hbrs.se2.project.hellocar.control;
 
 import org.hbrs.se2.builder.UserBuilder;
 import org.hbrs.se2.project.hellocar.dao.UserDAO;
-import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 import org.hbrs.se2.project.hellocar.dtos.impl.UserDTOImpl;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
 import org.junit.jupiter.api.Assertions;
@@ -13,147 +12,124 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
 import static org.hbrs.se2.project.hellocar.util.Globals.Roles.STUDENT;
-import static org.hbrs.se2.project.hellocar.util.Globals.Roles.UNTERNEHMEN;
 
+public class ManageExistingUserControlTest {
 
-class ManageExistingUserControlTest {
-
-    private ManageExistingUserControl manageExistingUserControl = null;
-
-    private RegistrationControl registrationControl = null;
-
-    private LoginControl loginControl = null;
-
+    private ManageExistingUserControl existingUserControl = null;
     private UserDAO userDAO = null;
-
-    private UserDTOImpl student = null;
-
-    private final String NEW_FIRSTNAME = "John";
-
-    private final String NEW_LASTNAME = "Doe";
-
-    private final String NEW_FACULTY = "Informatik";
-
-    private final int NEW_SEMESTER = 4;
-
-    private final String NEW_SPECIALIZATION = "Data Science";
-
-    private final String EMAIL = "mmuster@student.de";
-
-    private final String DESCRIPTION = "...";
-
-    private final String SECRET = "Hallo123";
+    private String email1 = null;
+    private String s1 = null;
 
     @BeforeEach
     public void init(){
-
-        manageExistingUserControl = new ManageExistingUserControl();
-
-        registrationControl = new RegistrationControl();
-
-        loginControl = new LoginControl();
-
+        existingUserControl = new ManageExistingUserControl();
         userDAO = new UserDAO();
-
-        student = UserBuilder
-                .getInstance()
-                .createNewUser()
-                .withEmail(EMAIL)
-                .withDescription(DESCRIPTION)
-                .withRole(STUDENT)
-                .withFirstName(NEW_FIRSTNAME)
-                .withLastName(NEW_LASTNAME)
-                .withFaculty(NEW_FACULTY)
-                .withSemester(NEW_SEMESTER)
-                .withSpecialization(NEW_SPECIALIZATION)
-                .withPassword(SECRET)
-                .build();
-
-
+        email1 = "test@student.com";
+        s1 = "Hallo123";
     }
 
     @Test
-    void updateUserPassword()  {
-
-        DatabaseLayerException thrown = Assertions.assertThrows(
-                DatabaseLayerException.class,
-                () -> manageExistingUserControl.updateUserPassword(student, SECRET, EMAIL)
+    void userDTOisNullThrowsRuntimeExceptionTest(){
+        RuntimeException thrown = Assertions.assertThrows(RuntimeException.class,
+                () -> existingUserControl.updateUserPassword(null, s1, email1)
         );
 
-        Assertions.assertEquals("Neues Passwort entsprciht dem alten Passwort!", thrown.getReason());
+        Assertions.assertEquals("DTO ist null!", thrown.getMessage());
     }
 
     @Test
-    void updateUserStudentTest() throws DatabaseLayerException, NoSuchAlgorithmException, InvalidKeySpecException {
-
-        Assertions.assertTrue(manageExistingUserControl.updateUser(student));
-
-        UserDTO user = userDAO.findUserByUserEmailAndPassword(EMAIL, RegistrationControl.hashPassword(SECRET));
-
-        Assertions.assertEquals(EMAIL, user.getEmail());
-        Assertions.assertEquals(STUDENT, user.getRole());
-        Assertions.assertEquals(DESCRIPTION, user.getDescription());
-        Assertions.assertEquals(NEW_FIRSTNAME, user.getFirstName());
-        Assertions.assertEquals(NEW_LASTNAME, user.getLastName());
-        Assertions.assertEquals(NEW_FACULTY, user.getFaculty());
-        Assertions.assertEquals(NEW_SEMESTER, user.getSemester());
-        Assertions.assertEquals(NEW_SPECIALIZATION, user.getSpecialization());
-    }
-
-    @Test
-    void updateUserCompanyTest() throws DatabaseLayerException, NoSuchAlgorithmException, InvalidKeySpecException {
-
-        UserDTOImpl company = UserBuilder
-                .getInstance()
-                .createDefaultUserCompany()
-                .build();
-
-        Assertions.assertTrue(manageExistingUserControl.updateUser(company));
-
-        UserDTO user = userDAO.findUserByUserEmailAndPassword(company.getEmail(), RegistrationControl.hashPassword(company.getPassword()));
-
-        Assertions.assertEquals(company.getEmail(), user.getEmail());
-        Assertions.assertEquals(company.getRole(), user.getRole());
-        Assertions.assertEquals(company.getDescription(), user.getDescription());
-        Assertions.assertEquals(company.getBranche(), user.getBranche());
-        Assertions.assertEquals(company.getCompanyName(), user.getCompanyName());
-    }
-
-
-
-    @Test
-    void deleteUserTest() throws DatabaseLayerException, NoSuchAlgorithmException, InvalidKeySpecException {
-
-        UserDTOImpl stud = UserBuilder
+    void unchangedNewPasswordTest(){
+        UserDTOImpl userDTO = UserBuilder
                 .getInstance()
                 .createNewUser()
-                .withEmail("bobrich@student.de")
+                .withEmail(email1)
+                .withPassword(s1)
+                .withConfirmPassword(s1)
+                .build();
+
+        DatabaseLayerException thrown = Assertions.assertThrows(DatabaseLayerException.class,
+                () -> existingUserControl.updateUserPassword(userDTO, s1, email1)
+        );
+
+        Assertions.assertEquals("Neues Passwort entspricht dem alten Passwort!", thrown.getReason());
+    }
+
+    @Test
+    void passwordNotEqualsPasswordConfirmThrowsDatabaseLayerException(){
+        UserDTOImpl userDTO = UserBuilder
+                .getInstance()
+                .createNewUser()
+                .withPassword(s1)
+                .withConfirmPassword(s1+"3")
+                .build();
+
+        DatabaseLayerException thrown = Assertions.assertThrows(DatabaseLayerException.class,
+                () -> existingUserControl.updateUserPassword(userDTO, s1+"4", email1)
+        );
+
+        Assertions.assertEquals("Neues Passwort und neues Passswort bestätigen stimmen nicht überein!",
+                thrown.getReason());
+    }
+
+    @Test
+    void passwordNotBoundToBeanThrowsDatabaseLayerException(){
+        UserDTOImpl userDTO = UserBuilder
+                .getInstance()
+                .createNewUser()
+                .withEmail(email1)
+                .withPassword("")
+                .withConfirmPassword("")
+                .build();
+
+        DatabaseLayerException thrown = Assertions.assertThrows(DatabaseLayerException.class,
+                () -> existingUserControl.updateUserPassword(userDTO, s1+"4", email1)
+        );
+
+        Assertions.assertEquals("Passwort konnte nicht übertragen werden.",
+                thrown.getReason());
+    }
+
+    @Test
+    void successfulChangePasswordReturnsTrueAndDeleteUser() throws NoSuchAlgorithmException,
+            InvalidKeySpecException {
+
+        UserDTOImpl student = UserBuilder
+                .getInstance()
+                .createNewUser()
                 .withRole(STUDENT)
-                .withPassword(SECRET)
-                .withConfirmPassword(SECRET)
-                .withFirstName("Bob")
-                .withLastName("Rich")
+                .withEmail(email1)
+                .withFirstName("Max")
+                .withLastName("Mustermann")
+                .withPassword(s1)
+                .withConfirmPassword(s1)
                 .build();
 
-        UserDTOImpl company = UserBuilder
+        UserDTOImpl userChangePassword = UserBuilder
                 .getInstance()
-                .createNewUser()
-                .withEmail("companytest@company.de")
-                .withCompanyName("company")
-                .withRole(UNTERNEHMEN)
-                .withPassword(SECRET)
-                .withConfirmPassword(SECRET)
-                .withBranche("IT")
+                .createNewUser().withPassword(s1+"4")
+                .withConfirmPassword(s1+"4")
                 .build();
 
-        Assertions.assertTrue(registrationControl.createUser(stud));
-        Assertions.assertTrue(registrationControl.createUser(company));
-        Assertions.assertTrue(manageExistingUserControl.deleteUser(stud));
-        Assertions.assertTrue(manageExistingUserControl.deleteUser(company));
+        try{
+            //User in die Datenbank einfuegen
+            userDAO.insertUser(student, RegistrationControl.hashPassword(student.getPassword()));
+
+            //Passwort aendern
+            Assertions.assertTrue(existingUserControl.updateUserPassword(userChangePassword, s1, email1));
+
+            // User wieder aus Datenbank entfernen
+            Assertions.assertTrue(existingUserControl.deleteUser(student));
+        } catch (DatabaseLayerException ignore){}
+
     }
 
     @Test
-    void updateProfilPictureTest() {
-        Assertions.assertFalse(manageExistingUserControl.updateProfilePicture(student));
+    void updateUserCatchUserDTONull(){
+        RuntimeException thrown = Assertions.assertThrows(RuntimeException.class,
+                () -> existingUserControl.updateUser(null)
+        );
+
+        Assertions.assertEquals("DTO ist null!", thrown.getMessage());
     }
+
 }
