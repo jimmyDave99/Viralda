@@ -237,7 +237,6 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
         // Setzen des aktuellen Names des Tabs
         viewTitle.setText(getCurrentPageTitle());
 
-        //ToDO: anpassen
         // Setzen des Vornamens von dem aktuell eingeloggten Benutzer, wenn der User einen Vornamen hat
         if (this.getCurrentNameOfUser() != null) {
             helloUser.setText("Willkommen "  + this.getCurrentNameOfUser() + " auf der HBRS@Collab Seite!");

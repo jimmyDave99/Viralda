@@ -2,6 +2,7 @@ package org.hbrs.se2.project.hellocar.control;
 
 import org.hbrs.se2.builder.UserBuilder;
 import org.hbrs.se2.project.hellocar.dao.UserDAO;
+import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 import org.hbrs.se2.project.hellocar.dtos.impl.UserDTOImpl;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
 import org.junit.jupiter.api.Assertions;
@@ -116,6 +117,55 @@ public class ManageExistingUserControlTest {
 
             //Passwort aendern
             Assertions.assertTrue(existingUserControl.updateUserPassword(userChangePassword, s1, email1));
+
+            // User wieder aus Datenbank entfernen
+            Assertions.assertTrue(existingUserControl.deleteUser(student));
+        } catch (DatabaseLayerException ignore){}
+
+    }
+
+    @Test
+    void successfulChangeUserDataReturnsTrueAndDeleteUser() {
+
+        UserDTOImpl student = UserBuilder
+                .getInstance()
+                .createNewUser()
+                .withRole(STUDENT)
+                .withEmail(email1)
+                .withFirstName("Max")
+                .withLastName("Mustermann")
+                .withPassword(s1)
+                .withConfirmPassword(s1)
+                .build();
+
+        UserDTOImpl userToUpdate = UserBuilder
+                .getInstance()
+                .createNewUser()
+                .withRole(STUDENT)
+                .withEmail(email1)
+                .withFirstName("Maxi")
+                .withLastName("Mann")
+                .withSemester(5)
+                .withDescription("Hallo")
+                .withSpecialization("CS")
+                .withFaculty("Informatik")
+                .build();
+
+        try{
+            //User in die Datenbank einfuegen
+            userDAO.insertUser(student, student.getPassword());
+
+            //User Updaten
+            Assertions.assertTrue(existingUserControl.updateUser(userToUpdate));
+
+            //User lesen
+            UserDTO temp = userDAO.findUserByUserEmailAndPassword(student.getEmail(), student.getPassword());
+            Assertions.assertEquals(userToUpdate.getFirstName(), temp.getFirstName());
+            Assertions.assertEquals(userToUpdate.getLastName(), temp.getLastName());
+            Assertions.assertEquals(userToUpdate.getDescription(), temp.getDescription());
+            Assertions.assertEquals(userToUpdate.getSemester(), temp.getSemester());
+            Assertions.assertEquals(userToUpdate.getSpecialization(), temp.getSpecialization());
+            Assertions.assertEquals(userToUpdate.getFaculty(), temp.getFaculty());
 
             // User wieder aus Datenbank entfernen
             Assertions.assertTrue(existingUserControl.deleteUser(student));
