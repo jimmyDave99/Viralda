@@ -5,6 +5,7 @@ import org.hbrs.se2.project.hellocar.dao.UserDAO;
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 import org.hbrs.se2.project.hellocar.dtos.impl.UserDTOImpl;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
+import org.hbrs.se2.project.hellocar.services.db.exceptions.ViewException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,11 +32,11 @@ public class ManageExistingUserControlTest {
 
     @Test
     void userDTOisNullThrowsRuntimeExceptionTest(){
-        RuntimeException thrown = Assertions.assertThrows(RuntimeException.class,
+        ViewException thrown = Assertions.assertThrows(ViewException.class,
                 () -> existingUserControl.updateUserPassword(null, s1, email1)
         );
 
-        Assertions.assertEquals("DTO ist null!", thrown.getMessage());
+        Assertions.assertEquals("DTO ist null!", thrown.getReason());
     }
 
     @Test
@@ -120,7 +121,7 @@ public class ManageExistingUserControlTest {
 
             // User wieder aus Datenbank entfernen
             Assertions.assertTrue(existingUserControl.deleteUser(student));
-        } catch (DatabaseLayerException ignore){}
+        } catch (DatabaseLayerException | ViewException ignore){}
 
     }
 

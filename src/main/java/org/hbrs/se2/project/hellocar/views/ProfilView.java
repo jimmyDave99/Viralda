@@ -24,6 +24,7 @@ import org.hbrs.se2.project.hellocar.control.ManageExistingUserControl;
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 import org.hbrs.se2.project.hellocar.dtos.impl.UserDTOImpl;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
+import org.hbrs.se2.project.hellocar.services.db.exceptions.ViewException;
 import org.hbrs.se2.project.hellocar.util.Globals;
 
 import java.security.NoSuchAlgorithmException;
@@ -438,7 +439,7 @@ public class ProfilView extends Div {
                     else Notification.show("Änderungen konnten nicht gespeichert werden.");
                 } else Notification.show("Änderungen konnten nicht gespeichert werden.");
 
-            } catch (DatabaseLayerException | NoSuchAlgorithmException | ValidationException | InvalidKeySpecException e) {
+            } catch (DatabaseLayerException | NoSuchAlgorithmException | ValidationException | InvalidKeySpecException | ViewException e) {
                 e.printStackTrace();
             }
 
