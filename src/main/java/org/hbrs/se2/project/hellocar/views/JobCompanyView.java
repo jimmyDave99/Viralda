@@ -32,7 +32,7 @@ import static org.hbrs.se2.project.hellocar.util.Globals.Pages.JOB_COMPANY_VIEW;
 
 @Route(value = JOB_COMPANY_VIEW, layout = AppView.class)
 @PageTitle("Stellenanzeige")
-@CssImport("./styles/views/landingpage/landing-page.css")
+@CssImport("./styles/views/showjobsfromcompany/show-jobs-from-company-view.css")
 public class JobCompanyView extends VerticalLayout implements HasUrlParameter<String>{
 
     LocalDate now = LocalDate.now();
