@@ -135,7 +135,7 @@ public class showJobCompanyView extends Div {
         idField.setPlaceholder("Filter");
     }
 
-    private Component createTitle() { return new H2("Meine Stellenanzeigen"); }
+    private Component createTitle() { return new H2("Stellenanzeigen des eigenen Unternehmens"); }
 
     private Component NotJobFound() { return new H4("   keine Stellenanzeigen gefunden"); }
 
