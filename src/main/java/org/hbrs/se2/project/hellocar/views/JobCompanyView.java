@@ -10,6 +10,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
@@ -18,6 +19,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.*;
 import org.hbrs.se2.project.hellocar.control.JobControl;
 import org.hbrs.se2.project.hellocar.dtos.StellenanzeigeDTO;
@@ -31,7 +33,7 @@ import static org.hbrs.se2.project.hellocar.util.Globals.JobStatus.*;
 import static org.hbrs.se2.project.hellocar.util.Globals.Pages.JOB_COMPANY_VIEW;
 
 @Route(value = JOB_COMPANY_VIEW, layout = AppView.class)
-@PageTitle("Stellenanzeigen des eigenen Unternehmens")
+@PageTitle("Stellenanzeige des eigenen Unternehmens bearbeiten")
 @CssImport("./styles/views/showjobsfromcompany/show-jobs-from-company-view.css")
 public class JobCompanyView extends VerticalLayout implements HasUrlParameter<String>{
 
@@ -96,99 +98,99 @@ public class JobCompanyView extends VerticalLayout implements HasUrlParameter<St
             UI.getCurrent().navigate(Globals.Pages.SHOW_JOB_COMPANY_VIEW);
         });
 
-        Grid<StellenanzeigeDTO> grid = new Grid<>();
-        Editor<StellenanzeigeDTO> editor = grid.getEditor();
+        Grid<StellenanzeigeDTO> upperGrid = new Grid<>();
+        Editor<StellenanzeigeDTO> upperEditor = upperGrid.getEditor();
 
-        grid.setHeightByRows(true);
+        upperGrid.setHeightByRows(true);
 
         ListDataProvider<StellenanzeigeDTO> dataProvider = new ListDataProvider<>(currentJob);
-        grid.setDataProvider(dataProvider);
+        upperGrid.setDataProvider(dataProvider);
 
-        grid.addColumn(StellenanzeigeDTO::getStellenId)
+        upperGrid.addColumn(StellenanzeigeDTO::getStellenId)
                 .setHeader("Stellen ID");
 
-        Grid.Column<StellenanzeigeDTO> titleColumn = grid.addColumn(StellenanzeigeDTO::getTitel)
+        Grid.Column<StellenanzeigeDTO> titleColumn = upperGrid.addColumn(StellenanzeigeDTO::getTitel)
                 .setHeader("Titel");
 
-        Grid.Column<StellenanzeigeDTO> descriptionColumn = grid.addColumn(StellenanzeigeDTO::getBeschreibung)
-                .setHeader("Beschreibung der Stelle").setWidth("450px").setFlexGrow(0);
-
-        Grid.Column<StellenanzeigeDTO> brancheColumn = grid.addColumn(StellenanzeigeDTO::getBereich)
+        Grid.Column<StellenanzeigeDTO> brancheColumn = upperGrid.addColumn(StellenanzeigeDTO::getBereich)
                 .setHeader("Bereich");
 
-        Grid.Column<StellenanzeigeDTO> dateColumn = grid.addColumn(StellenanzeigeDTO::getEinstellungsdatum)
+        Grid.Column<StellenanzeigeDTO> detailsColumn = upperGrid.addColumn(StellenanzeigeDTO::getBeschreibung);
+
+        Grid.Column<StellenanzeigeDTO> dateColumn = upperGrid.addColumn(StellenanzeigeDTO::getEinstellungsdatum)
                 .setHeader("Einstieg");
 
-        Grid.Column<StellenanzeigeDTO> priceColumn = grid.addColumn(StellenanzeigeDTO::getGehalt)
+        Grid.Column<StellenanzeigeDTO> priceColumn = upperGrid.addColumn(StellenanzeigeDTO::getGehalt)
                 .setHeader("Gehalt");
 
-        Grid.Column<StellenanzeigeDTO> weeklyHoursColumn = grid.addColumn(StellenanzeigeDTO::getWochenstunden)
+        Grid.Column<StellenanzeigeDTO> weeklyHoursColumn = upperGrid.addColumn(StellenanzeigeDTO::getWochenstunden)
                 .setHeader("Wochenstunden");
 
-        grid.addColumn(StellenanzeigeDTO::getStatus)
+        upperGrid.addColumn(StellenanzeigeDTO::getStatus)
                 .setHeader("Status");
 
-        Grid.Column<StellenanzeigeDTO> editColumn = grid.addComponentColumn(job -> {
+        Grid.Column<StellenanzeigeDTO> editColumn = upperGrid.addComponentColumn(job -> {
             Button editButton = new Button("Bearbeiten");
             editButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
             editButton.addClickListener(e -> {
-                if (editor.isOpen())
-                    editor.cancel();
-                grid.getEditor().editItem(job);
+                if (upperEditor.isOpen())
+                    upperEditor.cancel();
+                upperGrid.getEditor().editItem(job);
             });
             return editButton;
         }).setWidth("150px").setFlexGrow(0);
 
-        Binder<StellenanzeigeDTO> binder = new Binder<>(StellenanzeigeDTO.class);
-        editor.setBinder(binder);
-        editor.setBuffered(true);
+        Binder<StellenanzeigeDTO> binder1 = new Binder<>(StellenanzeigeDTO.class);
+        upperEditor.setBinder(binder1);
+        upperEditor.setBuffered(true);
+
 
         TextField titleField = new TextField();
         titleField.setWidthFull();
-        binder.forField(titleField)
+        binder1.forField(titleField)
                 .asRequired("Titel eingeben")
                 .bind(StellenanzeigeDTO::getTitel, StellenanzeigeDTO::setTitel);
         titleColumn.setEditorComponent(titleField);
 
         TextArea descriptionField = new TextArea();
         descriptionField.setWidthFull();
-        binder.forField(descriptionField).asRequired("Beschreibung eingeben")
+        binder1.forField(descriptionField).asRequired("Beschreibung eingeben")
                 .withValidator(
                         description -> description.length() >= 50,
                         "Beschreibung muss mindestens 50 Zeichen haben!"
                 )
                 .bind(StellenanzeigeDTO::getBeschreibung, StellenanzeigeDTO::setBeschreibung);
-        descriptionColumn.setEditorComponent(descriptionField);
+        detailsColumn.setEditorComponent(descriptionField);
 
         TextField brancheField = new TextField();
         brancheField.setWidthFull();
-        binder.forField(brancheField).asRequired("Bereich eingeben")
+        binder1.forField(brancheField).asRequired("Bereich eingeben")
                 .bind(StellenanzeigeDTO::getBereich, StellenanzeigeDTO::setBereich);
         brancheColumn.setEditorComponent(brancheField);
 
         DatePicker dateField = new DatePicker();
         dateField.setWidthFull();
         dateField.setMin(now);
-        binder.forField(dateField).asRequired()
+        binder1.forField(dateField).asRequired()
                 .bind(StellenanzeigeDTO::getEinstellungsdatum, StellenanzeigeDTO::setEinstellungsdatum);
         dateColumn.setEditorComponent(dateField);
 
         NumberField priceField = new NumberField();
         priceField.setMin(8.5);
         priceField.setStep(0.5);
-        binder.forField(priceField).asRequired()
+        binder1.forField(priceField).asRequired()
                 .bind(StellenanzeigeDTO::getGehalt, StellenanzeigeDTO::setGehalt);
         priceColumn.setEditorComponent(priceField);
 
         NumberField weeklyHoursField = new NumberField();
         weeklyHoursField.setMin(0);
         weeklyHoursField.setStep(0.5);
-        binder.forField(weeklyHoursField).asRequired()
+        binder1.forField(weeklyHoursField).asRequired()
                 .bind(StellenanzeigeDTO::getWochenstunden, StellenanzeigeDTO::setWochenstunden);
         weeklyHoursColumn.setEditorComponent(weeklyHoursField);
 
         Button saveEditButton = new Button("Speichern", e -> {
-            editor.save();
+            upperEditor.save();
             try {
                 jobControl.updateAnnouncement(currentJob.get(0));
             } catch (DatabaseLayerException ex) {
@@ -199,7 +201,7 @@ public class JobCompanyView extends VerticalLayout implements HasUrlParameter<St
         saveEditButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS, ButtonVariant.LUMO_PRIMARY);
 
         Button cancelEditButton = new Button(VaadinIcon.CLOSE.create(),
-                e -> editor.cancel());
+                e -> upperEditor.cancel());
         cancelEditButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY,
                 ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_ICON);
         HorizontalLayout actions = new HorizontalLayout(saveEditButton,
@@ -207,12 +209,30 @@ public class JobCompanyView extends VerticalLayout implements HasUrlParameter<St
         actions.setPadding(false);
         editColumn.setEditorComponent(actions);
 
+        //grid.setDetailsVisibleOnClick(false); // entfernt toggle
+        upperGrid.setItemDetailsRenderer(
+                new ComponentRenderer<>(stellenanzeigeDTO -> {
+                    VerticalLayout layout = new VerticalLayout();
 
-        grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
-        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
-        grid.addThemeVariants(GridVariant.LUMO_WRAP_CELL_CONTENT);
+                    TextArea details = new TextArea();
 
-        add(grid);
+                    details.setValue(stellenanzeigeDTO.getBeschreibung());
+                    details.setWidthFull();
+                    details.setEnabled(false);
+
+                    layout.add(new H4("Stellenbeschreibung:"));
+                    layout.add(details);
+
+                    return layout;
+                })
+        );
+
+
+        upperGrid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
+        upperGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+        upperGrid.addThemeVariants(GridVariant.LUMO_WRAP_CELL_CONTENT);
+
+        add(upperGrid);
 
         HorizontalLayout buttonLayout = new HorizontalLayout(publishButton, retrieveButton, deleteButton, cancelButton);
         buttonLayout.setPadding(true);

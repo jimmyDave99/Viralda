@@ -1,6 +1,7 @@
 package org.hbrs.se2.project.hellocar.views;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -9,6 +10,7 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
@@ -179,13 +181,17 @@ public class LandingPageStudentView extends Div {
                 new ComponentRenderer<>(stellenanzeigeDTO -> {
                     VerticalLayout layout = new VerticalLayout();
 
+                    TextArea details = new TextArea();
+                    details.setValue(stellenanzeigeDTO.getBeschreibung());
+                    details.setWidthFull();
+                    details.setEnabled(false);
+
                     layout.add(new H4("Stellenbeschreibung:"));
-                    layout.add(new Paragraph(stellenanzeigeDTO.getBeschreibung()));
+                    layout.add(details);
 
                     return layout;
                 })
         );
-        //grid.setItemDetailsRenderer(createGridDetailsRenderer());
 
         return grid;
     }
