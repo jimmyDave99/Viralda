@@ -30,8 +30,8 @@ import java.util.List;
  */
 
 @Route(value = Globals.Pages.SHOW_JOB_COMPANY_VIEW, layout = AppView.class)
-@PageTitle("Meine Stellenanzeigen")
-@CssImport(value = "./styles/views/landingpage/landing-page.css", themeFor = "vaadin-grid")
+@PageTitle("Stellenanzeigen des eigenen Unternehmens")
+@CssImport(value = "./styles/views/landingpage/landing-page.css")//, themeFor = "vaadin-grid")
 public class showJobCompanyView extends Div {
 
     protected static volatile int jobId = 0;

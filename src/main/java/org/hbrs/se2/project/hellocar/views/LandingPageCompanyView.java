@@ -131,5 +131,5 @@ public class LandingPageCompanyView extends Div {
         return (UserDTO) UI.getCurrent().getSession().getAttribute(Globals.CURRENT_USER);
     }
 
-    private Component NotJobFound() { return new H4("Leider wurden keine Bewerbungen von Studenten gefunden.\nVermutlich wurde sich noch nicht auf eine Stelle beworben."); }
+    private Component NotJobFound() { return new H4("Leider wurden keine Bewerbungen von Studenten gefunden. Vermutlich wurde sich noch nicht auf eine Stelle beworben."); }
 }
