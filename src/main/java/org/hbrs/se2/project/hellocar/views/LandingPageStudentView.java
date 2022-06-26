@@ -1,7 +1,6 @@
 package org.hbrs.se2.project.hellocar.views;
 
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -18,16 +17,11 @@ import com.vaadin.flow.router.*;
 import org.apache.commons.lang3.StringUtils;
 import org.hbrs.se2.project.hellocar.control.JobControl;
 import org.hbrs.se2.project.hellocar.dtos.StellenanzeigeDTO;
-import org.hbrs.se2.project.hellocar.dtos.impl.StellenanzeigeDTOImpl;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
 import org.hbrs.se2.project.hellocar.util.Globals;
 
-import javax.swing.*;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-
-import static org.hbrs.se2.project.hellocar.views.showJobCompanyView.createFilter;
 
 /**
  * The LandingPageStudent is the home page for users with the role = "Student".
