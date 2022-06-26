@@ -15,18 +15,22 @@ public class UserDTOImpl implements UserDTO {
     private String password;
     private String confirmPassword;
     private BufferedImage profilePicture;
+    private String faculty;
+    private int semester;
+    private String specialization;
 
     //Useranschrift
     private int plz;
     private String land;
     private String stadt;
     private String strasse;
-    private int nummer;
+    private int hausnummer;
 
     //Student
     private int studentId;
     private String firstName;
     private String lastName;
+    private LocalDate dateOfBirth;
 
     //Unternehmen
     private int unternehmenId;
@@ -38,6 +42,7 @@ public class UserDTOImpl implements UserDTO {
     private String status;
     private int stelleId;
     private Date bewerbungsdatum;
+
     //Setter
     @Override
     public void setUserId(int userId) {
@@ -81,6 +86,18 @@ public class UserDTOImpl implements UserDTO {
     }
 
     @Override
+    public void setDateOfBirth(LocalDate dateOfBirth) { this.dateOfBirth = dateOfBirth; }
+
+    @Override
+    public void setFaculty(String faculty){ this.faculty = faculty; }
+
+    @Override
+    public void setSemester(int semester) { this.semester = semester; }
+
+    @Override
+    public void setSpecialization(String specialization){ this.specialization = specialization; }
+
+    @Override
     public void setPlz(int plz) {
         this.plz = plz;
     }
@@ -101,8 +118,8 @@ public class UserDTOImpl implements UserDTO {
     }
 
     @Override
-    public void setNummer(int nummer) {
-        this.nummer = nummer;
+    public void setHausnummer(int hausnummer) {
+        this.hausnummer = hausnummer;
     }
 
     @Override
@@ -157,14 +174,17 @@ public class UserDTOImpl implements UserDTO {
     public String getStatus() {
         return status;
     }
+
     @Override
     public int getStelleId() {
         return stelleId;
     }
+
     @Override
     public Date getbewerbungsDatum() {
         return bewerbungsdatum;
     }
+
     @Override
     public String getRole() {
         return this.role;
@@ -180,6 +200,18 @@ public class UserDTOImpl implements UserDTO {
     public BufferedImage getProfilePicture() {
         return profilePicture;
     }
+
+    @Override
+    public LocalDate getDateOfBirth() { return dateOfBirth; }
+
+    @Override
+    public String getFaculty() {return faculty;}
+
+    @Override
+    public int getSemester(){return semester;}
+
+    @Override
+    public String getSpecialization(){return specialization;}
 
     @Override
     public int getPlz() {
@@ -202,8 +234,8 @@ public class UserDTOImpl implements UserDTO {
     }
 
     @Override
-    public int getNummer() {
-        return nummer;
+    public int getHausnummer() {
+        return hausnummer;
     }
 
     @Override
