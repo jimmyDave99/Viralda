@@ -138,9 +138,10 @@ public class EnterStellenanzeigeView extends Div {
     private Component createButtonLayout() {
         HorizontalLayout buttonLayout = new HorizontalLayout();
         buttonLayout.addClassName("button-layout");
-        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         buttonLayout.add(save);
+        save.addThemeVariants(ButtonVariant.LUMO_SUCCESS, ButtonVariant.LUMO_PRIMARY);
         buttonLayout.add(cancel);
+        cancel.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
         return buttonLayout;
     }
 }
