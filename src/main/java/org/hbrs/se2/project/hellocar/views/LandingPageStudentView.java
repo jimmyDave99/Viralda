@@ -69,23 +69,28 @@ public class LandingPageStudentView extends Div {
         // ToDo: Unternehmensname über UnternehmensID bekommen
         Grid.Column<StellenanzeigeDTO> companyNameColumn = grid
                 .addColumn(StellenanzeigeDTO::getUnternehmenId)
-                .setHeader("Unternehmen");
+                .setHeader("Unternehmen")
+                .setSortable(true);
 
         Grid.Column<StellenanzeigeDTO> titleColumn = grid
                 .addColumn(StellenanzeigeDTO::getTitel)
-                .setHeader("Titel");
+                .setHeader("Titel")
+                .setSortable(true);
 
         Grid.Column<StellenanzeigeDTO> dateOfDeploymentColumn = grid
                 .addColumn(StellenanzeigeDTO::getEinstellungsdatum)
-                .setHeader("Einstieg");
+                .setHeader("Einstieg")
+                .setSortable(true);
 
         Grid.Column<StellenanzeigeDTO> salaryColumn = grid
                 .addColumn(StellenanzeigeDTO::getGehalt)
-                .setHeader("Gehalt");
+                .setHeader("Gehalt")
+                .setSortable(true);
 
         Grid.Column<StellenanzeigeDTO> hoursPerWeekColumn = grid
                 .addColumn(StellenanzeigeDTO::getWochenstunden)
-                .setHeader("Wochenstunden");
+                .setHeader("Wochenstunden")
+                .setSortable(true);
 
         grid.addComponentColumn(job -> {
             Button applyButton = new Button("Bewerben");
