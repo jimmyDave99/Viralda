@@ -170,17 +170,17 @@ public class ManageExistingUserControlTest {
 
             // User wieder aus Datenbank entfernen
             Assertions.assertTrue(existingUserControl.deleteUser(student));
-        } catch (DatabaseLayerException ignore){}
+        } catch (DatabaseLayerException | ViewException ignore){}
 
     }
 
     @Test
     void updateUserCatchUserDTONull(){
-        RuntimeException thrown = Assertions.assertThrows(RuntimeException.class,
+        ViewException thrown = Assertions.assertThrows(ViewException.class,
                 () -> existingUserControl.updateUser(null)
         );
 
-        Assertions.assertEquals("DTO ist null!", thrown.getMessage());
+        Assertions.assertEquals("DTO ist null!", thrown.getReason());
     }
 
 }

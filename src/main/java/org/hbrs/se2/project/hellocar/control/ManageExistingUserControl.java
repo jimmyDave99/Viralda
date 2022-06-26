@@ -15,9 +15,9 @@ import static org.hbrs.se2.project.hellocar.control.RegistrationControl.hashPass
 public class ManageExistingUserControl {
     UserDAO userDAO = new UserDAO();
 
-    public boolean updateUser(UserDTO userDTO) throws DatabaseLayerException {
+    public boolean updateUser(UserDTO userDTO) throws DatabaseLayerException, ViewException {
         if(userDTO == null){
-            throw new RuntimeException("DTO ist null!");
+            throw new ViewException("DTO ist null!");
         }
         userDAO.updateUserByEmail(userDTO);
         return true;

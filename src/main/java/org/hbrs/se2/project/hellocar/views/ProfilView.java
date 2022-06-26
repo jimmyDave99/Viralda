@@ -267,7 +267,7 @@ public class ProfilView extends Div {
                         Notification.show("Änderungen erfolgreich gespeichert");
                         UI.getCurrent().getPage().reload();
                     }
-                } catch (DatabaseLayerException | ValidationException e) {
+                } catch (DatabaseLayerException | ValidationException | ViewException e) {
                     e.printStackTrace();
                 }
             }
@@ -366,7 +366,7 @@ public class ProfilView extends Div {
                         UI.getCurrent().getPage().reload();
                     }
 
-                } catch (DatabaseLayerException | ValidationException e) {
+                } catch (DatabaseLayerException | ValidationException | ViewException e) {
                     e.printStackTrace();
                 }
             }
