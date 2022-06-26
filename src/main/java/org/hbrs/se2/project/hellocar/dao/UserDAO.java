@@ -9,6 +9,7 @@ import org.hbrs.se2.project.hellocar.util.Globals;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 import static org.hbrs.se2.project.hellocar.util.Globals.Errors.PROBLEM;
 import static org.hbrs.se2.project.hellocar.util.Globals.Roles.STUDENT;
@@ -46,6 +47,7 @@ public class UserDAO {
                 userDTO.setEmail(set.getString(2));
                 userDTO.setPassword(set.getString(3));
                 userDTO.setRole(set.getString(4));
+                userDTO.setDescription(set.getString(6));
 
                 if (userDTO.getRole().equals(STUDENT)) {
                     //Get Student
@@ -59,6 +61,9 @@ public class UserDAO {
                         userDTO.setStudentId(set.getInt(1));
                         userDTO.setFirstName(set.getString(3));
                         userDTO.setLastName(set.getString(4));
+                        userDTO.setFaculty(set.getString(5));
+                        userDTO.setSemester(set.getInt(6));
+                        userDTO.setSpecialization(set.getString(7));
                     }
                 } else if (userDTO.getRole().equals(UNTERNEHMEN)) {
                     //Get Unternehmen
@@ -183,10 +188,10 @@ public class UserDAO {
             PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement(
                     "UPDATE collathbrs.user " +
                             "SET email = ? " +
-                            ", passwort = ? " +
+                            ", beschreibung = ? " +
                             "WHERE id = ?");
             statement.setString(1, userDTO.getEmail());
-            statement.setString(2, userDTO.getPassword());
+            statement.setString(2, userDTO.getDescription());
             statement.setInt(3, userId);
             statement.executeUpdate();
 
@@ -196,10 +201,16 @@ public class UserDAO {
                         "UPDATE collathbrs.student " +
                                 "SET vorname = ? " +
                                 ", nachname = ? " +
+                                ", fachbereich = ? " +
+                                ", semester = ? " +
+                                ", spezialisierung = ? " +
                                 "WHERE user_id = ?");
                 studentStatement.setString(1, userDTO.getFirstName());
                 studentStatement.setString(2, userDTO.getLastName());
-                studentStatement.setInt(3, userId);
+                studentStatement.setString(3, userDTO.getFaculty());
+                studentStatement.setInt(4, userDTO.getSemester());
+                studentStatement.setString(5, userDTO.getSpecialization());
+                studentStatement.setInt(6, userId);
                 studentStatement.executeUpdate();
             } else if (userDTO.getRole().equals(UNTERNEHMEN)) {
                 PreparedStatement unternehmenStatement = JDBCConnection.getInstance().getPreparedStatement(
@@ -216,6 +227,33 @@ public class UserDAO {
             DatabaseLayerException e = new DatabaseLayerException(PROBLEM);
             e.setReason(Globals.Errors.DATABASE);
             throw e;
+        }
+    }
+
+    /**
+     * Method for updating Users
+     *
+     * @param email, password
+     * @return
+     * @throws DatabaseLayerException
+     */
+    public void updateUserPasswordByEmail(String email, String password) throws DatabaseLayerException {
+        try {
+            UserDTO userDTO = new UserDTOImpl();
+            userDTO.setEmail(email);
+            int userId = getUserIdByEmail(userDTO);
+
+            //Update User
+            PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement(
+                    "UPDATE collathbrs.user " +
+                            "SET passwort = ? " +
+                            "WHERE id = ?");
+            statement.setString(1, password);
+            statement.setInt(2, userId);
+            statement.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 

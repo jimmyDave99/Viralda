@@ -36,7 +36,6 @@ import static org.hbrs.se2.project.hellocar.util.Globals.Roles.UNTERNEHMEN;
 public class RegistrationView extends VerticalLayout {
 
     private RadioButtonGroup<String> userGroup = new RadioButtonGroup<>();
-
     private EmailField email = new EmailField("E-Mail");
     private PasswordField password = new PasswordField("Passwort");
     private PasswordField confirmPassword = new PasswordField("Passwort bestätigen");
@@ -86,7 +85,7 @@ public class RegistrationView extends VerticalLayout {
                 .bind(UserDTOImpl::getPassword, UserDTOImpl::setPassword);
 
         binder.forField(confirmPassword)
-                .asRequired("passwort bestätigen")
+                .asRequired("Passwort bestätigen")
                 .bind(UserDTOImpl::getConfirmPassword, UserDTOImpl::setConfirmPassword);
 
         binder.forField(firstName)

@@ -1,6 +1,7 @@
 package org.hbrs.se2.project.hellocar.dtos;
 
 import java.awt.image.BufferedImage;
+import java.time.LocalDate;
 import java.util.Date;
 
 public interface UserDTO {
@@ -14,11 +15,15 @@ public interface UserDTO {
     void setPassword(String password);
     void setConfirmPassword(String confirmPassword);
     void setProfilePicture(BufferedImage profilePicture);
+    void setDateOfBirth(LocalDate dateOfBirth);
+    void setFaculty(String faculty);
+    void setSemester(int semester);
+    void setSpecialization(String specialization);
     void setPlz(int plz);
     void setLand(String land);
     void setStadt(String stadt);
     void setStrasse(String strasse);
-    void setNummer(int nummer);
+    void setHausnummer(int nummer);
     void setStudentId(int studentId);
     void setFirstName(String firstName);
     void setLastName(String lastName);
@@ -37,11 +42,15 @@ public interface UserDTO {
     String getPassword();
     String getConfirmPassword();
     BufferedImage getProfilePicture();
+    LocalDate getDateOfBirth();
+    String getFaculty();
+    int getSemester();
+    String getSpecialization();
     int getPlz();
     String getLand();
     String getStadt();
     String getStrasse();
-    int getNummer();
+    int getHausnummer();
     int getStudentId();
     String getFirstName();
     String getLastName();
