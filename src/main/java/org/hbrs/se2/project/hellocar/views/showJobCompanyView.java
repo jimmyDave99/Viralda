@@ -47,17 +47,17 @@ public class showJobCompanyView extends Div {
 
         add(createTitle());
 
-        if(jobList.isEmpty()){
+        if (jobList.isEmpty()) {
             add(NotJobFound());
-        }else {
+        } else {
             add(createGridTable());
         }
     }
 
-    private Component createGridTable(){
+    private Component createGridTable() {
 
         Grid<StellenanzeigeDTO> grid = new Grid<>(StellenanzeigeDTO.class, false);
-        Editor<StellenanzeigeDTO> editor=grid.getEditor();
+        Editor<StellenanzeigeDTO> editor = grid.getEditor();
         grid.setHeightByRows(true);
 
         grid.setSelectionMode(Grid.SelectionMode.NONE);
@@ -72,10 +72,10 @@ public class showJobCompanyView extends Div {
                 .addColumn(StellenanzeigeDTO::getTitel)
                 .setHeader("Titel");
 
-         grid.addColumn(StellenanzeigeDTO::getBeschreibung)
-                 .setHeader("Beschreibung der Stelle").setWidth("450px").setFlexGrow(0);
+        grid.addColumn(StellenanzeigeDTO::getBeschreibung)
+                .setHeader("Beschreibung der Stelle").setWidth("450px").setFlexGrow(0);
 
-         grid.addColumn(StellenanzeigeDTO::getEinstellungsdatum)
+        grid.addColumn(StellenanzeigeDTO::getEinstellungsdatum)
                 .setHeader("Einstieg");
 
         grid.addColumn(StellenanzeigeDTO::getGehalt)
@@ -87,14 +87,14 @@ public class showJobCompanyView extends Div {
         grid.addColumn(StellenanzeigeDTO::getStatus)
                 .setHeader("Status");
 
-        grid.addComponentColumn( job -> {
-                    Button saveButton = new Button("Bearbeiten");
-                    saveButton.addClickListener(e -> {
-                        jobId = job.getStellenId();
-                        navigateToJobApplicationView(jobId);
-                    });
-                    return saveButton;
-                }).setWidth("150px").setFlexGrow(0);
+        grid.addComponentColumn(job -> {
+            Button saveButton = new Button("Bearbeiten");
+            saveButton.addClickListener(e -> {
+                jobId = job.getStellenId();
+                navigateToJobApplicationView(jobId);
+            });
+            return saveButton;
+        }).setWidth("150px").setFlexGrow(0);
 
         createFilter(grid, dataProvider, idColumn, titleColumn);
 
@@ -102,12 +102,11 @@ public class showJobCompanyView extends Div {
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.addThemeVariants(GridVariant.LUMO_WRAP_CELL_CONTENT);
 
-         return grid;
+        return grid;
     }
 
-     static void createFilter( Grid<StellenanzeigeDTO> grid, ListDataProvider<StellenanzeigeDTO> dataProvider,
-                               Grid.Column<StellenanzeigeDTO> firstColumn, Grid.Column<StellenanzeigeDTO> secondColumn)
-     {
+    static void createFilter(Grid<StellenanzeigeDTO> grid, ListDataProvider<StellenanzeigeDTO> dataProvider,
+                             Grid.Column<StellenanzeigeDTO> firstColumn, Grid.Column<StellenanzeigeDTO> secondColumn) {
         HeaderRow filterRow = grid.appendHeaderRow();
 
         // filter
@@ -135,9 +134,14 @@ public class showJobCompanyView extends Div {
         idField.setPlaceholder("Filter");
     }
 
-    private Component createTitle() { return new H2("Stellenanzeigen des eigenen Unternehmens"); }
+    private Component createTitle() {
+        return new H2("Stellenanzeigen des eigenen Unternehmens");
+    }
 
-    private Component NotJobFound() { return new H4("   keine Stellenanzeigen gefunden"); }
+    private Component NotJobFound() {
+        return new H4("Es wurden leider keine Stellenanzeigen des eigenen"
+                + " Unternehmens gefunden. Vermutlich wurden noch keine Stellenanzeigen erstellt.");
+    }
 
     private void navigateToJobApplicationView(int jobId) {
         UI.getCurrent().navigate(Globals.Pages.JOB_COMPANY_VIEW + jobId);
