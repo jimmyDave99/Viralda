@@ -1,6 +1,7 @@
 package org.hbrs.se2.project.hellocar.views;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -12,8 +13,11 @@ import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H4;
+import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ListDataProvider;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -24,6 +28,7 @@ import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
 import org.hbrs.se2.project.hellocar.util.Globals;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -40,6 +45,8 @@ public class showJobCompanyView extends Div {
     UserDTO currentUser = this.getCurrentUser();
 
     private List<StellenanzeigeDTO> jobList;
+
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
 
     public showJobCompanyView(JobControl jobControl) throws DatabaseLayerException {
         addClassName("show-job-company");
@@ -66,23 +73,24 @@ public class showJobCompanyView extends Div {
         ListDataProvider<StellenanzeigeDTO> dataProvider = new ListDataProvider<>(jobList);
         grid.setDataProvider(dataProvider);
 
-        Grid.Column<StellenanzeigeDTO> idColumn = grid.addColumn(StellenanzeigeDTO::getStellenId)
+        Grid.Column<StellenanzeigeDTO> idColumn = grid
+                .addColumn(StellenanzeigeDTO::getStellenId)
                 .setHeader("Stellen ID");
 
         Grid.Column<StellenanzeigeDTO> titleColumn = grid
                 .addColumn(StellenanzeigeDTO::getTitel)
                 .setHeader("Titel");
 
-        grid.addColumn(StellenanzeigeDTO::getBeschreibung)
-                .setHeader("Beschreibung der Stelle").setWidth("450px").setFlexGrow(0);
+        Grid.Column<StellenanzeigeDTO> dateOfDeploymentColumn = grid
+                .addColumn(StellenanzeigeDTO::getEinstellungsdatum)
+                .setHeader("Einstellungsdatum");
 
-        grid.addColumn(StellenanzeigeDTO::getEinstellungsdatum)
-                .setHeader("Einstieg");
-
-        grid.addColumn(StellenanzeigeDTO::getGehalt)
+        Grid.Column<StellenanzeigeDTO> salaryColumn = grid
+                .addColumn(StellenanzeigeDTO::getGehalt)
                 .setHeader("Gehalt");
 
-        grid.addColumn(StellenanzeigeDTO::getWochenstunden)
+        Grid.Column<StellenanzeigeDTO> hoursPerWeekColumn = grid
+                .addColumn(StellenanzeigeDTO::getWochenstunden)
                 .setHeader("Wochenstunden");
 
         grid.addColumn(StellenanzeigeDTO::getStatus)
@@ -98,20 +106,19 @@ public class showJobCompanyView extends Div {
             return editButton;
         }).setWidth("150px").setFlexGrow(0);
 
-        createFilter(grid, dataProvider, idColumn, titleColumn);
-
-        grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
-        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
-        grid.addThemeVariants(GridVariant.LUMO_WRAP_CELL_CONTENT);
-
-        return grid;
-    }
-
-    static void createFilter(Grid<StellenanzeigeDTO> grid, ListDataProvider<StellenanzeigeDTO> dataProvider,
-                             Grid.Column<StellenanzeigeDTO> firstColumn, Grid.Column<StellenanzeigeDTO> secondColumn) {
         HeaderRow filterRow = grid.appendHeaderRow();
 
-        // filter
+        // idColumn filter
+        TextField idColumnField = new TextField();
+        idColumnField.addValueChangeListener(event -> dataProvider.addFilter(
+                job -> StringUtils.containsIgnoreCase(String.valueOf(job.getUnternehmenId()),
+                        idColumnField.getValue())));
+
+        filterRow.getCell(idColumn).setComponent(idColumnField);
+        idColumnField.setSizeFull();
+        idColumnField.setPlaceholder("Filter");
+
+        // titleColumn filter
         TextField titleField = new TextField();
         titleField.addValueChangeListener(event -> dataProvider.addFilter(
                 job -> StringUtils.containsIgnoreCase(job.getTitel(),
@@ -119,21 +126,62 @@ public class showJobCompanyView extends Div {
 
         titleField.setValueChangeMode(ValueChangeMode.EAGER);
 
-        filterRow.getCell(secondColumn).setComponent(titleField);
+        filterRow.getCell(titleColumn).setComponent(titleField);
         titleField.setSizeFull();
         titleField.setPlaceholder("Filter");
 
-        // filter
-        TextField idField = new TextField();
-        idField.addValueChangeListener(event -> dataProvider.addFilter(
-                job -> StringUtils.containsIgnoreCase(String.valueOf(job.getStellenId()),
-                        idField.getValue())));
+        // dateOfDeploymentColumn filter
+        TextField dateOfDeploymentField = new TextField();
+        dateOfDeploymentField.addValueChangeListener(event -> dataProvider.addFilter(
+                job -> StringUtils.containsIgnoreCase(job.getEinstellungsdatum().format(formatter),
+                        dateOfDeploymentField.getValue())));
 
-        idField.setValueChangeMode(ValueChangeMode.EAGER);
+        dateOfDeploymentField.setValueChangeMode(ValueChangeMode.EAGER);
 
-        filterRow.getCell(firstColumn).setComponent(idField);
-        idField.setSizeFull();
-        idField.setPlaceholder("Filter");
+        filterRow.getCell(dateOfDeploymentColumn).setComponent(dateOfDeploymentField);
+        dateOfDeploymentField.setSizeFull();
+        dateOfDeploymentField.setPlaceholder("Filter");
+
+        // salary filter
+        TextField salaryField = new TextField();
+        salaryField.addValueChangeListener(event -> dataProvider.addFilter(
+                job -> StringUtils.containsIgnoreCase(String.valueOf(job.getGehalt()),
+                        salaryField.getValue())));
+
+        salaryField.setValueChangeMode(ValueChangeMode.EAGER);
+
+        filterRow.getCell(salaryColumn).setComponent(salaryField);
+        salaryField.setSizeFull();
+        salaryField.setPlaceholder("Filter");
+
+        // hoursPerWeekColumn filter
+        TextField hoursPerWeekField = new TextField();
+        hoursPerWeekField.addValueChangeListener(event -> dataProvider.addFilter(
+                job -> StringUtils.containsIgnoreCase(String.valueOf(job.getWochenstunden()),
+                        hoursPerWeekField.getValue())));
+
+        hoursPerWeekField.setValueChangeMode(ValueChangeMode.EAGER);
+
+        filterRow.getCell(hoursPerWeekColumn).setComponent(hoursPerWeekField);
+        hoursPerWeekField.setSizeFull();
+        hoursPerWeekField.setPlaceholder("Filter");
+
+        grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
+        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+        grid.addThemeVariants(GridVariant.LUMO_WRAP_CELL_CONTENT);
+
+        grid.setItemDetailsRenderer(
+                new ComponentRenderer<>(stellenanzeigeDTO -> {
+                    VerticalLayout layout = new VerticalLayout();
+
+                    layout.add(new H4("Stellenbeschreibung:"));
+                    layout.add(new Paragraph(stellenanzeigeDTO.getBeschreibung()));
+
+                    return layout;
+                })
+        );
+
+        return grid;
     }
 
     private Component createTitle() {
