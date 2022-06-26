@@ -1,7 +1,6 @@
 package org.hbrs.se2.project.hellocar.control;
 
 import org.hbrs.se2.builder.UserBuilder;
-import org.hbrs.se2.project.hellocar.dao.UserDAO;
 import org.hbrs.se2.project.hellocar.dtos.impl.UserDTOImpl;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
 import org.junit.jupiter.api.Assertions;
