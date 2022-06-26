@@ -1,5 +1,6 @@
 package org.hbrs.se2.project.hellocar.views;
 
+import com.sun.xml.bind.v2.runtime.unmarshaller.TextLoader;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
@@ -14,10 +15,13 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -28,6 +32,8 @@ import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
 import org.hbrs.se2.project.hellocar.util.Globals;
 
+import javax.security.auth.callback.TextOutputCallback;
+import java.awt.font.TextLayout;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -170,12 +176,18 @@ public class showJobCompanyView extends Div {
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.addThemeVariants(GridVariant.LUMO_WRAP_CELL_CONTENT);
 
+        //grid.setDetailsVisibleOnClick(false); // entfernt toggle
         grid.setItemDetailsRenderer(
                 new ComponentRenderer<>(stellenanzeigeDTO -> {
                     VerticalLayout layout = new VerticalLayout();
 
+                    TextArea details = new TextArea();
+                    details.setValue(stellenanzeigeDTO.getBeschreibung());
+                    details.setWidthFull();
+                    details.setEnabled(false);
+
                     layout.add(new H4("Stellenbeschreibung:"));
-                    layout.add(new Paragraph(stellenanzeigeDTO.getBeschreibung()));
+                    layout.add(details);
 
                     return layout;
                 })
