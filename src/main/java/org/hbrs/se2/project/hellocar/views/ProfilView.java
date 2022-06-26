@@ -17,6 +17,7 @@ import com.vaadin.flow.component.tabs.TabVariant;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.*;
 //import org.hbrs.se2.project.hellocar.control.AuthorizationControl;
 import org.hbrs.se2.project.hellocar.control.ManageExistingUserControl;
@@ -262,12 +263,15 @@ public class ProfilView extends Div {
         save.addClickListener(event -> {
             if(binder.validate().isOk()){
                 try {
-                    navigateToSubBarShowStudentAttributesWithSave();
-                    userService.updateUser(binder.getBean());
-                } catch (DatabaseLayerException e) {
+                    binderBindFieldsStudent();
+                    boolean isOK = userService.updateUser(binder.getBean());
+                    if(isOK){
+                        navigateToSubBarShowStudentAttributesWithSave();
+                        Notification.show("Änderungen erfolgreich gespeichert");
+                    }
+                } catch (DatabaseLayerException | ValidationException e) {
                     e.printStackTrace();
                 }
-                Notification.show("Änderungen erfolgreich gespeichert");
             }
         });
         cancel.addClickListener(event -> navigateToSubBarShowStudentAttributesWithoutSave());
@@ -356,12 +360,16 @@ public class ProfilView extends Div {
         save.addClickListener(event -> {
             if(binder.validate().isOk()){
                 try {
-                    navigateToSubBarShowCompanyAttributesWithSaving();
-                    userService.updateUser(binder.getBean());
-                } catch (DatabaseLayerException e) {
+                    binderBindFieldsCompany();
+                    boolean isOK = userService.updateUser(binder.getBean());
+                    if(isOK){
+                        navigateToSubBarShowCompanyAttributesWithSaving();
+                        Notification.show("Änderungen erfolgreich gespeichert");
+                    }
+
+                } catch (DatabaseLayerException | ValidationException e) {
                     e.printStackTrace();
                 }
-                Notification.show("Änderungen erfolgreich gespeichert");
             }
         });
         cancel.addClickListener(event -> navigateToSubBarShowCompanyAttributesWithoutSaving());
@@ -420,13 +428,16 @@ public class ProfilView extends Div {
         save.addClickListener(event -> {
             try{
                 if(binder.validate().isOk()){
-                    navigateToSubBarSecuritySettingsWithSaving();
+                    binderBindPassword();
                     boolean isOK = userService.updateUserPassword(binder.getBean(), oldPassword.getValue(), getCurrentUser().getEmail());
-                    if(isOK) Notification.show("Änderungen erfolgreich gespeichert.");
+                    if(isOK) {
+                        Notification.show("Änderungen erfolgreich gespeichert.");
+                        navigateToSubBarSecuritySettingsWithSaving();
+                    }
                     else Notification.show("Änderungen konnten nicht gespeichert werden.");
                 } else Notification.show("Änderungen konnten nicht gespeichert werden.");
 
-            } catch (DatabaseLayerException | NoSuchAlgorithmException e) {
+            } catch (DatabaseLayerException | NoSuchAlgorithmException | ValidationException e) {
                 e.printStackTrace();
             }
 
@@ -445,23 +456,6 @@ public class ProfilView extends Div {
     }
 
     private void navigateToSubBarShowStudentAttributesWithSave() {
-        binder.forField(firstName)
-                .bind(UserDTOImpl::getFirstName, UserDTOImpl::setFirstName);
-        binder.forField(lastName)
-                .bind(UserDTOImpl::getLastName, UserDTOImpl::setLastName);
-        binder.bind(email, UserDTOImpl::getEmail, UserDTOImpl::setEmail);
-        binder.bind(dateOfBirth, UserDTOImpl::getDateOfBirth, UserDTOImpl::setDateOfBirth);
-        binder.bind(faculty, UserDTOImpl::getFaculty, UserDTOImpl::setFaculty);
-        binder.bind(semester, UserDTOImpl::getSemester, UserDTOImpl::setSemester);
-        binder.bind(specialization, UserDTOImpl::getSpecialization, UserDTOImpl::setSpecialization);
-        binder.bind(description, UserDTOImpl::getDescription, UserDTOImpl::setDescription);
-        binder.bind(role, UserDTOImpl::getRole, UserDTOImpl::setRole);
-        binder.readBean(new UserDTOImpl());
-
-        clearForm();
-
-        content.removeAll();
-
         content.add(createButtonLayoutShowStudentAttributes());
         content.add(createFormLayoutShowStudentAttributes());
     }
@@ -481,10 +475,8 @@ public class ProfilView extends Div {
         content.add(createButtonLayoutEditCompanyAttributes());
         content.add(createFormLayoutEditCompanyAttributes());
     }
-    // ToDo
-    private void navigateToSubBarShowCompanyAttributesWithSaving() {
-        content.removeAll();
 
+    private void navigateToSubBarShowCompanyAttributesWithSaving() {
         content.add(createButtonLayoutShowCompanyAttributes());
         content.add(createFormLayoutShowCompanyAttributes());
     }
@@ -505,21 +497,64 @@ public class ProfilView extends Div {
         content.add(createFormLayoutChangePassword());
     }
 
-    // ToDo
+
     private void navigateToSubBarSecuritySettingsWithSaving() {
-        binder.forField(newPassword)
-                .bind(UserDTOImpl::getPassword, UserDTOImpl::setPassword);
-        binder.forField(newPasswordAgain).bind(UserDTOImpl::getConfirmPassword, UserDTOImpl::setConfirmPassword);
-        binder.readBean(new UserDTOImpl());
-
-        content.removeAll();
-
         content.add(createButtonLayoutTabSecuritySettings());
         content.add(createFormLayoutChangePassword());
     }
 
 
     // ------  other necessary functions  ------
+
+    private void binderBindFieldsStudent() throws ValidationException {
+        binder.forField(firstName)
+                .bind(UserDTOImpl::getFirstName, UserDTOImpl::setFirstName);
+        binder.forField(description)
+                .bind(UserDTOImpl::getDescription, UserDTOImpl::setDescription);
+        binder.forField(lastName)
+                .bind(UserDTOImpl::getLastName, UserDTOImpl::setLastName);
+        binder.forField(email)
+                .bind(UserDTOImpl::getEmail, UserDTOImpl::setEmail);
+        binder.forField(dateOfBirth)
+                .bind(UserDTOImpl::getDateOfBirth, UserDTOImpl::setDateOfBirth);
+        binder.forField(faculty)
+                .bind(UserDTOImpl::getFaculty, UserDTOImpl::setFaculty);
+        binder.forField(semester)
+                .bind(UserDTOImpl::getSemester, UserDTOImpl::setSemester);
+        binder.forField(specialization)
+                .bind(UserDTOImpl::getSpecialization, UserDTOImpl::setSpecialization);
+        binder.forField(role)
+                .bind(UserDTOImpl::getRole, UserDTOImpl::setRole);
+        binder.writeBean((UserDTOImpl) getCurrentUser());
+
+        clearForm();
+    }
+
+    private void binderBindFieldsCompany() throws ValidationException {
+        binder.forField(role)
+                .bind(UserDTOImpl::getRole, UserDTOImpl::setRole);
+        binder.forField(description)
+                .bind(UserDTOImpl::getDescription, UserDTOImpl::setDescription);
+        binder.forField(companyName)
+                .bind(UserDTOImpl::getCompanyName, UserDTOImpl::setCompanyName);
+        binder.forField(branch)
+                .bind(UserDTOImpl::getBranche, UserDTOImpl::setBranche);
+        binder.writeBean((UserDTOImpl) getCurrentUser());
+
+        clearForm();
+    }
+
+    private void binderBindPassword() throws ValidationException {
+        binder.forField(newPassword)
+                .bind(UserDTOImpl::getPassword, UserDTOImpl::setPassword);
+        binder.forField(newPasswordAgain)
+                .bind(UserDTOImpl::getConfirmPassword, UserDTOImpl::setConfirmPassword);
+        binder.writeBean((UserDTOImpl) getCurrentUser());
+
+        clearForm();
+    }
+
+
     private void clearForm() {
         binder.setBean((UserDTOImpl) getCurrentUser());
     }

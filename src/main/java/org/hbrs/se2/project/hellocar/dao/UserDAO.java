@@ -9,6 +9,7 @@ import org.hbrs.se2.project.hellocar.util.Globals;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 import static org.hbrs.se2.project.hellocar.util.Globals.Roles.STUDENT;
 import static org.hbrs.se2.project.hellocar.util.Globals.Roles.UNTERNEHMEN;
