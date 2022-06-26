@@ -21,17 +21,19 @@ public class ManageExistingUserControl {
         return true;
     }
 
-    public boolean updateUserPassword(UserDTO userDTO, UserDTO userDTOSession) throws DatabaseLayerException,
+    public boolean updateUserPassword(UserDTO userDTO, String oldPassword, String email) throws DatabaseLayerException,
                 NoSuchAlgorithmException {
 
-        if(userDTOSession.getPassword().equals(hashPassword(userDTO.getPassword())))
+        if(userDTO == null){
+            throw new RuntimeException("DTO ist null!");
+        } else if(oldPassword.equals(userDTO.getPassword()))
             throw new DatabaseLayerException("Neues Passwort entsprciht dem alten Passwort!");
         else if(!userDTO.getPassword().equals(userDTO.getConfirmPassword()))
             throw new DatabaseLayerException("Neues Passwort und neues Passswort bestätigen stimmen nicht überein!");
         else if(userDTO.getPassword().equals("") || userDTO.getPassword() == null)
             throw new DatabaseLayerException("Passwort konnte nicht übertragen werden.");
         else {
-            userDAO.updateUserPasswordByEmail(userDTOSession.getEmail(), hashPassword(userDTO.getPassword()));
+            userDAO.updateUserPasswordByEmail(email, hashPassword(userDTO.getPassword()));
             return true;
         }
     }
