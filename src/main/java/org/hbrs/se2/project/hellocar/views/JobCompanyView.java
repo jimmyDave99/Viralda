@@ -196,12 +196,12 @@ public class JobCompanyView extends VerticalLayout implements HasUrlParameter<St
             }
             UI.getCurrent().getPage().reload();
         });
-        saveEditButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        saveEditButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS, ButtonVariant.LUMO_PRIMARY);
 
         Button cancelEditButton = new Button(VaadinIcon.CLOSE.create(),
                 e -> editor.cancel());
-        cancelEditButton.addThemeVariants(ButtonVariant.LUMO_ICON,
-                ButtonVariant.LUMO_ERROR);
+        cancelEditButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY,
+                ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_ICON);
         HorizontalLayout actions = new HorizontalLayout(saveEditButton,
                 cancelEditButton);
         actions.setPadding(false);
