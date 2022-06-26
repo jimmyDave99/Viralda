@@ -68,7 +68,6 @@ public class ProfilView extends Div {
     private PasswordField newPasswordAgain;
 
     private final Binder<UserDTOImpl> binder = new Binder(UserDTOImpl.class);
-    private final Binder<UserDTOImpl> passwordBinder = new Binder(UserDTOImpl.class);
     private final ManageExistingUserControl userService;
 
     // ------  functions for all fields  ------
@@ -420,12 +419,17 @@ public class ProfilView extends Div {
 
         save.addClickListener(event -> {
             try{
-                navigateToSubBarSecuritySettingsWithSaving();
-                userService.updateUserPassword(passwordBinder.getBean(), this.getCurrentUser());
+                if(binder.validate().isOk()){
+                    navigateToSubBarSecuritySettingsWithSaving();
+                    boolean isOK = userService.updateUserPassword(binder.getBean(), oldPassword.getValue(), getCurrentUser().getEmail());
+                    if(isOK) Notification.show("Änderungen erfolgreich gespeichert.");
+                    else Notification.show("Änderungen konnten nicht gespeichert werden.");
+                } else Notification.show("Änderungen konnten nicht gespeichert werden.");
+
             } catch (DatabaseLayerException | NoSuchAlgorithmException e) {
                 e.printStackTrace();
             }
-            Notification.show("Änderungen erfolgreich gespeichert.");
+
         });
 
         return buttonLayout;
@@ -452,7 +456,7 @@ public class ProfilView extends Div {
         binder.bind(specialization, UserDTOImpl::getSpecialization, UserDTOImpl::setSpecialization);
         binder.bind(description, UserDTOImpl::getDescription, UserDTOImpl::setDescription);
         binder.bind(role, UserDTOImpl::getRole, UserDTOImpl::setRole);
-
+        binder.readBean(new UserDTOImpl());
 
         clearForm();
 
