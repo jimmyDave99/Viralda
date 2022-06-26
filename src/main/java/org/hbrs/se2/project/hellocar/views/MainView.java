@@ -16,6 +16,7 @@ import org.hbrs.se2.project.hellocar.util.Globals;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 
 /**
@@ -46,7 +47,7 @@ public class MainView extends VerticalLayout {
                 dialog.setWidth("400px");
                 dialog.setHeight("150px");
                 dialog.open();
-            } catch (NoSuchAlgorithmException ex) {
+            } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
                 ex.printStackTrace();
             }
             if (isAuthenticated) {

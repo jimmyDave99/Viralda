@@ -9,19 +9,25 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.TabVariant;
 import com.vaadin.flow.component.tabs.Tabs;
-import com.vaadin.flow.component.textfield.EmailField;
-import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.*;
 //import org.hbrs.se2.project.hellocar.control.AuthorizationControl;
+import org.hbrs.se2.project.hellocar.control.ManageExistingUserControl;
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 import org.hbrs.se2.project.hellocar.dtos.impl.UserDTOImpl;
+import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
 import org.hbrs.se2.project.hellocar.util.Globals;
+
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 @Route(value = Globals.Pages.PROFIL_VIEW, layout = AppView.class)
 @PageTitle("Profil")
@@ -43,25 +49,28 @@ public class ProfilView extends Div {
     // user attributes
     private EmailField email;
     private TextField role;
-    // ToDo: Bild und Beschreibung hinzufügen
+    private TextArea description;
+    private Image image;
 
     // student attributes
     private TextField firstName;
     private TextField lastName;
     private DatePicker dateOfBirth;
     private TextField faculty;
-    private TextField semester;
+    private IntegerField semester;
     private TextField specialization;
 
     // company attributes
     private TextField companyName;
     private TextField branch;
 
-    private TextField oldPassword;
-    private TextField newPassword;
-    private TextField newPasswordAgain;
+    // password fields for resetting the password
+    private PasswordField oldPassword;
+    private PasswordField newPassword;
+    private PasswordField newPasswordAgain;
 
     private final Binder<UserDTOImpl> binder = new Binder(UserDTOImpl.class);
+    private final ManageExistingUserControl userService;
 
     // ------  functions for all fields  ------
     private void setFieldsStudentAttributes() {
@@ -70,26 +79,37 @@ public class ProfilView extends Div {
         email = new EmailField("E-Mail-Adresse");
         dateOfBirth = new DatePicker("Geburtsdatum");
         role = new TextField("Rolle");
-        // ToDo: faculty, semester und specialization hinzufügen
+        faculty = new TextField("Fakultät");
+        semester = new IntegerField("Semester");
+        semester.setMin(1);
+        semester.setMax(30);
+        specialization = new TextField("Spezialisierung");
+        image = new Image();
+        description = new TextArea("Beschreibung");
     }
 
     private void setFieldsCompanyAttributes() {
         companyName = new TextField("Unternehmensname");
         email = new EmailField("E-Mail-Adresse");
         role = new TextField("Rolle");
-        // ToDo: fehleden Attribute einfügen
+        branch = new TextField("Branche");
+        description = new TextArea("Beschreibung");
     }
 
     private void setFieldsEditUserPassword() {
-        oldPassword = new TextField("Altes Passwort");
-        newPassword = new TextField("Passwort");
-        newPasswordAgain = new TextField("Passwort wiederholen");
+        oldPassword = new PasswordField("Altes Passwort");
+        newPassword = new PasswordField("Neues Passwort");
+        newPassword.setHelperText("Ein Passwort besteht aus mind. 8 Zeichen, wovon mind. eines ein Buchstabe und eine Zahl ist.");
+        newPassword.setPattern("^(?=.*[0-9])(?=.*[a-zA-Z]).{8}.*$");
+        newPassword.setErrorMessage("Passwort entspricht nicht der Form.");
+        newPasswordAgain = new PasswordField("Neues Passwort wiederholen");
     }
 
 
 
-    public ProfilView() {
+    public ProfilView(ManageExistingUserControl userService) {
         addClassName("profile");
+        this.userService = userService;
 
         add(createTitle());
 
@@ -150,13 +170,10 @@ public class ProfilView extends Div {
         if (tab.equals(profile)) {
 
             if (getCurrentUser().getRole().equals("Student")) {
-
                 content.add(createButtonLayoutShowStudentAttributes());
-                //ToDo: add context for button editProfile, idea: Split Layout, Upload
                 content.add(createFormLayoutShowStudentAttributes());
 
             } else if (getCurrentUser().getRole().equals("Unternehmen")) {
-
                 content.add(createButtonLayoutShowCompanyAttributes());
                 content.add(createFormLayoutShowCompanyAttributes());
             }
@@ -188,29 +205,48 @@ public class ProfilView extends Div {
     private Component createFormLayoutShowStudentAttributes() {
         setFieldsStudentAttributes();
 
-        firstName.setPrefixComponent(new Div(new Text(getCurrentUser().getFirstName())));
-        firstName.setEnabled(false);
+        firstName.setValue(getCurrentUser().getFirstName());
+        firstName.setReadOnly(true);
 
-        lastName.setPrefixComponent(new Div(new Text(getCurrentUser().getLastName())));
-        lastName.setEnabled(false);
+        lastName.setValue(getCurrentUser().getLastName());
+        lastName.setReadOnly(true);
 
-        email.setPrefixComponent(new Div(new Text(getCurrentUser().getEmail())));
-        email.setEnabled(false);
+        email.setValue(getCurrentUser().getEmail());
+        email.setReadOnly(true);
 
-        //ToDo: sobald Geburtsdatum in Datenbank vorhanden ist BDay abfragen
-        dateOfBirth.setPlaceholder("'Platzhalter Geburtstag'");
-        dateOfBirth.setEnabled(false);
+        if(getCurrentUser().getDateOfBirth() == null) dateOfBirth.setPlaceholder("'Platzhalter Geburtstag'");
+        else dateOfBirth.setValue(getCurrentUser().getDateOfBirth());
+        dateOfBirth.setReadOnly(true);
 
-        role.setPrefixComponent(new Div(new Text(getCurrentUser().getRole())));
-        role.setEnabled(false);
+        if(getCurrentUser().getFaculty() == null) faculty.setPlaceholder("Z.B. Informatik");
+        else faculty.setValue(getCurrentUser().getFaculty());
+        faculty.setReadOnly(true);
 
-        // ToDo: fehlende Attribute einbiden
+        if(getCurrentUser().getSemester() == 0) semester.setPlaceholder("1");
+        else semester.setValue(getCurrentUser().getSemester());
+        semester.setReadOnly(true);
+
+        if(getCurrentUser().getSpecialization() == null) specialization.setPlaceholder("Z.B. Visual Computing");
+        else specialization.setValue(getCurrentUser().getSpecialization());
+        specialization.setReadOnly(true);
+
+        if(getCurrentUser().getDescription() == null) description.setPlaceholder("Beschreibe dich selbst!");
+        else description.setValue(getCurrentUser().getDescription());
+        description.setReadOnly(true);
+
+        if(getCurrentUser().getProfilePicture() == null) image.setAlt("User Bild");
+
+        role.setValue(getCurrentUser().getRole());
+        role.setReadOnly(true);
+
 
         FormLayout formLayout = new FormLayout();
 
         formLayout.add(
                 firstName, lastName,
                 email, dateOfBirth,
+                faculty, semester,
+                specialization, description,
                 role);
 
         return formLayout;
@@ -226,7 +262,20 @@ public class ProfilView extends Div {
         buttonLayout.add(save);
         buttonLayout.add(cancel);
 
-        save.addClickListener(event -> navigateToSubBarShowStudentAttributesWithSave());
+        save.addClickListener(event -> {
+            if(binder.validate().isOk()){
+                try {
+                    binderBindFieldsStudent();
+                    boolean isOK = userService.updateUser(binder.getBean());
+                    if(isOK){
+                        navigateToSubBarShowStudentAttributesWithSave();
+                        Notification.show("Änderungen erfolgreich gespeichert");
+                    }
+                } catch (DatabaseLayerException | ValidationException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         cancel.addClickListener(event -> navigateToSubBarShowStudentAttributesWithoutSave());
 
         return buttonLayout;
@@ -235,21 +284,29 @@ public class ProfilView extends Div {
     private Component createFormLayoutEditStudentAttributes() {
         setFieldsStudentAttributes();
 
-        firstName.setPlaceholder(getCurrentUser().getFirstName());
-        lastName.setPlaceholder(getCurrentUser().getLastName());
-        email.setPlaceholder(getCurrentUser().getEmail());
-        //ToDo: sobald Geburtsdatum in Datenbank vorhanden ist BDay abfragen
-        dateOfBirth.setPlaceholder("'Platzhalter Geburtsdatum'");
+        firstName.setValue(getCurrentUser().getFirstName());
+        lastName.setValue(getCurrentUser().getLastName());
+        email.setValue(getCurrentUser().getEmail());
+        email.setReadOnly(true);
+        if(getCurrentUser().getDateOfBirth() == null){
+            dateOfBirth.setPlaceholder("'Platzhalter Geburtsdatum'");
+        } else {
+            dateOfBirth.setValue(getCurrentUser().getDateOfBirth());
+        }
+        if(!(getCurrentUser().getFaculty() == null)) faculty.setValue(getCurrentUser().getFaculty());
+        if(!(getCurrentUser().getSemester() == 0)) semester.setValue(getCurrentUser().getSemester());
+        if(!(getCurrentUser().getSpecialization() == null)) specialization.setValue(getCurrentUser().getSpecialization());
+        if(!(getCurrentUser().getDescription() == null)) description.setValue(getCurrentUser().getDescription());
 
-        // ToDo: fehlende Attribute einbinden
-
-        role.setPrefixComponent(new Div(new Text(getCurrentUser().getRole())));
-        role.setEnabled(false);
+        role.setValue(getCurrentUser().getRole());
+        role.setReadOnly(true);
 
         FormLayout formLayout = new FormLayout();
 
         formLayout.add(firstName, lastName,
                 email, dateOfBirth,
+                faculty, semester,
+                specialization, description,
                 role);
 
         return formLayout;
@@ -271,21 +328,27 @@ public class ProfilView extends Div {
     private Component createFormLayoutShowCompanyAttributes() {
         setFieldsCompanyAttributes();
 
-        companyName.setPrefixComponent(new Div(new Text(getCurrentUser().getCompanyName())));
-        companyName.setEnabled(false);
+        companyName.setValue(getCurrentUser().getCompanyName());
+        companyName.setReadOnly(true);
 
-        email.setPrefixComponent(new Div(new Text(getCurrentUser().getEmail())));
-        email.setEnabled(false);
+        email.setValue(getCurrentUser().getEmail());
+        email.setReadOnly(true);
 
-        role.setPrefixComponent(new Div(new Text(getCurrentUser().getRole())));
-        role.setEnabled(false);
+        role.setValue(getCurrentUser().getRole());
+        role.setReadOnly(true);
 
-        // ToDo: fehlende Attribute einbinden
+        if(getCurrentUser().getBranche() == null) description.setPlaceholder("Chemie");
+        else branch.setValue(getCurrentUser().getBranche());
+        branch.setReadOnly(true);
+
+        if(getCurrentUser().getDescription() == null) description.setPlaceholder("Beschreibe dein Unternehmen.");
+        else description.setValue(getCurrentUser().getDescription());
+        description.setReadOnly(true);
 
         FormLayout formLayout = new FormLayout();
 
-        formLayout.add(companyName, email,
-                role);
+        formLayout.add(companyName, email, branch,
+                role, description);
 
         return formLayout;
     }
@@ -300,7 +363,21 @@ public class ProfilView extends Div {
         buttonLayout.add(save);
         buttonLayout.add(cancel);
 
-        save.addClickListener(event -> navigateToSubBarShowCompanyAttributesWithSaving());
+        save.addClickListener(event -> {
+            if(binder.validate().isOk()){
+                try {
+                    binderBindFieldsCompany();
+                    boolean isOK = userService.updateUser(binder.getBean());
+                    if(isOK){
+                        navigateToSubBarShowCompanyAttributesWithSaving();
+                        Notification.show("Änderungen erfolgreich gespeichert");
+                    }
+
+                } catch (DatabaseLayerException | ValidationException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         cancel.addClickListener(event -> navigateToSubBarShowCompanyAttributesWithoutSaving());
 
         return buttonLayout;
@@ -309,18 +386,23 @@ public class ProfilView extends Div {
     private Component createFormLayoutEditCompanyAttributes() {
         setFieldsCompanyAttributes();
 
-        companyName.setPlaceholder(getCurrentUser().getCompanyName());
-        email.setPlaceholder(getCurrentUser().getEmail());
+        companyName.setValue(getCurrentUser().getCompanyName());
+        email.setValue(getCurrentUser().getEmail());
+        email.setReadOnly(true);
 
-        // ToDo: fehlende Attribute einbinden
+        if(getCurrentUser().getDescription() == null) description.setPlaceholder("Beschreibe dein Unternehmen");
+        else description.setValue(getCurrentUser().getDescription());
 
-        role.setPrefixComponent(new Div(new Text(getCurrentUser().getRole())));
-        role.setEnabled(false);
+        if(getCurrentUser().getBranche() == null) description.setPlaceholder("Chemie");
+        else branch.setValue(getCurrentUser().getBranche());
+
+        role.setValue(getCurrentUser().getRole());
+        role.setReadOnly(true);
 
         FormLayout formLayout = new FormLayout();
 
-        formLayout.add(companyName, email,
-                role);
+        formLayout.add(companyName, email, branch,
+                role, description);
 
         return formLayout;
     }
@@ -340,7 +422,7 @@ public class ProfilView extends Div {
         return formLayout;
     }
 
-    //ToDo: Buttonlayout
+    // Buttonlayout
     private Component createButtonLayoutTabSecuritySettings() {
         content.removeAll();
 
@@ -348,10 +430,27 @@ public class ProfilView extends Div {
         buttonLayout.add(save);
         buttonLayout.add(cancel);
 
-        cancel.addClickListener(event -> navigateToSubBarSecuritySettingsWithoutSaving());
-        // ToDo: Popup bei erfolgreichem ändern
-        save.addClickListener(event -> navigateToSubBarSecuritySettingsWithSaving());
+        cancel.addClickListener(event -> {
+            navigateToSubBarSecuritySettingsWithoutSaving();
+        });
 
+        save.addClickListener(event -> {
+            try{
+                if(binder.validate().isOk()){
+                    binderBindPassword();
+                    boolean isOK = userService.updateUserPassword(binder.getBean(), oldPassword.getValue(), getCurrentUser().getEmail());
+                    if(isOK) {
+                        navigateToSubBarSecuritySettingsWithSaving();
+                        Notification.show("Änderungen erfolgreich gespeichert.");
+                    }
+                    else Notification.show("Änderungen konnten nicht gespeichert werden.");
+                } else Notification.show("Änderungen konnten nicht gespeichert werden.");
+
+            } catch (DatabaseLayerException | NoSuchAlgorithmException | ValidationException | InvalidKeySpecException e) {
+                e.printStackTrace();
+            }
+
+        });
         return buttonLayout;
     }
 
@@ -365,25 +464,6 @@ public class ProfilView extends Div {
     }
 
     private void navigateToSubBarShowStudentAttributesWithSave() {
-        //ToDo: save new input
-        if (firstName != null) {
-            binder.forField(firstName)
-                    .bind(UserDTOImpl::getFirstName, UserDTOImpl::setFirstName);
-        } else if (lastName != null) {
-            binder.forField(lastName)
-                    .bind(UserDTOImpl::getLastName, UserDTOImpl::setLastName);
-        } else if (email != null) {
-            binder.forField(email)
-                    .bind(UserDTOImpl::getEmail, UserDTOImpl::setEmail);
-        } else if (dateOfBirth != null) {
-            //ToDo: sobald Geburtsdatum in Datenbank vorhanden ist anpassen, dass BDay geändert weden kann
-        }
-
-        binder.readBean((UserDTOImpl) getCurrentUser());
-        clearForm();
-
-        content.removeAll();
-
         content.add(createButtonLayoutShowStudentAttributes());
         content.add(createFormLayoutShowStudentAttributes());
     }
@@ -403,13 +483,8 @@ public class ProfilView extends Div {
         content.add(createButtonLayoutEditCompanyAttributes());
         content.add(createFormLayoutEditCompanyAttributes());
     }
-    // ToDo
+
     private void navigateToSubBarShowCompanyAttributesWithSaving() {
-        // ToDo: Pop-up einfügen für erfolgreiches ändern
-        // ToDo: ManageExistingUserControl einbinden
-
-        content.removeAll();
-
         content.add(createButtonLayoutShowCompanyAttributes());
         content.add(createFormLayoutShowCompanyAttributes());
     }
@@ -430,19 +505,66 @@ public class ProfilView extends Div {
         content.add(createFormLayoutChangePassword());
     }
 
-    // ToDo
+
     private void navigateToSubBarSecuritySettingsWithSaving() {
-        // ToDo: Pop-up einfügen für erfolgreiches ändern
-        // ToDo: Passwort ändern einfügen
-
-        content.removeAll();
-
         content.add(createButtonLayoutTabSecuritySettings());
         content.add(createFormLayoutChangePassword());
     }
 
 
     // ------  other necessary functions  ------
+
+    private void binderBindFieldsStudent() throws ValidationException {
+        binder.forField(firstName)
+                .bind(UserDTOImpl::getFirstName, UserDTOImpl::setFirstName);
+        binder.forField(description)
+                .bind(UserDTOImpl::getDescription, UserDTOImpl::setDescription);
+        binder.forField(lastName)
+                .bind(UserDTOImpl::getLastName, UserDTOImpl::setLastName);
+        binder.forField(email)
+                .bind(UserDTOImpl::getEmail, UserDTOImpl::setEmail);
+        binder.forField(dateOfBirth)
+                .bind(UserDTOImpl::getDateOfBirth, UserDTOImpl::setDateOfBirth);
+        binder.forField(faculty)
+                .bind(UserDTOImpl::getFaculty, UserDTOImpl::setFaculty);
+        binder.forField(semester)
+                .bind(UserDTOImpl::getSemester, UserDTOImpl::setSemester);
+        binder.forField(specialization)
+                .bind(UserDTOImpl::getSpecialization, UserDTOImpl::setSpecialization);
+        binder.forField(role)
+                .bind(UserDTOImpl::getRole, UserDTOImpl::setRole);
+        binder.writeBean((UserDTOImpl) getCurrentUser());
+
+        clearForm();
+    }
+
+    private void binderBindFieldsCompany() throws ValidationException {
+        binder.forField(role)
+                .bind(UserDTOImpl::getRole, UserDTOImpl::setRole);
+        binder.forField(description)
+                .bind(UserDTOImpl::getDescription, UserDTOImpl::setDescription);
+        binder.forField(email)
+                .bind(UserDTOImpl::getEmail, UserDTOImpl::setEmail);
+        binder.forField(companyName)
+                .bind(UserDTOImpl::getCompanyName, UserDTOImpl::setCompanyName);
+        binder.forField(branch)
+                .bind(UserDTOImpl::getBranche, UserDTOImpl::setBranche);
+        binder.writeBean((UserDTOImpl) getCurrentUser());
+
+        clearForm();
+    }
+
+    private void binderBindPassword() throws ValidationException {
+        binder.forField(newPassword)
+                .bind(UserDTOImpl::getPassword, UserDTOImpl::setPassword);
+        binder.forField(newPasswordAgain)
+                .bind(UserDTOImpl::getConfirmPassword, UserDTOImpl::setConfirmPassword);
+        binder.writeBean((UserDTOImpl) getCurrentUser());
+
+        clearForm();
+    }
+
+
     private void clearForm() {
         binder.setBean((UserDTOImpl) getCurrentUser());
     }

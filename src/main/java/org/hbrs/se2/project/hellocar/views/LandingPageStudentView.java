@@ -7,7 +7,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
-import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -15,8 +14,7 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.*;
-import org.apache.commons.lang3.StringUtils;
-import org.hbrs.se2.project.hellocar.control.JobApplicationControl;
+import org.hbrs.se2.project.hellocar.control.JobControl;
 import org.hbrs.se2.project.hellocar.dtos.StellenanzeigeDTO;
 import org.hbrs.se2.project.hellocar.dtos.impl.StellenanzeigeDTOImpl;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
@@ -26,6 +24,8 @@ import javax.swing.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+
+import static org.hbrs.se2.project.hellocar.views.showJobCompanyView.createFilter;
 
 /**
  * The LandingPageStudent is the home page for users with the role = "Student".
@@ -42,17 +42,19 @@ public class LandingPageStudentView extends Div {
 
     private List<StellenanzeigeDTO> jobList;
 
-    private Component createTitle() {
-        return new H2("Stellenanzeigen");
-    }
 
-    public LandingPageStudentView(JobApplicationControl jobApplicationControl) throws DatabaseLayerException {
+    public LandingPageStudentView(JobControl jobControl) throws DatabaseLayerException {
         addClassName("landing-page");
 
-        jobList = jobApplicationControl.readAllJobApplications();
+        jobList = jobControl.readAllJobApplications();
 
         add(createTitle());
-        add(createGridTable());
+
+        if(jobList.isEmpty()){
+            add(NotJobFound());
+        }else {
+            add(createGridTable());
+        }
     }
 
     private Component createGridTable() {
@@ -196,4 +198,6 @@ public class LandingPageStudentView extends Div {
     private void navigateToJobApplicationView(int jobId) {
         UI.getCurrent().navigate(Globals.Pages.JOB_APPLICATION_VIEW + jobId);
     }
+
+    private Component NotJobFound() { return new H4("   keine Stellenanzeigen gefunden"); }
 }
