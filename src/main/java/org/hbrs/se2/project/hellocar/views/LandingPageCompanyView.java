@@ -28,7 +28,7 @@ import static org.hbrs.se2.project.hellocar.util.Globals.JobStatus.*;
  * The LandingPageCompanyView is the home page for user with the role 'employer'.
  */
 @Route(value = Globals.Pages.LANDING_PAGE_COMPANY_VIEW, layout = AppView.class)
-@PageTitle("Startseite")
+@PageTitle("Bewerbungen einsehen")
 @CssImport("./styles/views/landingpage/landing-page.css")
 public class LandingPageCompanyView extends Div {
 
