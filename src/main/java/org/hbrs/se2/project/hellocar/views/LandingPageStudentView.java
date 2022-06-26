@@ -7,6 +7,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -14,6 +15,7 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.*;
+import org.apache.commons.lang3.StringUtils;
 import org.hbrs.se2.project.hellocar.control.JobControl;
 import org.hbrs.se2.project.hellocar.dtos.StellenanzeigeDTO;
 import org.hbrs.se2.project.hellocar.dtos.impl.StellenanzeigeDTOImpl;
@@ -55,6 +57,10 @@ public class LandingPageStudentView extends Div {
         }else {
             add(createGridTable());
         }
+    }
+
+    private Component createTitle() {
+        return new H2("Stellenanzeigen");
     }
 
     private Component createGridTable() {
