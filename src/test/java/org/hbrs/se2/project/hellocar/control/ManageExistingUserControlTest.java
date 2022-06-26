@@ -13,6 +13,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
 import static org.hbrs.se2.project.hellocar.util.Globals.Roles.STUDENT;
+import static org.hbrs.se2.project.hellocar.util.Globals.Roles.UNTERNEHMEN;
 
 
 class ManageExistingUserControlTest {
@@ -67,6 +68,8 @@ class ManageExistingUserControlTest {
                 .withSpecialization(NEW_SPECIALIZATION)
                 .withPassword(SECRET)
                 .build();
+
+
     }
 
     @Test
@@ -81,7 +84,7 @@ class ManageExistingUserControlTest {
     }
 
     @Test
-    void updateUserTest() throws DatabaseLayerException, NoSuchAlgorithmException, InvalidKeySpecException {
+    void updateUserStudentTest() throws DatabaseLayerException, NoSuchAlgorithmException, InvalidKeySpecException {
 
         Assertions.assertTrue(manageExistingUserControl.updateUser(student));
 
@@ -98,6 +101,27 @@ class ManageExistingUserControlTest {
     }
 
     @Test
+    void updateUserCompanyTest() throws DatabaseLayerException, NoSuchAlgorithmException, InvalidKeySpecException {
+
+        UserDTOImpl company = UserBuilder
+                .getInstance()
+                .createDefaultUserCompany()
+                .build();
+
+        Assertions.assertTrue(manageExistingUserControl.updateUser(company));
+
+        UserDTO user = userDAO.findUserByUserEmailAndPassword(company.getEmail(), RegistrationControl.hashPassword(company.getPassword()));
+
+        Assertions.assertEquals(company.getEmail(), user.getEmail());
+        Assertions.assertEquals(company.getRole(), user.getRole());
+        Assertions.assertEquals(company.getDescription(), user.getDescription());
+        Assertions.assertEquals(company.getBranche(), user.getBranche());
+        Assertions.assertEquals(company.getCompanyName(), user.getCompanyName());
+    }
+
+
+
+    @Test
     void deleteUserTest() throws DatabaseLayerException, NoSuchAlgorithmException, InvalidKeySpecException {
 
         UserDTOImpl stud = UserBuilder
@@ -111,7 +135,25 @@ class ManageExistingUserControlTest {
                 .withLastName("Rich")
                 .build();
 
+        UserDTOImpl company = UserBuilder
+                .getInstance()
+                .createNewUser()
+                .withEmail("companytest@company.de")
+                .withCompanyName("company")
+                .withRole(UNTERNEHMEN)
+                .withPassword(SECRET)
+                .withConfirmPassword(SECRET)
+                .withBranche("IT")
+                .build();
+
         Assertions.assertTrue(registrationControl.createUser(stud));
+        Assertions.assertTrue(registrationControl.createUser(company));
         Assertions.assertTrue(manageExistingUserControl.deleteUser(stud));
+        Assertions.assertTrue(manageExistingUserControl.deleteUser(company));
+    }
+
+    @Test
+    void updateProfilPictureTest() {
+        Assertions.assertFalse(manageExistingUserControl.updateProfilePicture(student));
     }
 }
