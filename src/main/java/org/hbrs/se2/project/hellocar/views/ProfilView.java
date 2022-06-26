@@ -173,6 +173,9 @@ public class ProfilView extends Div {
                 content.add(createFormLayoutShowCompanyAttributes());
             }
 
+            save.addThemeVariants(ButtonVariant.LUMO_SUCCESS, ButtonVariant.LUMO_PRIMARY);
+            cancel.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
+
         } else if (tab.equals(securitySettings)) {
             content.add(createButtonLayoutTabSecuritySettings());
             content.add(createFormLayoutChangePassword());
