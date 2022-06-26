@@ -38,10 +38,6 @@ class ManageExistingUserControlTest {
 
         manageExistingUserControl = new ManageExistingUserControl();
 
-        loginControl = new LoginControl();
-
-        userDAO = new UserDAO();
-
         student = UserBuilder
                 .getInstance()
                 .createNewUser()
