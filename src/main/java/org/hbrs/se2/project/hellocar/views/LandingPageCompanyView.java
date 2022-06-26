@@ -43,7 +43,6 @@ public class LandingPageCompanyView extends Div {
 
         add(createTitle());
 
-
         Grid<UserDTO> grid = new Grid<>();
         grid.setHeight("800px");
 
@@ -69,7 +68,6 @@ public class LandingPageCompanyView extends Div {
 
         grid.addColumn(UserDTO::getStatus)
                 .setHeader("Status");
-
 
         grid.addComponentColumn( job -> {
             Button saveButton = new Button("Annehmen");
@@ -120,8 +118,11 @@ public class LandingPageCompanyView extends Div {
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.addThemeVariants(GridVariant.LUMO_WRAP_CELL_CONTENT);
 
-        add(grid);
-
+        if(bewerbungslist.isEmpty()){
+            add(NotJobFound());
+        }else {
+            add(grid);
+        }
     }
 
     private Component createTitle() { return new H2("Bewerbungen Von Studenten"); }
@@ -129,4 +130,6 @@ public class LandingPageCompanyView extends Div {
     private UserDTO getCurrentUser() {
         return (UserDTO) UI.getCurrent().getSession().getAttribute(Globals.CURRENT_USER);
     }
+
+    private Component NotJobFound() { return new H4("   keine Bewerbungen eingegangen"); }
 }
