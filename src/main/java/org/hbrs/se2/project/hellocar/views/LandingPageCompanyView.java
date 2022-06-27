@@ -193,17 +193,16 @@ public class LandingPageCompanyView extends Div {
                     TextField faculty = new TextField("Fakultät");
                     //faculty.setValue(userDTO.getFaculty());
                     faculty.setWidth("40em");
-                    faculty.setEnabled(false);
+                    faculty.setReadOnly(true);
 
                     TextField semester = new TextField("Semester");
                     //semester.setValue(String.valueOf(userDTO.getSemester()));
                     semester.setWidth("10em");
-                    semester.setEnabled(false);
+                    semester.setReadOnly(true);
 
                     TextField specialization = new TextField("Spezialisierung");
                     //specialization.setValue(userDTO.getSpecialization());
                     specialization.setWidth("40em");
-                    //specialization.setEnabled(false);
                     specialization.setReadOnly(true);
 
                     studentDetailsLayout.add(faculty, specialization, semester);
@@ -214,7 +213,7 @@ public class LandingPageCompanyView extends Div {
                     TextArea descriptionStudent = new TextArea();
                     //description.setValue(userDTO.getDescription());
                     descriptionStudent.setWidthFull();
-                    descriptionStudent.setEnabled(false);
+                    descriptionStudent.setReadOnly(true);
 
                     descriptionLayout.add(new H6("Studentenbeschreibung:"));
                     descriptionLayout.add(descriptionStudent);
@@ -225,22 +224,21 @@ public class LandingPageCompanyView extends Div {
                     TextField title = new TextField("Titel");
                     // title.setValue(); mit StellanzeigenDTO
                     title.setWidth("40em");
-                    title.setEnabled(false);
+                    title.setReadOnly(true);
 
                     TextField dateOfDeployment = new TextField("Einstellungsdatum");
                     //dateOfDeployment.setValue();
                     dateOfDeployment.setWidth("12em");
-                    dateOfDeployment.setEnabled(false);
+                    dateOfDeployment.setReadOnly(true);
 
                     TextField salary = new TextField("Gehalt");
                     salary.setValue("noch ein TEst");
                     salary.setWidth("10em");
-                    salary.setEnabled(false);
+                    salary.setReadOnly(true);
 
                     TextField hoursPerWeek = new TextField("Wochenstunden");
                     hoursPerWeek.setValue("TEst");
                     hoursPerWeek.setWidth("10em");
-                    //hoursPerWeek.setEnabled(false);
                     hoursPerWeek.setReadOnly(true);
 
                     jobLayout.add(title, dateOfDeployment, salary, hoursPerWeek);
@@ -251,7 +249,6 @@ public class LandingPageCompanyView extends Div {
                     TextArea descriptionJob = new TextArea();
                     //descriptionJob.setValue();
                     descriptionJob.setWidthFull();
-                    //descriptionJob.setEnabled(false);
                     descriptionJob.setReadOnly(true);
 
                     jobDescriptionLayout.add(new H6("Stellenbeschreibung"));
