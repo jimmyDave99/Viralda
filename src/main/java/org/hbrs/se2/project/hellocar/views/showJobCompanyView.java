@@ -78,17 +78,20 @@ public class showJobCompanyView extends Div {
 
         Grid.Column<StellenanzeigeDTO> idColumn = grid
                 .addColumn(StellenanzeigeDTO::getStellenId)
-                .setHeader("Stellen ID")
+                .setHeader("Stellen-ID")
+                .setWidth("6em").setFlexGrow(0)
                 .setSortable(true);
 
         Grid.Column<StellenanzeigeDTO> titleColumn = grid
                 .addColumn(StellenanzeigeDTO::getTitel)
                 .setHeader("Titel")
+                .setWidth("40em").setFlexGrow(0)
                 .setSortable(true);
 
         Grid.Column<StellenanzeigeDTO> dateOfDeploymentColumn = grid
                 .addColumn(StellenanzeigeDTO::getEinstellungsdatum)
                 .setHeader("Einstellungsdatum")
+                .setWidth("12em").setFlexGrow(0)
                 .setSortable(true);
 
         Grid.Column<StellenanzeigeDTO> salaryColumn = grid
