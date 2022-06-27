@@ -98,7 +98,7 @@ public class LandingPageStudentView extends Div {
         Grid.Column<StellenanzeigeDTO> hoursPerWeekColumn = grid
                 .addColumn(StellenanzeigeDTO::getWochenstunden)
                 .setHeader("Wochenstunden")
-                .setWidth("9em").setFlexGrow(0)
+                .setWidth("10em").setFlexGrow(0)
                 .setSortable(true);
 
         grid.addComponentColumn(job -> {
