@@ -11,10 +11,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.grid.editor.Editor;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.H4;
-import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -182,11 +179,12 @@ public class showJobCompanyView extends Div {
                     VerticalLayout layout = new VerticalLayout();
 
                     TextArea details = new TextArea();
+
                     details.setValue(stellenanzeigeDTO.getBeschreibung());
                     details.setWidthFull();
                     details.setEnabled(false);
 
-                    layout.add(new H4("Stellenbeschreibung:"));
+                    layout.add(new H5("Stellenbeschreibung:"));
                     layout.add(details);
 
                     return layout;
