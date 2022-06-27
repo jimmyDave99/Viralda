@@ -71,7 +71,7 @@ public class LandingPageCompanyView extends Div {
 
         grid.addComponentColumn( job -> {
             Button saveButton = new Button("Annehmen");
-            saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+            saveButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS, ButtonVariant.LUMO_PRIMARY);
             saveButton.addClickListener(e -> {
                 try {
                     jobApplicationControl.updateJobApplicationStatus(job.getStelleId(), job.getStudentId(), ANGENOMMEN);
@@ -86,7 +86,7 @@ public class LandingPageCompanyView extends Div {
 
         grid.addComponentColumn( job -> {
             Button saveButton = new Button("Ablehnen");
-            saveButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+            saveButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
             saveButton.addClickListener(e -> {
                 try {
                     jobApplicationControl.updateJobApplicationStatus(job.getStelleId(), job.getStudentId(), ABGELEHNT);

@@ -7,17 +7,16 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.html.H4;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
 import com.vaadin.flow.data.provider.ListDataProvider;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.*;
 import org.hbrs.se2.project.hellocar.control.JobApplicationControl;
 import org.hbrs.se2.project.hellocar.control.JobControl;
@@ -106,11 +105,11 @@ public class JobApplictionView extends VerticalLayout implements HasUrlParameter
         ListDataProvider<StellenanzeigeDTO> dataProvider = new ListDataProvider<>(currentJob);
         grid.setDataProvider(dataProvider);
 
-        grid.addColumn(StellenanzeigeDTO::getBeschreibung)
-                .setHeader("Beschreibung der Stelle").setWidth("450px").setFlexGrow(0);
+        grid.addColumn(StellenanzeigeDTO::getUnternehmenId)
+                        .setHeader("Unternehmen");
 
         grid.addColumn(StellenanzeigeDTO::getEinstellungsdatum)
-                .setHeader("Einstieg");
+                .setHeader("Einstellungsdatum");
 
         grid.addColumn(StellenanzeigeDTO::getGehalt)
                 .setHeader("Gehalt");
@@ -123,11 +122,30 @@ public class JobApplictionView extends VerticalLayout implements HasUrlParameter
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.addThemeVariants(GridVariant.LUMO_WRAP_CELL_CONTENT);
 
+        // Einstellungen zum Toggle
+        //grid.setDetailsVisibleOnClick(false); // entfernt toggle
+        grid.setItemDetailsRenderer(
+                new ComponentRenderer<>(stellenanzeigeDTO -> {
+                    VerticalLayout layout = new VerticalLayout();
+
+                    TextArea details = new TextArea();
+
+                    details.setValue(stellenanzeigeDTO.getBeschreibung());
+                    details.setWidthFull();
+                    details.setEnabled(false);
+
+                    layout.add(new H5("Stellenbeschreibung:"));
+                    layout.add(details);
+
+                    return layout;
+                })
+        );
+
         return grid;
     }
 
     private Component createTitle(String title) {
-        return new H2("Bewerbung für die Stelle " + title);
+        return new H2("Bewerbung für die Stelle: " + title);
     }
 
     private Component createJobStatus(String status) {
