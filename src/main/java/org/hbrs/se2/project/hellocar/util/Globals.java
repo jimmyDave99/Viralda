@@ -32,7 +32,7 @@ public class Globals {
 
     public static class JobStatus {
         public static final String BEWORBEN = "BEWORBEN";
-        public static final String ZURUCKGEZOGEN = "ZURUCKGEZOGEN";
+        public static final String ZURUCKGEZOGEN = "ZURÜCKGEZOGEN";
         public static final String ABGELEHNT = "ABGELEHNT";
         public static final String ANGENOMMEN = "ANGENOMMEN";
         public static final String AKTIV = "AKTIV";

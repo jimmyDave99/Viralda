@@ -37,7 +37,7 @@ public class LandingPageStudentView extends Div {
 
     protected static volatile int jobId = 0;
 
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private List<StellenanzeigeDTO> jobList;
 
@@ -57,7 +57,7 @@ public class LandingPageStudentView extends Div {
     }
 
     private Component createTitle() {
-        return new H2("Stellenanzeigen");
+        return new H2("Aktuell verfügbare Stellenanzeigen");
     }
 
     private Component createGridTable() {
@@ -75,7 +75,7 @@ public class LandingPageStudentView extends Div {
         Grid.Column<StellenanzeigeDTO> companyNameColumn = grid
                 .addColumn(StellenanzeigeDTO::getUnternehmenId)
                 .setHeader("Unternehmen")
-                .setWidth("20em").setFlexGrow(0)
+                .setWidth("30em").setFlexGrow(0)
                 .setSortable(true);
 
         Grid.Column<StellenanzeigeDTO> titleColumn = grid
