@@ -75,6 +75,7 @@ public class LandingPageStudentView extends Div {
         Grid.Column<StellenanzeigeDTO> companyNameColumn = grid
                 .addColumn(StellenanzeigeDTO::getUnternehmenId)
                 .setHeader("Unternehmen")
+                .setWidth("20em").setFlexGrow(0)
                 .setSortable(true);
 
         Grid.Column<StellenanzeigeDTO> titleColumn = grid
@@ -85,16 +86,19 @@ public class LandingPageStudentView extends Div {
         Grid.Column<StellenanzeigeDTO> dateOfDeploymentColumn = grid
                 .addColumn(StellenanzeigeDTO::getEinstellungsdatum)
                 .setHeader("Einstellungsdatum")
+                .setWidth("12em").setFlexGrow(0)
                 .setSortable(true);
 
         Grid.Column<StellenanzeigeDTO> salaryColumn = grid
                 .addColumn(StellenanzeigeDTO::getGehalt)
                 .setHeader("Gehalt")
+                .setWidth("8em").setFlexGrow(0)
                 .setSortable(true);
 
         Grid.Column<StellenanzeigeDTO> hoursPerWeekColumn = grid
                 .addColumn(StellenanzeigeDTO::getWochenstunden)
                 .setHeader("Wochenstunden")
+                .setWidth("9em").setFlexGrow(0)
                 .setSortable(true);
 
         grid.addComponentColumn(job -> {
