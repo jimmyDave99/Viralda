@@ -43,8 +43,8 @@ public class JobCompanyViewReworked extends VerticalLayout implements HasUrlPara
 
     @Override
     public void setParameter(BeforeEvent beforeEvent, String s) {
-        Location location = event.getLocation();
-        this.jobId = Integer.parseInt(location.getPath().replaceAll("[\\D]", ""));
+        //Location location = event.getLocation();
+        //this.jobId = Integer.parseInt(location.getPath().replaceAll("[\\D]", ""));
     }
 
 

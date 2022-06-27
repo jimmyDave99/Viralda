@@ -11,6 +11,8 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H4;
+import com.vaadin.flow.component.html.H5;
+import com.vaadin.flow.component.html.H6;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
@@ -210,24 +212,6 @@ public class JobCompanyView extends VerticalLayout implements HasUrlParameter<St
         actions.setPadding(false);
         editColumn.setEditorComponent(actions);
 
-        //grid.setDetailsVisibleOnClick(false); // entfernt toggle
-        upperGrid.setItemDetailsRenderer(
-                new ComponentRenderer<>(stellenanzeigeDTO -> {
-                    VerticalLayout layout = new VerticalLayout();
-
-                    TextArea details = new TextArea();
-
-                    details.setValue(stellenanzeigeDTO.getBeschreibung());
-                    details.setWidthFull();
-                    details.setEnabled(false);
-
-                    layout.add(new H4("Stellenbeschreibung:"));
-                    layout.add(details);
-
-                    return layout;
-                })
-        );
-
 
         upperGrid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
         upperGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
@@ -237,7 +221,7 @@ public class JobCompanyView extends VerticalLayout implements HasUrlParameter<St
 
         HorizontalLayout buttonLayout = new HorizontalLayout(publishButton, retrieveButton, deleteButton, cancelButton);
         buttonLayout.setPadding(true);
-        buttonLayout.addClassName("button-layout");
+        //buttonLayout.addClassName("button-layout");
         add(buttonLayout);
     }
 
