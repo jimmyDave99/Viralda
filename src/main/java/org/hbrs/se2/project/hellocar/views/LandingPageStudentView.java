@@ -36,6 +36,7 @@ import java.util.List;
 public class LandingPageStudentView extends Div {
 
     protected static volatile int jobId = 0;
+
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
 
     private List<StellenanzeigeDTO> jobList;
@@ -185,7 +186,6 @@ public class LandingPageStudentView extends Div {
                     VerticalLayout layout = new VerticalLayout();
 
                     TextArea details = new TextArea();
-
                     details.setValue(stellenanzeigeDTO.getBeschreibung());
                     details.setWidthFull();
                     details.setEnabled(false);
