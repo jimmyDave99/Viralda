@@ -64,7 +64,6 @@ public class UserDAO {
                         userDTO.setLastName(set.getString(4));
                         userDTO.setFaculty(set.getString(5));
                         userDTO.setSemester(set.getInt(6));
-                        //ToDo: userDTO.setDateOfBirth(set.getDate(8).toLocalDate());
                         userDTO.setSpecialization(set.getString(7));
                     }
                 } else if (userDTO.getRole().equals(UNTERNEHMEN)) {
@@ -206,15 +205,13 @@ public class UserDAO {
                                 ", fachbereich = ? " +
                                 ", semester = ? " +
                                 ", spezialisierung = ? " +
-                                //ToDo: ", geburtsdatum = ? " +
                                 "WHERE user_id = ?");
                 studentStatement.setString(1, userDTO.getFirstName());
                 studentStatement.setString(2, userDTO.getLastName());
                 studentStatement.setString(3, userDTO.getFaculty());
                 studentStatement.setInt(4, userDTO.getSemester());
                 studentStatement.setString(5, userDTO.getSpecialization());
-                //ToDo: studentStatement.setDate(6, Date.valueOf(userDTO.getDateOfBirth()));
-                studentStatement.setInt(7, userId);
+                studentStatement.setInt(6, userId);
                 studentStatement.executeUpdate();
             } else if (userDTO.getRole().equals(UNTERNEHMEN)) {
                 PreparedStatement unternehmenStatement = JDBCConnection.getInstance().getPreparedStatement(
