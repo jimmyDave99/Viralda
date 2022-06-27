@@ -190,28 +190,44 @@ public class LandingPageCompanyView extends Div {
 
                     HorizontalLayout studentDetailsLayout = new HorizontalLayout();
 
-                    TextField faculty = new TextField("Fakultät");
-                    //faculty.setValue(userDTO.getFaculty());
-                    faculty.setWidth("40em");
-                    faculty.setReadOnly(true);
+                    // Fachbereich
+                    TextField department = new TextField("Fachbereich");
 
+                    if (userDTO.getFaculty() != null) department.setValue(userDTO.getFaculty());
+                    else department.setValue("nicht eingetragen");
+
+                    department.setWidth("40em");
+                    department.setReadOnly(true);
+
+                    // Semester
                     TextField semester = new TextField("Semester");
-                    //semester.setValue(String.valueOf(userDTO.getSemester()));
+
+                    if (userDTO.getSemester() == 0) semester.setValue(String.valueOf(userDTO.getSemester()));
+                    else semester.setValue("nicht eingetragen");
+
                     semester.setWidth("10em");
                     semester.setReadOnly(true);
 
+                    // Spezialisierung
                     TextField specialization = new TextField("Spezialisierung");
-                    //specialization.setValue(userDTO.getSpecialization());
+
+                    if (userDTO.getSpecialization() != null) specialization.setValue(userDTO.getSpecialization());
+                    else specialization.setValue("nicht eingetragen");
+
                     specialization.setWidth("40em");
                     specialization.setReadOnly(true);
 
-                    studentDetailsLayout.add(faculty, specialization, semester);
+                    studentDetailsLayout.add(department, specialization, semester);
 
 
                     VerticalLayout descriptionLayout = new VerticalLayout();
 
+                    // Beschreibung Student
                     TextArea descriptionStudent = new TextArea();
-                    //description.setValue(userDTO.getDescription());
+
+                    if (userDTO.getDescription() != null) descriptionStudent.setValue(userDTO.getDescription());
+                    else descriptionStudent.setValue("Dieser Student besitzt leider keine nähere Beschreibung zu seiner Person.");
+
                     descriptionStudent.setWidthFull();
                     descriptionStudent.setReadOnly(true);
 
@@ -221,23 +237,44 @@ public class LandingPageCompanyView extends Div {
 
                     HorizontalLayout jobLayout = new HorizontalLayout();
 
+                    // Titel
                     TextField title = new TextField("Titel");
-                    // title.setValue(); mit StellanzeigenDTO
+
+                    if (userDTO.getTitle() != null) title.setValue(userDTO.getTitle());
+                    else title.setValue("nicht eingetragen");
+
                     title.setWidth("40em");
                     title.setReadOnly(true);
 
+                    // Einstellungsdatum
                     TextField dateOfDeployment = new TextField("Einstellungsdatum");
-                    //dateOfDeployment.setValue();
+
+                    if (userDTO.getDateOfDeployment() != null) dateOfDeployment.setValue(userDTO.getDateOfDeployment().toString());
+                    else dateOfDeployment.setValue("nicht eingetragen");
+
                     dateOfDeployment.setWidth("12em");
                     dateOfDeployment.setReadOnly(true);
 
+                    // Gehalt
                     TextField salary = new TextField("Gehalt");
-                    salary.setValue("noch ein TEst");
+
+                    if (userDTO.getSalary() != 0) salary.setValue(String.valueOf(userDTO.getSalary()));
+                    else salary.setValue("nicht eingetragen");
+
+                    Div euroSuffix = new Div();
+                    euroSuffix.setText("€");
+
+                    salary.setSuffixComponent(euroSuffix);
+
                     salary.setWidth("10em");
                     salary.setReadOnly(true);
 
+                    // Wochenstunden
                     TextField hoursPerWeek = new TextField("Wochenstunden");
-                    hoursPerWeek.setValue("TEst");
+
+                    if (userDTO.getHoursPerWeek() != 0) hoursPerWeek.setValue(String.valueOf(userDTO.getHoursPerWeek()));
+                    else hoursPerWeek.setValue("nicht eingetragen");
+
                     hoursPerWeek.setWidth("10em");
                     hoursPerWeek.setReadOnly(true);
 
@@ -246,8 +283,13 @@ public class LandingPageCompanyView extends Div {
 
                     VerticalLayout jobDescriptionLayout = new VerticalLayout();
 
+                    // Stellenbeschreibung
                     TextArea descriptionJob = new TextArea();
-                    //descriptionJob.setValue();
+
+                    // ToDo: Abfrage funktioniert noch nicht richtig
+                    if (userDTO.getEmploymentDescription() != null) descriptionJob.setValue(userDTO.getEmploymentDescription());
+                    else descriptionJob.setValue("Diese Stellenanzeige besitzt leider keine nähere Beschreibung.");
+
                     descriptionJob.setWidthFull();
                     descriptionJob.setReadOnly(true);
 
