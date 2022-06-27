@@ -34,7 +34,7 @@ import java.util.List;
 import static org.hbrs.se2.project.hellocar.util.Globals.JobStatus.*;
 import static org.hbrs.se2.project.hellocar.util.Globals.Pages.JOB_COMPANY_VIEW;
 
-//@Route(value = JOB_COMPANY_VIEW, layout = AppView.class)
+@Route(value = JOB_COMPANY_VIEW, layout = AppView.class)
 @PageTitle("Stellenanzeige des eigenen Unternehmens bearbeiten")
 @CssImport("./styles/views/showjobsfromcompany/show-jobs-from-company-view.css")
 public class JobCompanyView extends VerticalLayout implements HasUrlParameter<String> {
@@ -118,7 +118,8 @@ public class JobCompanyView extends VerticalLayout implements HasUrlParameter<St
         Grid.Column<StellenanzeigeDTO> brancheColumn = upperGrid.addColumn(StellenanzeigeDTO::getBereich)
                 .setHeader("Bereich");
 
-        Grid.Column<StellenanzeigeDTO> detailsColumn = upperGrid.addColumn(StellenanzeigeDTO::getBeschreibung);
+        Grid.Column<StellenanzeigeDTO> detailsColumn = upperGrid.addColumn(StellenanzeigeDTO::getBeschreibung)
+                .setHeader("Stellenbeschreibung");
 
         Grid.Column<StellenanzeigeDTO> dateColumn = upperGrid.addColumn(StellenanzeigeDTO::getEinstellungsdatum)
                 .setHeader("Einstieg");
@@ -217,12 +218,12 @@ public class JobCompanyView extends VerticalLayout implements HasUrlParameter<St
         upperGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         upperGrid.addThemeVariants(GridVariant.LUMO_WRAP_CELL_CONTENT);
 
-        add(upperGrid);
-
         HorizontalLayout buttonLayout = new HorizontalLayout(publishButton, retrieveButton, deleteButton, cancelButton);
         buttonLayout.setPadding(true);
         //buttonLayout.addClassName("button-layout");
         add(buttonLayout);
+
+        add(upperGrid);
     }
 
     private Component createTitle(String title) {
