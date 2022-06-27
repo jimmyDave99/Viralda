@@ -78,26 +78,32 @@ public class showJobCompanyView extends Div {
 
         Grid.Column<StellenanzeigeDTO> idColumn = grid
                 .addColumn(StellenanzeigeDTO::getStellenId)
-                .setHeader("Stellen ID");
+                .setHeader("Stellen ID")
+                .setSortable(true);
 
         Grid.Column<StellenanzeigeDTO> titleColumn = grid
                 .addColumn(StellenanzeigeDTO::getTitel)
-                .setHeader("Titel");
+                .setHeader("Titel")
+                .setSortable(true);
 
         Grid.Column<StellenanzeigeDTO> dateOfDeploymentColumn = grid
                 .addColumn(StellenanzeigeDTO::getEinstellungsdatum)
-                .setHeader("Einstellungsdatum");
+                .setHeader("Einstellungsdatum")
+                .setSortable(true);
 
         Grid.Column<StellenanzeigeDTO> salaryColumn = grid
                 .addColumn(StellenanzeigeDTO::getGehalt)
-                .setHeader("Gehalt");
+                .setHeader("Gehalt")
+                .setSortable(true);
 
         Grid.Column<StellenanzeigeDTO> hoursPerWeekColumn = grid
                 .addColumn(StellenanzeigeDTO::getWochenstunden)
-                .setHeader("Wochenstunden");
+                .setHeader("Wochenstunden")
+                .setSortable(true);
 
         grid.addColumn(StellenanzeigeDTO::getStatus)
-                .setHeader("Status");
+                .setHeader("Status")
+                .setSortable(true);
 
         grid.addComponentColumn(job -> {
             Button editButton = new Button("Bearbeiten");

@@ -1,6 +1,7 @@
 package org.hbrs.se2.project.hellocar.views;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -34,7 +35,7 @@ import java.util.List;
 import static org.hbrs.se2.project.hellocar.util.Globals.JobStatus.*;
 import static org.hbrs.se2.project.hellocar.util.Globals.Pages.JOB_COMPANY_VIEW;
 
-@Route(value = JOB_COMPANY_VIEW, layout = AppView.class)
+//@Route(value = JOB_COMPANY_VIEW, layout = AppView.class)
 @PageTitle("Stellenanzeige des eigenen Unternehmens bearbeiten")
 @CssImport("./styles/views/profile/profile.css")
 public class JobCompanyViewReworked extends Div implements HasUrlParameter<String> {
@@ -63,6 +64,7 @@ public class JobCompanyViewReworked extends Div implements HasUrlParameter<Strin
         add(createButtonLayout(jobControl));
 
         add(createFormLayout());
+        add(new Text(currentJob.get(0).getBeschreibung()));
     }
 
 
