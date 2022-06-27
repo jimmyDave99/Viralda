@@ -1,6 +1,7 @@
 package org.hbrs.se2.project.hellocar.views;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -56,10 +57,11 @@ public class EnterStellenanzeigeView extends Div {
 
         titel.setAutofocus(true);
 
-//        gehalt.setValue(8.0);
         Div euroSuffix = new Div();
         euroSuffix.setText("€");
+
         gehalt.setSuffixComponent(euroSuffix);
+        gehalt.setPlaceholder("Der Mindestlohn in Deutschland beträgt aktuell 9,60 pro Stunde.");
 
         einstellungsdatum.setMin(now);
         einstellungsdatum.setMax(now.plusDays(180));
@@ -146,6 +148,9 @@ public class EnterStellenanzeigeView extends Div {
         FormLayout formLayout = new FormLayout();
 
         formLayout.add(titel, bereich, gehalt, wochenstunden, einstellungsdatum);
+
+        gehalt.setValue(null);
+        wochenstunden.setValue(2.0);
 
         return formLayout;
     }
