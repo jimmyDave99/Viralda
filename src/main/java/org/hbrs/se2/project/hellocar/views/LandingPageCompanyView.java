@@ -52,22 +52,27 @@ public class LandingPageCompanyView extends Div {
 
         Grid.Column<UserDTO> stellenIdColumn = grid
                 .addColumn(UserDTO::getStelleId)
-                .setHeader("StelleID");
+                .setHeader("StelleID")
+                .setWidth("6em").setFlexGrow(0);
 
         grid.addColumn(UserDTO::getFirstName)
-                .setHeader("Vorname");
+                .setHeader("Vorname")
+                .setWidth("12em").setFlexGrow(0);
 
         grid.addColumn(UserDTO::getLastName)
-                .setHeader("Nachname");
+                .setHeader("Nachname")
+                .setWidth("20em").setFlexGrow(0);
 
         grid.addColumn(UserDTO::getEmail)
-                .setHeader("Email").setWidth("250px").setFlexGrow(0);
+                .setHeader("E-Mail-Adresse");
 
         grid.addColumn(UserDTO::getbewerbungsDatum)
-                .setHeader("BewerbungsDatum");
+                .setHeader("Bewerbungsdatum")
+                .setWidth("10em").setFlexGrow(0);
 
         grid.addColumn(UserDTO::getStatus)
-                .setHeader("Status");
+                .setHeader("Status")
+                .setWidth("8em").setFlexGrow(0);
 
         grid.addComponentColumn( job -> {
             Button saveButton = new Button("Annehmen");
