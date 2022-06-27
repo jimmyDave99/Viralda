@@ -36,11 +36,12 @@ import static org.hbrs.se2.project.hellocar.util.Globals.Pages.JOB_APPLICATION_V
 @Route(value = JOB_APPLICATION_VIEW, layout = AppView.class)
 @PageTitle("Bewerben")
 @CssImport("./styles/views/landingpage/landing-page.css")
-public class JobApplictionView extends VerticalLayout implements HasUrlParameter<String>{
+public class JobApplictionView extends VerticalLayout implements HasUrlParameter<String> {
 
     UserDTO currentUser = this.getCurrentUser();
 
     int jobId = 0;
+
     @Override
     public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
         Location location = event.getLocation();
@@ -49,7 +50,7 @@ public class JobApplictionView extends VerticalLayout implements HasUrlParameter
 
     private List<StellenanzeigeDTO> currentJob;
 
-    public  JobApplictionView(JobApplicationControl jobApplicationControl, JobControl jobControl) throws DatabaseLayerException {
+    public JobApplictionView(JobApplicationControl jobApplicationControl, JobControl jobControl) throws DatabaseLayerException {
 
         addClassName("job-application");
 
@@ -58,6 +59,8 @@ public class JobApplictionView extends VerticalLayout implements HasUrlParameter
         add(createTitle(currentJob.get(0).getTitel()));
 
         add(createJobStatus(jobApplicationControl.getJobStatus(currentJob.get(0), currentUser)));
+
+        add(createButtonLayout(jobApplicationControl));
 
         add(createGridTable());
 
@@ -94,39 +97,9 @@ public class JobApplictionView extends VerticalLayout implements HasUrlParameter
         });
 
         add(upload);
-
-        Button saveButton = new Button("Bewerben");
-        saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        saveButton.addClickListener(event -> {
-
-            try {
-                jobApplicationControl.createJobApplication(currentJob.get(0), currentUser, BEWORBEN);
-            } catch (DatabaseLayerException e) {
-                e.printStackTrace();
-            }
-
-            Notification.show("Sie haben sich erfolgreich beworben.");
-            UI.getCurrent().getPage().reload();
-        });
-        Button cancelButton = new Button("Zurückziehen");
-        cancelButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
-        cancelButton.addClickListener(e -> {
-            try {
-                jobApplicationControl.updateJobApplicationStatus(currentJob.get(0).getStellenId(), currentUser.getStudentId() ,ZURUCKGEZOGEN);
-            } catch (DatabaseLayerException ex) {
-                ex.printStackTrace();
-            }
-            Notification.show("Bewerbung zurückgezogen");
-            UI.getCurrent().getPage().reload();
-        });
-
-        HorizontalLayout buttonLayout = new HorizontalLayout(saveButton, cancelButton);
-        buttonLayout.setPadding(true);
-        buttonLayout.addClassName("button-layout");
-        add(buttonLayout);
     }
 
-    private Component createGridTable(){
+    private Component createGridTable() {
         Grid<StellenanzeigeDTO> grid = new Grid<>();
         grid.setHeightByRows(true);
 
@@ -139,7 +112,7 @@ public class JobApplictionView extends VerticalLayout implements HasUrlParameter
         grid.addColumn(StellenanzeigeDTO::getEinstellungsdatum)
                 .setHeader("Einstieg");
 
-         grid.addColumn(StellenanzeigeDTO::getGehalt)
+        grid.addColumn(StellenanzeigeDTO::getGehalt)
                 .setHeader("Gehalt");
 
         grid.addColumn(StellenanzeigeDTO::getWochenstunden)
@@ -153,11 +126,58 @@ public class JobApplictionView extends VerticalLayout implements HasUrlParameter
         return grid;
     }
 
-    private Component createTitle(String title) { return new H2("Bewerbung für die Stelle " + title); }
+    private Component createTitle(String title) {
+        return new H2("Bewerbung für die Stelle " + title);
+    }
 
-    private Component createJobStatus(String status) { return new H4("Status der Bewerbung: " + status); }
+    private Component createJobStatus(String status) {
+        return new H4("Status der Bewerbung: " + status);
+    }
 
-    private Component createsubTitle() { return new H3("Bewerbung Unterlagen"); }
+    private Component createButtonLayout(JobApplicationControl jobApplicationControl) {
+
+        Button saveButton = new Button("Bewerben");
+        saveButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS, ButtonVariant.LUMO_PRIMARY);
+        saveButton.addClickListener(event -> {
+
+            try {
+                jobApplicationControl.createJobApplication(currentJob.get(0), currentUser, BEWORBEN);
+            } catch (DatabaseLayerException e) {
+                e.printStackTrace();
+            }
+
+            Notification.show("Sie haben sich erfolgreich beworben.");
+            UI.getCurrent().getPage().reload();
+        });
+
+        Button withdrawButton = new Button("Zurückziehen");
+        withdrawButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
+        withdrawButton.addClickListener(e -> {
+            try {
+                jobApplicationControl.updateJobApplicationStatus(currentJob.get(0).getStellenId(), currentUser.getStudentId(), ZURUCKGEZOGEN);
+            } catch (DatabaseLayerException ex) {
+                ex.printStackTrace();
+            }
+            Notification.show("Bewerbung zurückgezogen");
+            UI.getCurrent().getPage().reload();
+        });
+
+        Button cancelButton = new Button("Abbrechen");
+        cancelButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        cancelButton.addClickListener(event -> {
+            UI.getCurrent().navigate(Globals.Pages.LANDING_PAGE_STUDENT_VIEW);
+        });
+
+        HorizontalLayout buttonLayout = new HorizontalLayout(saveButton, withdrawButton, cancelButton);
+        buttonLayout.setPadding(true);
+        buttonLayout.addClassName("button-layout");
+
+        return buttonLayout;
+    }
+
+    private Component createsubTitle() {
+        return new H3("Bewerbung Unterlagen");
+    }
 
     private UserDTO getCurrentUser() {
         return (UserDTO) UI.getCurrent().getSession().getAttribute(Globals.CURRENT_USER);

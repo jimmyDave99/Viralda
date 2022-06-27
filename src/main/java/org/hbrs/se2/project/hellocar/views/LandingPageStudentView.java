@@ -4,6 +4,7 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
@@ -97,6 +98,8 @@ public class LandingPageStudentView extends Div {
 
         grid.addComponentColumn(job -> {
             Button applyButton = new Button("Bewerben");
+
+            applyButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
             applyButton.addClickListener(e -> {
                 jobId = job.getStellenId();
