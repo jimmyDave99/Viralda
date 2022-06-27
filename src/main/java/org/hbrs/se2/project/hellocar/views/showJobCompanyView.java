@@ -79,7 +79,7 @@ public class showJobCompanyView extends Div {
         Grid.Column<StellenanzeigeDTO> idColumn = grid
                 .addColumn(StellenanzeigeDTO::getStellenId)
                 .setHeader("Stellen-ID")
-                .setWidth("6em").setFlexGrow(0)
+                .setWidth("7em").setFlexGrow(0)
                 .setSortable(true);
 
         Grid.Column<StellenanzeigeDTO> titleColumn = grid
@@ -94,9 +94,12 @@ public class showJobCompanyView extends Div {
                 .setWidth("12em").setFlexGrow(0)
                 .setSortable(true);
 
+        Div euroSuffix = new Div();
+        euroSuffix.setText("(€)");
+
         Grid.Column<StellenanzeigeDTO> salaryColumn = grid
                 .addColumn(StellenanzeigeDTO::getGehalt)
-                .setHeader("Gehalt")
+                .setHeader("Gehalt (€)")
                 .setSortable(true);
 
         Grid.Column<StellenanzeigeDTO> hoursPerWeekColumn = grid

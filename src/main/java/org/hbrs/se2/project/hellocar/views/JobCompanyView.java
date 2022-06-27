@@ -110,7 +110,7 @@ public class JobCompanyView extends VerticalLayout implements HasUrlParameter<St
         upperGrid.setDataProvider(dataProvider);
 
         upperGrid.addColumn(StellenanzeigeDTO::getStellenId)
-                .setHeader("Stellen ID")
+                .setHeader("Stellen-ID")
                 .setWidth("6em").setFlexGrow(0);
 
         Grid.Column<StellenanzeigeDTO> titleColumn = upperGrid.addColumn(StellenanzeigeDTO::getTitel)
@@ -125,11 +125,11 @@ public class JobCompanyView extends VerticalLayout implements HasUrlParameter<St
                 .setHeader("Stellenbeschreibung");
 
         Grid.Column<StellenanzeigeDTO> dateColumn = upperGrid.addColumn(StellenanzeigeDTO::getEinstellungsdatum)
-                .setHeader("Einstieg")
+                .setHeader("Einstellungsdatum")
                 .setWidth("12em").setFlexGrow(0);
 
         Grid.Column<StellenanzeigeDTO> priceColumn = upperGrid.addColumn(StellenanzeigeDTO::getGehalt)
-                .setHeader("Gehalt")
+                .setHeader("Gehalt (€)")
                 .setWidth("8em").setFlexGrow(0);
 
         Grid.Column<StellenanzeigeDTO> weeklyHoursColumn = upperGrid.addColumn(StellenanzeigeDTO::getWochenstunden)

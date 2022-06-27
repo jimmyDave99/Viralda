@@ -91,7 +91,7 @@ public class LandingPageStudentView extends Div {
 
         Grid.Column<StellenanzeigeDTO> salaryColumn = grid
                 .addColumn(StellenanzeigeDTO::getGehalt)
-                .setHeader("Gehalt")
+                .setHeader("Gehalt (€)")
                 .setWidth("8em").setFlexGrow(0)
                 .setSortable(true);
 
