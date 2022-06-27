@@ -40,7 +40,7 @@ import java.util.List;
 
 @Route(value = Globals.Pages.SHOW_JOB_COMPANY_VIEW, layout = AppView.class)
 @PageTitle("Stellenanzeigen des eigenen Unternehmens")
-@CssImport(value = "./styles/views/landingpage/landing-page.css")//, themeFor = "vaadin-grid")
+@CssImport("./styles/views/profile/profile.css")//, themeFor = "vaadin-grid")
 public class showJobCompanyView extends Div {
 
     protected static volatile int jobId = 0;
@@ -52,7 +52,7 @@ public class showJobCompanyView extends Div {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
 
     public showJobCompanyView(JobControl jobControl) throws DatabaseLayerException {
-        addClassName("show-job-company");
+        addClassName("profile");
 
         jobList = jobControl.readCurrentCompanyJob(currentUser);
 

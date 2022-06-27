@@ -36,7 +36,7 @@ import static org.hbrs.se2.project.hellocar.util.Globals.Pages.JOB_COMPANY_VIEW;
 
 @Route(value = JOB_COMPANY_VIEW, layout = AppView.class)
 @PageTitle("Stellenanzeige des eigenen Unternehmens bearbeiten")
-@CssImport("./styles/views/showjobsfromcompany/show-jobs-from-company-view.css")
+@CssImport("./styles/views/profile/profile.css")
 public class JobCompanyViewReworked extends Div implements HasUrlParameter<String> {
 
     LocalDate now = LocalDate.now();
@@ -52,7 +52,7 @@ public class JobCompanyViewReworked extends Div implements HasUrlParameter<Strin
     private List<StellenanzeigeDTO> currentJob;
 
     public JobCompanyViewReworked(JobControl jobControl) throws DatabaseLayerException {
-        addClassName("job-company");
+        addClassName("profile");
 
         currentJob = jobControl.findJob(showJobCompanyView.jobId);
 
