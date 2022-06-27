@@ -31,6 +31,11 @@ public interface UserDTO {
     void setCompanyName(String companyName);
     void setBranche(String branche);
     void setDescription(String description);
+    // Setter details application
+    void setTitle(String title);
+    void setDateOfDeployment(Date dateOfDeployment);
+    void setSalary(int salary);
+    void setHoursPerWeek(int hoursPerWeek);
 
     //Getter
     int getUserId();
@@ -58,4 +63,9 @@ public interface UserDTO {
     String getCompanyName();
     String getBranche();
     String getDescription();
+    // Getter details application
+    String getTitle();
+    Date getDateOfDeployment();
+    int getSalary();
+    int getHoursPerWeek();
 }
