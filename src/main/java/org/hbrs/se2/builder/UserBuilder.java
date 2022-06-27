@@ -142,6 +142,36 @@ public class UserBuilder {
         return this;
     }
 
+
+    // methods for more details from an employment
+    public UserBuilder withTitle( String title) {
+        this.userDTO.setTitle(title);
+        return this;
+    }
+
+    public UserBuilder withDateOfDeployment(Date dateOfDeployment) {
+        this.userDTO.setDateOfDeployment(dateOfDeployment);
+        return this;
+    }
+
+    public UserBuilder withSalary(int salary) {
+        this.userDTO.setSalary(salary);
+        return this;
+    }
+
+    public UserBuilder withHoursPerWeek(int hoursPerWeek) {
+        this.userDTO.setHoursPerWeek(hoursPerWeek);
+        return this;
+    }
+
+    public UserBuilder withEmploymentDescription( String employmentDescription) {
+        this.userDTO.setEmploymentDescription(employmentDescription);
+        return this;
+    }
+
+
+
+
     public UserBuilder createDefaultUserCompany() {
         userDTO = new UserDTOImpl();
         this.userDTO.setRole(UNTERNEHMEN);
