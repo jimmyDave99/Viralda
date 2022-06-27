@@ -192,7 +192,8 @@ public class LandingPageStudentView extends Div {
                     TextArea details = new TextArea();
                     details.setValue(stellenanzeigeDTO.getBeschreibung());
                     details.setWidthFull();
-                    details.setEnabled(false);
+                    //details.setEnabled(false);
+                    details.setReadOnly(true);
 
                     layout.add(new H5("Stellenbeschreibung:"));
                     layout.add(details);
