@@ -1,18 +1,21 @@
 package org.hbrs.se2.project.hellocar.views;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.component.notification.Notification;
@@ -30,12 +33,13 @@ import java.time.ZoneId;
 
 @Route(value = Globals.Pages.ENTER_STELLENANZEIGE_VIEW, layout = AppView.class)
 @PageTitle("Stellenanzeige erstellen")
-@CssImport("./styles/views/enterstellenanzeige/enter-stellenanzeige-view.css")
+@CssImport("./styles/views/profile/profile.css")
 public class EnterStellenanzeigeView extends Div {
 
     private TextField titel = new TextField("Titel");
     private TextField bereich = new TextField("Bereich");
     private TextArea beschreibung = new TextArea("Beschreibung");
+
     private DatePicker einstellungsdatum = new DatePicker("Einstellungsdatum");
     private LocalDate now = LocalDate.now(ZoneId.systemDefault());
     private NumberField gehalt = new NumberField("Gehalt");
@@ -43,41 +47,58 @@ public class EnterStellenanzeigeView extends Div {
 
     private Button cancel = new Button("Abbrechen");
     private Button save = new Button("Speichern");
-    private Button editStellenanzeige = new Button("Stellenanzeige bearbeiten");
 
     private Binder<StellenanzeigeDTOImpl> binder = new Binder(StellenanzeigeDTOImpl.class);
 
     public EnterStellenanzeigeView(JobControl jobControl) {
-        addClassName("enter-stellenanzeige-view");
+        addClassName("profile");
 
         add(createTitle());
 
+        add(new H4());
+
         titel.setAutofocus(true);
 
-//        gehalt.setValue(8.0);
         Div euroSuffix = new Div();
         euroSuffix.setText("€");
+
         gehalt.setSuffixComponent(euroSuffix);
+        gehalt.setPlaceholder("Der Mindestlohn in Deutschland beträgt aktuell 9,60 pro Stunde.");
 
         einstellungsdatum.setMin(now);
         einstellungsdatum.setMax(now.plusDays(180));
 
-        add(createFormLayout());
+        beschreibung.setWidthFull();
+        beschreibung.setValueChangeMode(ValueChangeMode.EAGER);
+        beschreibung.addValueChangeListener(event -> {
+            event.getSource().setHelperText("Zeichen: " + event.getValue().length());
+        });
+
         add(createButtonLayout());
+        add(createFormLayoutWithoutBeschreibung());
+        add(createHorizontalLayoutWithBeschreibung());
 
         binder.forField(titel)
                 .asRequired("Geben Sie bitte einen Titel ein.")
+                .withValidator(
+                        titel -> Character.isUpperCase(titel.charAt(0)),
+                        "Der Titel muss mit einem Großbuchstaben anfangen."
+                )
                 .bind(StellenanzeigeDTOImpl::getTitel, StellenanzeigeDTOImpl::setTitel);
 
         binder.forField(bereich)
                 .asRequired("Geben Sie bitte einen Bereich ein.")
+                .withValidator(
+                        bereich -> Character.isUpperCase(bereich.charAt(0)),
+                        "Der Bereich muss mit einem Großbuchstaben anfangen."
+                )
                 .bind(StellenanzeigeDTOImpl::getBereich, StellenanzeigeDTOImpl::setBereich);
 
         binder.forField(beschreibung)
                 .asRequired("Geben Sie bitte eine Beschreibung ein.")
                 .withValidator(
-                        beschreibung -> beschreibung.length() >= 50,
-                        "Beschreibung muss mindestens 50 Zeichen haben!"
+                        beschreibung -> beschreibung.length() >= 25,
+                        "Beschreibung muss mindestens 25 Zeichen haben!"
                 )
                 .bind(StellenanzeigeDTOImpl::getBeschreibung, StellenanzeigeDTOImpl::setBeschreibung);
 
@@ -88,7 +109,7 @@ public class EnterStellenanzeigeView extends Div {
                         "Ein negatives Gehalt ist nicht zulässig!"
                 )
                 .withValidator(
-                        gehalt -> 8.50 <= gehalt,
+                        gehalt -> 9.60 <= gehalt,
                         "Gehalt entspricht nicht dem Mindestlohn!"
                 )
                 .bind(StellenanzeigeDTOImpl::getGehalt, StellenanzeigeDTOImpl::setGehalt);
@@ -129,18 +150,32 @@ public class EnterStellenanzeigeView extends Div {
         return new H2("Stellenanzeige Angaben/Details");
     }
 
-    private Component createFormLayout() {
+    private Component createFormLayoutWithoutBeschreibung() {
         FormLayout formLayout = new FormLayout();
-        formLayout.add(titel, bereich, beschreibung, einstellungsdatum, gehalt, wochenstunden);
+
+        formLayout.add(titel, bereich, gehalt, wochenstunden, einstellungsdatum);
+
+        gehalt.setValue(null);
+        wochenstunden.setValue(2.0);
+
         return formLayout;
+    }
+
+    private Component createHorizontalLayoutWithBeschreibung() {
+        HorizontalLayout details = new HorizontalLayout();
+
+        details.add(beschreibung);
+
+        return details;
     }
 
     private Component createButtonLayout() {
         HorizontalLayout buttonLayout = new HorizontalLayout();
         buttonLayout.addClassName("button-layout");
-        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         buttonLayout.add(save);
+        save.addThemeVariants(ButtonVariant.LUMO_SUCCESS, ButtonVariant.LUMO_PRIMARY);
         buttonLayout.add(cancel);
+        cancel.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
         return buttonLayout;
     }
 }

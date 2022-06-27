@@ -42,6 +42,11 @@ public class UserDTOImpl implements UserDTO {
     private String status;
     private int stelleId;
     private Date bewerbungsdatum;
+    private String title;
+    private Date dateOfDeployment;
+    private int salary;
+    private int hoursPerWeek;
+    private String employmentDescription;
 
     //Setter
     @Override
@@ -158,6 +163,24 @@ public class UserDTOImpl implements UserDTO {
     }
 
 
+    // Setter details application
+    @Override
+    public void setTitle(String title) { this.title = title; }
+
+    @Override
+    public void setDateOfDeployment(Date dateOfDeployment) { this.dateOfDeployment = dateOfDeployment; }
+
+    @Override
+    public void setSalary(int salary) { this.salary = salary; }
+
+    @Override
+    public void setHoursPerWeek(int hoursPerWeek) { this.hoursPerWeek = hoursPerWeek; }
+
+    @Override
+    public void setEmploymentDescription(String employmentDescription) { this.employmentDescription = employmentDescription; }
+
+
+
 
     //Getter
     @Override
@@ -272,6 +295,22 @@ public class UserDTOImpl implements UserDTO {
     public String getDescription() {
         return description;
     }
+
+    // Getter details application
+    @Override
+    public String getTitle() {return  title;}
+
+    @Override
+    public Date getDateOfDeployment() { return dateOfDeployment; }
+
+    @Override
+    public int getSalary() { return salary; }
+
+    @Override
+    public int getHoursPerWeek() { return hoursPerWeek; }
+
+    @Override
+    public String getEmploymentDescription() { return employmentDescription; };
 
     @Override
     public String toString() {

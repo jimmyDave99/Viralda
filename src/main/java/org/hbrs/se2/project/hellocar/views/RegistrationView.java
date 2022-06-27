@@ -201,7 +201,9 @@ public class RegistrationView extends VerticalLayout {
         register.addClickShortcut(Key.ENTER);
         cancel.addClickShortcut(Key.ESCAPE);
         buttonLayout.add(register);
+        register.addThemeVariants(ButtonVariant.LUMO_SUCCESS, ButtonVariant.LUMO_PRIMARY);
         buttonLayout.add(cancel);
+        cancel.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
         return buttonLayout;
     }
 

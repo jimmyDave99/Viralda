@@ -4,12 +4,14 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
@@ -18,29 +20,24 @@ import com.vaadin.flow.router.*;
 import org.apache.commons.lang3.StringUtils;
 import org.hbrs.se2.project.hellocar.control.JobControl;
 import org.hbrs.se2.project.hellocar.dtos.StellenanzeigeDTO;
-import org.hbrs.se2.project.hellocar.dtos.impl.StellenanzeigeDTOImpl;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
 import org.hbrs.se2.project.hellocar.util.Globals;
 
-import javax.swing.*;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-
-import static org.hbrs.se2.project.hellocar.views.showJobCompanyView.createFilter;
 
 /**
  * The LandingPageStudent is the home page for users with the role = "Student".
  */
 
 @Route(value = Globals.Pages.LANDING_PAGE_STUDENT_VIEW, layout = AppView.class)
-@PageTitle("Startseite")
+@PageTitle("Verfügbare Stellenazeigen")
 @CssImport(value = "./styles/views/landingpage/landing-page.css", themeFor = "vaadin-grid")
 public class LandingPageStudentView extends Div {
 
     protected static volatile int jobId = 0;
-    // ToDo: aldanative Datumsformate
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy");
+
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private List<StellenanzeigeDTO> jobList;
 
@@ -60,7 +57,7 @@ public class LandingPageStudentView extends Div {
     }
 
     private Component createTitle() {
-        return new H2("Stellenanzeigen");
+        return new H2("Aktuell verfügbare Stellenanzeigen");
     }
 
     private Component createGridTable() {
@@ -78,6 +75,7 @@ public class LandingPageStudentView extends Div {
         Grid.Column<StellenanzeigeDTO> companyNameColumn = grid
                 .addColumn(StellenanzeigeDTO::getUnternehmenId)
                 .setHeader("Unternehmen")
+                .setWidth("30em").setFlexGrow(0)
                 .setSortable(true);
 
         Grid.Column<StellenanzeigeDTO> titleColumn = grid
@@ -87,21 +85,26 @@ public class LandingPageStudentView extends Div {
 
         Grid.Column<StellenanzeigeDTO> dateOfDeploymentColumn = grid
                 .addColumn(StellenanzeigeDTO::getEinstellungsdatum)
-                .setHeader("Einstieg")
+                .setHeader("Einstellungsdatum")
+                .setWidth("12em").setFlexGrow(0)
                 .setSortable(true);
 
         Grid.Column<StellenanzeigeDTO> salaryColumn = grid
                 .addColumn(StellenanzeigeDTO::getGehalt)
-                .setHeader("Gehalt")
+                .setHeader("Gehalt (€)")
+                .setWidth("8em").setFlexGrow(0)
                 .setSortable(true);
 
         Grid.Column<StellenanzeigeDTO> hoursPerWeekColumn = grid
                 .addColumn(StellenanzeigeDTO::getWochenstunden)
                 .setHeader("Wochenstunden")
+                .setWidth("10em").setFlexGrow(0)
                 .setSortable(true);
 
         grid.addComponentColumn(job -> {
             Button applyButton = new Button("Bewerben");
+
+            applyButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
             applyButton.addClickListener(e -> {
                 jobId = job.getStellenId();
@@ -186,13 +189,18 @@ public class LandingPageStudentView extends Div {
                 new ComponentRenderer<>(stellenanzeigeDTO -> {
                     VerticalLayout layout = new VerticalLayout();
 
-                    layout.add(new H4("Stellenbeschreibung:"));
-                    layout.add(new Paragraph(stellenanzeigeDTO.getBeschreibung()));
+                    TextArea details = new TextArea();
+                    details.setValue(stellenanzeigeDTO.getBeschreibung());
+                    details.setWidthFull();
+                    //details.setEnabled(false);
+                    details.setReadOnly(true);
+
+                    layout.add(new H5("Stellenbeschreibung:"));
+                    layout.add(details);
 
                     return layout;
                 })
         );
-        //grid.setItemDetailsRenderer(createGridDetailsRenderer());
 
         return grid;
     }
@@ -205,5 +213,5 @@ public class LandingPageStudentView extends Div {
         UI.getCurrent().navigate(Globals.Pages.JOB_APPLICATION_VIEW + jobId);
     }
 
-    private Component NotJobFound() { return new H4("   keine Stellenanzeigen gefunden"); }
+    private Component NotJobFound() { return new H4("Es wurden leider keine Stellenanzeigen gefunden."); }
 }

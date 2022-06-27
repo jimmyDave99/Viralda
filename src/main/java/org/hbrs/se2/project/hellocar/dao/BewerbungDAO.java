@@ -34,7 +34,15 @@ public class BewerbungDAO {
                     "SELECT collathbrs.bewerbung.stellen_id, collathbrs.bewerbung.status, " +
                             "collathbrs.stellenanzeige.unternehmer_id, " +
                             "collathbrs.bewerbung.bewerbungsdatum, collathbrs.student.nachname, " +
-                            "collathbrs.student.vorname, collathbrs.student.student_id,  collathbrs.user.email " +
+                            "collathbrs.student.vorname, collathbrs.student.student_id,  collathbrs.user.email, " +
+                            // ToDo:
+                            // Ergänzungen für die LandingPageCompanyView mehr Details von Student
+                            "collathbrs.student.fachbereich, collathbrs.student.semester, collathbrs.student.spezialisierung, " +
+                            // mehr Details von Stellenazeige
+                            "collathbrs.stellenanzeige.titel, collathbrs.stellenanzeige.einstellungsdatum, collathbrs.stellenanzeige.gehalt, collathbrs.stellenanzeige.wochenstunden, collathbrs.stellenanzeige.beschreibung, " +
+                            // mehr Details von user
+                            "collathbrs.user.beschreibung AS beschreibungS " +
+                            // Ende Ergänzungen
                             "FROM collathbrs.student " +
                             "INNER JOIN collathbrs.bewerbung " +
                             "ON " +
@@ -58,6 +66,17 @@ public class BewerbungDAO {
                         .withEmail(rs.getString("email"))
                         .withApplicationDate(rs.getDate("bewerbungsdatum"))
                         .withStatus(rs.getString("status"))
+                        // ToDo: falls Fehler sind
+                        .withFaculty(rs.getString("fachbereich"))
+                        .withSemester(Integer.parseInt(rs.getString("semester")))
+                        .withSpecialization(rs.getString("spezialisierung"))
+                        .withDescription(rs.getString("beschreibungS"))
+                        .withTitle(rs.getString("titel"))
+                        .withDateOfDeployment(rs.getDate("einstellungsdatum"))
+                        .withSalary(rs.getInt("gehalt"))
+                        .withHoursPerWeek(rs.getInt("wochenstunden"))
+                        .withEmploymentDescription(rs.getString("beschreibung"))
+                        // Ende Ergänzung
                         .build();
 
                 list.add(applicant);

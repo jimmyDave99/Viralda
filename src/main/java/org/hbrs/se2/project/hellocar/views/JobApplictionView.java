@@ -7,17 +7,16 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.html.H4;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
 import com.vaadin.flow.data.provider.ListDataProvider;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.*;
 import org.hbrs.se2.project.hellocar.control.JobApplicationControl;
 import org.hbrs.se2.project.hellocar.control.JobControl;
@@ -36,11 +35,12 @@ import static org.hbrs.se2.project.hellocar.util.Globals.Pages.JOB_APPLICATION_V
 @Route(value = JOB_APPLICATION_VIEW, layout = AppView.class)
 @PageTitle("Bewerben")
 @CssImport("./styles/views/landingpage/landing-page.css")
-public class JobApplictionView extends VerticalLayout implements HasUrlParameter<String>{
+public class JobApplictionView extends VerticalLayout implements HasUrlParameter<String> {
 
     UserDTO currentUser = this.getCurrentUser();
 
     int jobId = 0;
+
     @Override
     public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
         Location location = event.getLocation();
@@ -49,7 +49,7 @@ public class JobApplictionView extends VerticalLayout implements HasUrlParameter
 
     private List<StellenanzeigeDTO> currentJob;
 
-    public  JobApplictionView(JobApplicationControl jobApplicationControl, JobControl jobControl) throws DatabaseLayerException {
+    public JobApplictionView(JobApplicationControl jobApplicationControl, JobControl jobControl) throws DatabaseLayerException {
 
         addClassName("job-application");
 
@@ -58,6 +58,8 @@ public class JobApplictionView extends VerticalLayout implements HasUrlParameter
         add(createTitle(currentJob.get(0).getTitel()));
 
         add(createJobStatus(jobApplicationControl.getJobStatus(currentJob.get(0), currentUser)));
+
+        add(createButtonLayout(jobApplicationControl));
 
         add(createGridTable());
 
@@ -94,9 +96,67 @@ public class JobApplictionView extends VerticalLayout implements HasUrlParameter
         });
 
         add(upload);
+    }
+
+    private Component createGridTable() {
+        Grid<StellenanzeigeDTO> grid = new Grid<>();
+        grid.setHeightByRows(true);
+
+        ListDataProvider<StellenanzeigeDTO> dataProvider = new ListDataProvider<>(currentJob);
+        grid.setDataProvider(dataProvider);
+
+        grid.addColumn(StellenanzeigeDTO::getUnternehmenId)
+                        .setHeader("Unternehmen")
+                .setWidth("30em");
+
+        grid.addColumn(StellenanzeigeDTO::getEinstellungsdatum)
+                .setHeader("Einstellungsdatum");
+
+        grid.addColumn(StellenanzeigeDTO::getGehalt)
+                .setHeader("Gehalt (€)");
+
+        grid.addColumn(StellenanzeigeDTO::getWochenstunden)
+                .setHeader("Wochenstunden");
+
+
+        grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
+        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+        grid.addThemeVariants(GridVariant.LUMO_WRAP_CELL_CONTENT);
+
+        // Einstellungen zum Toggle
+        //grid.setDetailsVisibleOnClick(false); // entfernt toggle
+        grid.setItemDetailsRenderer(
+                new ComponentRenderer<>(stellenanzeigeDTO -> {
+                    VerticalLayout layout = new VerticalLayout();
+
+                    TextArea details = new TextArea();
+
+                    details.setValue(stellenanzeigeDTO.getBeschreibung());
+                    details.setWidthFull();
+                    details.setReadOnly(true);
+
+                    layout.add(new H5("Stellenbeschreibung:"));
+                    layout.add(details);
+
+                    return layout;
+                })
+        );
+
+        return grid;
+    }
+
+    private Component createTitle(String title) {
+        return new H2("Bewerbung auf die Stelle: " + title);
+    }
+
+    private Component createJobStatus(String status) {
+        return new H4("Status der Bewerbung: " + status);
+    }
+
+    private Component createButtonLayout(JobApplicationControl jobApplicationControl) {
 
         Button saveButton = new Button("Bewerben");
-        saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        saveButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS, ButtonVariant.LUMO_PRIMARY);
         saveButton.addClickListener(event -> {
 
             try {
@@ -108,11 +168,12 @@ public class JobApplictionView extends VerticalLayout implements HasUrlParameter
             Notification.show("Sie haben sich erfolgreich beworben.");
             UI.getCurrent().getPage().reload();
         });
-        Button cancelButton = new Button("Zurückziehen");
-        cancelButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
-        cancelButton.addClickListener(e -> {
+
+        Button withdrawButton = new Button("Zurückziehen");
+        withdrawButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
+        withdrawButton.addClickListener(e -> {
             try {
-                jobApplicationControl.updateJobApplicationStatus(currentJob.get(0).getStellenId(), currentUser.getStudentId() ,ZURUCKGEZOGEN);
+                jobApplicationControl.updateJobApplicationStatus(currentJob.get(0).getStellenId(), currentUser.getStudentId(), ZURUCKGEZOGEN);
             } catch (DatabaseLayerException ex) {
                 ex.printStackTrace();
             }
@@ -120,44 +181,22 @@ public class JobApplictionView extends VerticalLayout implements HasUrlParameter
             UI.getCurrent().getPage().reload();
         });
 
-        HorizontalLayout buttonLayout = new HorizontalLayout(saveButton, cancelButton);
+        Button cancelButton = new Button("Abbrechen");
+        cancelButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        cancelButton.addClickListener(event -> {
+            UI.getCurrent().navigate(Globals.Pages.LANDING_PAGE_STUDENT_VIEW);
+        });
+
+        HorizontalLayout buttonLayout = new HorizontalLayout(saveButton, withdrawButton, cancelButton);
         buttonLayout.setPadding(true);
         buttonLayout.addClassName("button-layout");
-        add(buttonLayout);
+
+        return buttonLayout;
     }
 
-    private Component createGridTable(){
-        Grid<StellenanzeigeDTO> grid = new Grid<>();
-        grid.setHeightByRows(true);
-
-        ListDataProvider<StellenanzeigeDTO> dataProvider = new ListDataProvider<>(currentJob);
-        grid.setDataProvider(dataProvider);
-
-        grid.addColumn(StellenanzeigeDTO::getBeschreibung)
-                .setHeader("Beschreibung der Stelle").setWidth("450px").setFlexGrow(0);
-
-        grid.addColumn(StellenanzeigeDTO::getEinstellungsdatum)
-                .setHeader("Einstieg");
-
-         grid.addColumn(StellenanzeigeDTO::getGehalt)
-                .setHeader("Gehalt");
-
-        grid.addColumn(StellenanzeigeDTO::getWochenstunden)
-                .setHeader("Wochenstunden");
-
-
-        grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
-        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
-        grid.addThemeVariants(GridVariant.LUMO_WRAP_CELL_CONTENT);
-
-        return grid;
+    private Component createsubTitle() {
+        return new H3("Bewerbung Unterlagen");
     }
-
-    private Component createTitle(String title) { return new H2("Bewerbung für die Stelle " + title); }
-
-    private Component createJobStatus(String status) { return new H4("Status der Bewerbung: " + status); }
-
-    private Component createsubTitle() { return new H3("Bewerbung Unterlagen"); }
 
     private UserDTO getCurrentUser() {
         return (UserDTO) UI.getCurrent().getSession().getAttribute(Globals.CURRENT_USER);

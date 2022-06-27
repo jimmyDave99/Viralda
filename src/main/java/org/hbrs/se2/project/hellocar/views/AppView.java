@@ -49,18 +49,6 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
         }
     }
 
-    /*
-    private void addDependencies() {
-        UI.getCurrent().getPage()
-                .addJavaScript("/js/script.js");
-        UI.getCurrent().getPage()
-                .addHtmlImport("/html/htmlimport.html");
-        // external JavaScript module
-        UI.getCurrent().getPage()
-                .addJsModule("https://unpkg.com/lodash@4.17.15");
-    }
-     */
-
     public void setUpUI() {
         // Anzeige des Toggles über den Drawer
         setPrimarySection(Section.DRAWER);
@@ -112,16 +100,6 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
         // Der Name des Users wird später reingesetzt, falls die Navigation stattfindet
         helloUser = new H1();
         topRightPanel.add(helloUser);
-
-        //Hinzufügen des Profilbuttons als Profilbild
-        /*
-        ToDO: (vielleicht) Abfrage, ob User ein Profilbild hochgeladen hat
-        if (Profilbildabfrage positiv) {
-
-        } else {
-
-        }
-         */
 
         // Profil-Button am rechten oberen Rand.
         MenuBar bar = new MenuBar();
@@ -202,15 +180,15 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
 
         //Falls User ein Stundent ist soll die LandingPageStundentView angezeigt werden
         if (this.authorizationControl.isUserInRole(this.getCurrentUser(), Globals.Roles.STUDENT)) {
-            tabs = Utils.append(tabs, createTab("Startseite", LandingPageStudentView.class));
+            tabs = Utils.append(tabs, createTab("Verfügbare Stellenazeigen", LandingPageStudentView.class));
             System.out.println("User is a Student!");
         }
 
         //Falls User ein Arbeitgeber ist soll die LandingPageCompanyView angezeigt werden
         if (this.authorizationControl.isUserInRole(this.getCurrentUser(), Globals.Roles.UNTERNEHMEN)) {
-            tabs = Utils.append(tabs, createTab("Bewerbungen", LandingPageCompanyView.class));
+            tabs = Utils.append(tabs, createTab("Bewerbungen einsehen", LandingPageCompanyView.class));
             tabs = Utils.append(tabs, createTab("Stellenanzeige erstellen", EnterStellenanzeigeView.class));
-            tabs = Utils.append(tabs, createTab("Meine Stellenanzeigen", showJobCompanyView.class));
+            tabs = Utils.append(tabs, createTab("Stellenanzeigen des eigenen Unternehmens", showJobCompanyView.class));
             System.out.println("User is a Company!");
         }
 
