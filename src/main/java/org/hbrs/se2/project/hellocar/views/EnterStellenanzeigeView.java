@@ -7,6 +7,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.textfield.NumberField;
@@ -30,7 +31,7 @@ import java.time.ZoneId;
 
 @Route(value = Globals.Pages.ENTER_STELLENANZEIGE_VIEW, layout = AppView.class)
 @PageTitle("Stellenanzeige erstellen")
-@CssImport("./styles/views/enterstellenanzeige/enter-stellenanzeige-view.css")
+@CssImport("./styles/views/profile/profile.css")
 public class EnterStellenanzeigeView extends Div {
 
     private TextField titel = new TextField("Titel");
@@ -41,15 +42,19 @@ public class EnterStellenanzeigeView extends Div {
     private NumberField gehalt = new NumberField("Gehalt");
     private NumberField wochenstunden = new NumberField("Wochenstunden");
 
+    private TextField empty = new TextField("");
+
     private Button cancel = new Button("Abbrechen");
     private Button save = new Button("Speichern");
 
     private Binder<StellenanzeigeDTOImpl> binder = new Binder(StellenanzeigeDTOImpl.class);
 
     public EnterStellenanzeigeView(JobControl jobControl) {
-        addClassName("enter-stellenanzeige-view");
+        addClassName("profile");
 
         add(createTitle());
+
+        add(new H4());
 
         titel.setAutofocus(true);
 
@@ -61,8 +66,11 @@ public class EnterStellenanzeigeView extends Div {
         einstellungsdatum.setMin(now);
         einstellungsdatum.setMax(now.plusDays(180));
 
-        add(createFormLayout());
+        beschreibung.setWidthFull();
+
         add(createButtonLayout());
+        add(createFormLayoutWithoutBeschreibung());
+        add(createHorizontalLayoutWithBeschreibung());
 
         binder.forField(titel)
                 .asRequired("Geben Sie bitte einen Titel ein.")
@@ -128,10 +136,20 @@ public class EnterStellenanzeigeView extends Div {
         return new H2("Stellenanzeige Angaben/Details");
     }
 
-    private Component createFormLayout() {
+    private Component createFormLayoutWithoutBeschreibung() {
         FormLayout formLayout = new FormLayout();
-        formLayout.add(titel, bereich, beschreibung, einstellungsdatum, gehalt, wochenstunden);
+
+        formLayout.add(titel, bereich, gehalt, wochenstunden, einstellungsdatum);
+
         return formLayout;
+    }
+
+    private Component createHorizontalLayoutWithBeschreibung() {
+        HorizontalLayout details = new HorizontalLayout();
+
+        details.add(beschreibung);
+
+        return details;
     }
 
     private Component createButtonLayout() {
