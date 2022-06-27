@@ -227,7 +227,7 @@ public class JobCompanyView extends VerticalLayout implements HasUrlParameter<St
     }
 
     private Component createTitle(String title) {
-        return new H2("Stelle " + title);
+        return new H2("Stelle: " + title);
     }
 
     private void navigateToshowJobCompanyView() {
