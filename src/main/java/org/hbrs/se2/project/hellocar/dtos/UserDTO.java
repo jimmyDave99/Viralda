@@ -36,6 +36,7 @@ public interface UserDTO {
     void setDateOfDeployment(Date dateOfDeployment);
     void setSalary(int salary);
     void setHoursPerWeek(int hoursPerWeek);
+    void setEmploymentDescription(String employmentDescription);
 
     //Getter
     int getUserId();
@@ -68,4 +69,5 @@ public interface UserDTO {
     Date getDateOfDeployment();
     int getSalary();
     int getHoursPerWeek();
+    String getEmploymentDescription();
 }

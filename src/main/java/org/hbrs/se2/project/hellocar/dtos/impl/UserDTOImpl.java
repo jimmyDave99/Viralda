@@ -46,6 +46,7 @@ public class UserDTOImpl implements UserDTO {
     private Date dateOfDeployment;
     private int salary;
     private int hoursPerWeek;
+    private String employmentDescription;
 
     //Setter
     @Override
@@ -174,6 +175,9 @@ public class UserDTOImpl implements UserDTO {
 
     @Override
     public void setHoursPerWeek(int hoursPerWeek) { this.hoursPerWeek = hoursPerWeek; }
+
+    @Override
+    public void setEmploymentDescription(String employmentDescription) { this.employmentDescription = employmentDescription; }
 
 
 
@@ -304,6 +308,9 @@ public class UserDTOImpl implements UserDTO {
 
     @Override
     public int getHoursPerWeek() { return hoursPerWeek; }
+
+    @Override
+    public String getEmploymentDescription() { return employmentDescription; };
 
     @Override
     public String toString() {
