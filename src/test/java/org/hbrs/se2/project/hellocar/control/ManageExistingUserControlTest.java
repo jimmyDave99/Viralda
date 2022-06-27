@@ -116,6 +116,9 @@ public class ManageExistingUserControlTest {
             //User in die Datenbank einfuegen
             userDAO.insertUser(student, RegistrationControl.hashPassword(student.getPassword()));
 
+            // Check ob user auch in der datenbank ist
+            Assertions.assertNotNull(userDAO.findUserByUserEmailAndPassword(email1, s1));
+
             //Passwort aendern
             Assertions.assertTrue(existingUserControl.updateUserPassword(userChangePassword, s1, email1));
 
@@ -161,6 +164,7 @@ public class ManageExistingUserControlTest {
 
             //User lesen
             UserDTO temp = userDAO.findUserByUserEmailAndPassword(student.getEmail(), student.getPassword());
+            Assertions.assertNotNull(temp);
             Assertions.assertEquals(userToUpdate.getFirstName(), temp.getFirstName());
             Assertions.assertEquals(userToUpdate.getLastName(), temp.getLastName());
             Assertions.assertEquals(userToUpdate.getDescription(), temp.getDescription());
@@ -170,6 +174,7 @@ public class ManageExistingUserControlTest {
 
             // User wieder aus Datenbank entfernen
             Assertions.assertTrue(existingUserControl.deleteUser(student));
+
         } catch (DatabaseLayerException | ViewException ignore){}
 
     }
@@ -181,6 +186,18 @@ public class ManageExistingUserControlTest {
         );
 
         Assertions.assertEquals("DTO ist null!", thrown.getReason());
+    }
+
+    @Test
+    void updateProfilePictureNull(){
+        UserDTOImpl userDTO = UserBuilder
+                .getInstance()
+                .createNewUser()
+                .withEmail(email1)
+                .withPassword(s1)
+                .withConfirmPassword(s1)
+                .build();
+        Assertions.assertFalse(existingUserControl.updateProfilePicture(userDTO));
     }
 
 }
