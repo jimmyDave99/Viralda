@@ -1,6 +1,7 @@
 package org.hbrs.se2.project.hellocar.views;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -10,16 +11,23 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ListDataProvider;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.*;
 import org.apache.commons.lang3.StringUtils;
 import org.hbrs.se2.project.hellocar.control.JobApplicationControl;
+import org.hbrs.se2.project.hellocar.control.JobControl;
+import org.hbrs.se2.project.hellocar.dtos.StellenanzeigeDTO;
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
 import org.hbrs.se2.project.hellocar.util.Globals;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.hbrs.se2.project.hellocar.util.Globals.JobStatus.*;
@@ -43,12 +51,12 @@ public class LandingPageCompanyView extends Div {
 
         add(createTitle());
 
-        Grid<UserDTO> grid = new Grid<>();
-        grid.setHeight("800px");
+        Grid<UserDTO> grid = new Grid<>(UserDTO.class, false);
+        grid.setHeightByRows(true);
 
         // Befüllen der Tabelle mit den zuvor ausgelesenen Stellen
-        ListDataProvider<UserDTO> dataProvider = new ListDataProvider<>(bewerbungslist);
-        grid.setDataProvider(dataProvider);
+        ListDataProvider<UserDTO> dataProviderApplication = new ListDataProvider<>(bewerbungslist);
+        grid.setDataProvider(dataProviderApplication);
 
         Grid.Column<UserDTO> stellenIdColumn = grid
                 .addColumn(UserDTO::getStelleId)
@@ -76,7 +84,7 @@ public class LandingPageCompanyView extends Div {
         Grid.Column<UserDTO> bewerbungsdatumColumn = grid
                 .addColumn(UserDTO::getbewerbungsDatum)
                 .setHeader("Bewerbungsdatum")
-                .setWidth("10em").setFlexGrow(0)
+                .setWidth("12em").setFlexGrow(0)
                 .setSortable(true);
 
         grid.addColumn(UserDTO::getStatus)
@@ -119,7 +127,7 @@ public class LandingPageCompanyView extends Div {
 
         // stellenId filter
         TextField stellenIdField = new TextField();
-        stellenIdField.addValueChangeListener(event -> dataProvider.addFilter(
+        stellenIdField.addValueChangeListener(event -> dataProviderApplication.addFilter(
                 job -> StringUtils.containsIgnoreCase(String.valueOf(job.getStelleId()),
                         stellenIdField.getValue())));
 
@@ -131,7 +139,7 @@ public class LandingPageCompanyView extends Div {
 
         // vorname filter
         TextField vornameField = new TextField();
-        vornameField.addValueChangeListener(event -> dataProvider.addFilter(
+        vornameField.addValueChangeListener(event -> dataProviderApplication.addFilter(
                 job -> StringUtils.containsIgnoreCase(String.valueOf(job.getFirstName()),
                         vornameField.getValue())));
 
@@ -143,7 +151,7 @@ public class LandingPageCompanyView extends Div {
 
         // nachname filter
         TextField nachnameField = new TextField();
-        nachnameField.addValueChangeListener(event -> dataProvider.addFilter(
+        nachnameField.addValueChangeListener(event -> dataProviderApplication.addFilter(
                 job -> StringUtils.containsIgnoreCase(String.valueOf(job.getLastName()),
                         nachnameField.getValue())));
 
@@ -155,7 +163,7 @@ public class LandingPageCompanyView extends Div {
 
         // emailAdresss filter
         TextField emailAdresseField = new TextField();
-        emailAdresseField.addValueChangeListener(event -> dataProvider.addFilter(
+        emailAdresseField.addValueChangeListener(event -> dataProviderApplication.addFilter(
                 job -> StringUtils.containsIgnoreCase(String.valueOf(job.getEmail()),
                         emailAdresseField.getValue())));
 
@@ -167,7 +175,7 @@ public class LandingPageCompanyView extends Div {
 
         // emailAdresss filter
         TextField bewerbungsDatumField = new TextField();
-        bewerbungsDatumField.addValueChangeListener(event -> dataProvider.addFilter(
+        bewerbungsDatumField.addValueChangeListener(event -> dataProviderApplication.addFilter(
                 job -> StringUtils.containsIgnoreCase(String.valueOf(job.getbewerbungsDatum()),
                         bewerbungsDatumField.getValue())));
 
@@ -176,6 +184,90 @@ public class LandingPageCompanyView extends Div {
         filterRow.getCell(bewerbungsdatumColumn).setComponent(bewerbungsDatumField);
         bewerbungsDatumField.setSizeFull();
         bewerbungsDatumField.setPlaceholder("Filter");
+
+        grid.setItemDetailsRenderer(
+                new ComponentRenderer<>(userDTO -> {
+
+                    HorizontalLayout studentDetailsLayout = new HorizontalLayout();
+
+                    TextField faculty = new TextField("Fakultät");
+                    //faculty.setValue(userDTO.getFaculty());
+                    faculty.setWidth("40em");
+                    faculty.setEnabled(false);
+
+                    TextField semester = new TextField("Semester");
+                    //semester.setValue(String.valueOf(userDTO.getSemester()));
+                    semester.setWidth("10em");
+                    semester.setEnabled(false);
+
+                    TextField specialization = new TextField("Spezialisierung");
+                    //specialization.setValue(userDTO.getSpecialization());
+                    specialization.setWidth("40em");
+                    specialization.setEnabled(false);
+
+                    studentDetailsLayout.add(faculty, specialization, semester);
+
+
+                    VerticalLayout descriptionLayout = new VerticalLayout();
+
+                    TextArea descriptionStudent = new TextArea();
+                    //description.setValue(userDTO.getDescription());
+                    descriptionStudent.setWidthFull();
+                    descriptionStudent.setEnabled(false);
+
+                    descriptionLayout.add(new H6("Studentenbeschreibung:"));
+                    descriptionLayout.add(descriptionStudent);
+
+
+                    HorizontalLayout jobLayout = new HorizontalLayout();
+
+                    TextField title = new TextField("Titel");
+                    // title.setValue(); mit StellanzeigenDTO
+                    title.setWidth("40em");
+                    title.setEnabled(false);
+
+                    TextField dateOfDeployment = new TextField("Einstellungsdatum");
+                    //dateOfDeployment.setValue();
+                    dateOfDeployment.setWidth("12em");
+                    dateOfDeployment.setEnabled(false);
+
+                    TextField salary = new TextField("Gehalt");
+                    //salary.setValue()
+                    salary.setWidth("10em");
+                    salary.setEnabled(false);
+
+                    TextField hoursPerWeek = new TextField("Wochenstunden");
+                    //hoursPerWeek.setValue();
+                    hoursPerWeek.setWidth("10em");
+                    hoursPerWeek.setEnabled(false);
+
+                    jobLayout.add(title, dateOfDeployment, salary, hoursPerWeek);
+
+
+                    VerticalLayout jobDescriptionLayout = new VerticalLayout();
+
+                    TextArea descriptionJob = new TextArea();
+                    //descriptionJob.setValue();
+                    descriptionJob.setWidthFull();
+                    descriptionJob.setEnabled(false);
+
+                    jobDescriptionLayout.add(new H6("Stellenbeschreibung"));
+                    jobDescriptionLayout.add(descriptionJob);
+
+
+                    VerticalLayout layout = new VerticalLayout();
+
+                    layout.add(new H5("Details zum Studium von: " + userDTO.getFirstName() + " " + userDTO.getLastName()));
+                    layout.add(studentDetailsLayout);
+                    layout.add(descriptionLayout);
+                    layout.add(new H4(" "));
+                    layout.add(new H5("Details zur Stellenanzeige:"));
+                    layout.add(jobLayout);
+                    layout.add(jobDescriptionLayout);
+
+                    return layout;
+                })
+        );
 
 
         grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
