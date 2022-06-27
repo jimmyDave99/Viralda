@@ -120,6 +120,10 @@ public class EnterStellenanzeigeView extends Div {
                         wochenstunden -> 0 <= wochenstunden,
                         "Eine negative Wochenstundenanzahl ist nicht zulässig!"
                 )
+                .withValidator(
+                        wochenstunden -> 168 >= wochenstunden,
+                        "Eine Woche hat maximal 168 Stunden!"
+                )
                 .bind(StellenanzeigeDTOImpl::getWochenstunden, StellenanzeigeDTOImpl::setWochenstunden);
 
         // Binder
