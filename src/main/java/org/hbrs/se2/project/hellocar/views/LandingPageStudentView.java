@@ -31,7 +31,7 @@ import java.util.List;
  */
 
 @Route(value = Globals.Pages.LANDING_PAGE_STUDENT_VIEW, layout = AppView.class)
-@PageTitle("Startseite")
+@PageTitle("Verfügbare Stellenazeigen")
 @CssImport(value = "./styles/views/landingpage/landing-page.css", themeFor = "vaadin-grid")
 public class LandingPageStudentView extends Div {
 

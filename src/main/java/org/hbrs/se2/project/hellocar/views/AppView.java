@@ -180,7 +180,7 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
 
         //Falls User ein Stundent ist soll die LandingPageStundentView angezeigt werden
         if (this.authorizationControl.isUserInRole(this.getCurrentUser(), Globals.Roles.STUDENT)) {
-            tabs = Utils.append(tabs, createTab("Startseite", LandingPageStudentView.class));
+            tabs = Utils.append(tabs, createTab("Verfügbare Stellenazeigen", LandingPageStudentView.class));
             System.out.println("User is a Student!");
         }
 
