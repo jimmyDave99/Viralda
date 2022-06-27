@@ -39,9 +39,9 @@ public class BewerbungDAO {
                             // Ergänzungen für die LandingPageCompanyView mehr Details von Student
                             "collathbrs.student.fachbereich, collathbrs.student.semester, collathbrs.student.spezialisierung, " +
                             // mehr Details von Stellenazeige
-                            "collathbrs.stellenanzeige.titel, collathbrs.stellenanzeige.einstellungsdatum, collathbrs.stellenanzeige.gehalt, collathbrs.stellenanzeige.wochenstunden, " +
-                            // mehr Details von unser
-                            "collathbrs.user.beschreibung " +
+                            "collathbrs.stellenanzeige.titel, collathbrs.stellenanzeige.einstellungsdatum, collathbrs.stellenanzeige.gehalt, collathbrs.stellenanzeige.wochenstunden, collathbrs.stellenanzeige.beschreibung, " +
+                            // mehr Details von user
+                            "collathbrs.user.beschreibung AS beschreibungS " +
                             // Ende Ergänzungen
                             "FROM collathbrs.student " +
                             "INNER JOIN collathbrs.bewerbung " +
@@ -70,11 +70,12 @@ public class BewerbungDAO {
                         .withFaculty(rs.getString("fachbereich"))
                         .withSemester(Integer.parseInt(rs.getString("semester")))
                         .withSpecialization(rs.getString("spezialisierung"))
-                        .withDescription(rs.getString("beschreibung"))
+                        .withDescription(rs.getString("beschreibungS"))
                         .withTitle(rs.getString("titel"))
                         .withDateOfDeployment(rs.getDate("einstellungsdatum"))
                         .withSalary(rs.getInt("gehalt"))
                         .withHoursPerWeek(rs.getInt("wochenstunden"))
+                        .withEmploymentDescription(rs.getString("beschreibung"))
                         // Ende Ergänzung
                         .build();
 
