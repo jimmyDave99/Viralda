@@ -70,6 +70,7 @@ public class StellenAnzeigeDAO {
                         .withSalary(rs.getDouble("gehalt"))
                         .withWeeklyHours(rs.getDouble("wochenstunden"))
                         .withStatus(rs.getString("status"))
+                        .withUnternehmenID(rs.getInt("unternehmer_id"))
                         .build();
                  list.add(currentJob);
             }
