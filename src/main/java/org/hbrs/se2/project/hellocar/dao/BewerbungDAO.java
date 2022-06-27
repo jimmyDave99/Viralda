@@ -71,6 +71,10 @@ public class BewerbungDAO {
                         .withSemester(Integer.parseInt(rs.getString("semester")))
                         .withSpecialization(rs.getString("spezialisierung"))
                         .withDescription(rs.getString("beschreibung"))
+                        .withTitle(rs.getString("titel"))
+                        .withDateOfDeployment(rs.getDate("einstellungsdatum"))
+                        .withSalary(rs.getInt("gehalt"))
+                        .withHoursPerWeek(rs.getInt("wochenstunden"))
                         // Ende Ergänzung
                         .build();
 
