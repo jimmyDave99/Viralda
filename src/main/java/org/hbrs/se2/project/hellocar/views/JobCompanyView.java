@@ -110,28 +110,35 @@ public class JobCompanyView extends VerticalLayout implements HasUrlParameter<St
         upperGrid.setDataProvider(dataProvider);
 
         upperGrid.addColumn(StellenanzeigeDTO::getStellenId)
-                .setHeader("Stellen ID");
+                .setHeader("Stellen ID")
+                .setWidth("6em").setFlexGrow(0);
 
         Grid.Column<StellenanzeigeDTO> titleColumn = upperGrid.addColumn(StellenanzeigeDTO::getTitel)
-                .setHeader("Titel");
+                .setHeader("Titel")
+                .setWidth("20em").setFlexGrow(0);
 
         Grid.Column<StellenanzeigeDTO> brancheColumn = upperGrid.addColumn(StellenanzeigeDTO::getBereich)
-                .setHeader("Bereich");
+                .setHeader("Bereich")
+                .setWidth("10em").setFlexGrow(0);
 
         Grid.Column<StellenanzeigeDTO> detailsColumn = upperGrid.addColumn(StellenanzeigeDTO::getBeschreibung)
                 .setHeader("Stellenbeschreibung");
 
         Grid.Column<StellenanzeigeDTO> dateColumn = upperGrid.addColumn(StellenanzeigeDTO::getEinstellungsdatum)
-                .setHeader("Einstieg");
+                .setHeader("Einstieg")
+                .setWidth("12em").setFlexGrow(0);
 
         Grid.Column<StellenanzeigeDTO> priceColumn = upperGrid.addColumn(StellenanzeigeDTO::getGehalt)
-                .setHeader("Gehalt");
+                .setHeader("Gehalt")
+                .setWidth("8em").setFlexGrow(0);
 
         Grid.Column<StellenanzeigeDTO> weeklyHoursColumn = upperGrid.addColumn(StellenanzeigeDTO::getWochenstunden)
-                .setHeader("Wochenstunden");
+                .setHeader("Wochenstunden")
+                .setWidth("9em").setFlexGrow(0);
 
         upperGrid.addColumn(StellenanzeigeDTO::getStatus)
-                .setHeader("Status");
+                .setHeader("Status")
+                .setWidth("8em").setFlexGrow(0);
 
         Grid.Column<StellenanzeigeDTO> editColumn = upperGrid.addComponentColumn(job -> {
             Button editButton = new Button("Bearbeiten");
@@ -142,7 +149,7 @@ public class JobCompanyView extends VerticalLayout implements HasUrlParameter<St
                 upperGrid.getEditor().editItem(job);
             });
             return editButton;
-        }).setWidth("150px").setFlexGrow(0);
+        }).setWidth("9em").setFlexGrow(0);
 
         Binder<StellenanzeigeDTO> binder1 = new Binder<>(StellenanzeigeDTO.class);
         upperEditor.setBinder(binder1);
@@ -193,7 +200,7 @@ public class JobCompanyView extends VerticalLayout implements HasUrlParameter<St
                 .bind(StellenanzeigeDTO::getWochenstunden, StellenanzeigeDTO::setWochenstunden);
         weeklyHoursColumn.setEditorComponent(weeklyHoursField);
 
-        Button saveEditButton = new Button("Speichern", e -> {
+        Button saveEditButton = new Button(VaadinIcon.LOCK.create(), e -> {
             upperEditor.save();
             try {
                 jobControl.updateAnnouncement(currentJob.get(0));
@@ -202,7 +209,8 @@ public class JobCompanyView extends VerticalLayout implements HasUrlParameter<St
             }
             UI.getCurrent().getPage().reload();
         });
-        saveEditButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS, ButtonVariant.LUMO_PRIMARY);
+        saveEditButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS, ButtonVariant.LUMO_PRIMARY,
+                ButtonVariant.LUMO_ICON);
 
         Button cancelEditButton = new Button(VaadinIcon.CLOSE.create(),
                 e -> upperEditor.cancel());
@@ -211,6 +219,7 @@ public class JobCompanyView extends VerticalLayout implements HasUrlParameter<St
         HorizontalLayout actions = new HorizontalLayout(saveEditButton,
                 cancelEditButton);
         actions.setPadding(false);
+        actions.setWidth("1em");
         editColumn.setEditorComponent(actions);
 
 
@@ -227,7 +236,7 @@ public class JobCompanyView extends VerticalLayout implements HasUrlParameter<St
     }
 
     private Component createTitle(String title) {
-        return new H2("Stelle: " + title);
+        return new H2("Stellenazeige: " + title);
     }
 
     private void navigateToshowJobCompanyView() {
