@@ -60,8 +60,8 @@ public class LandingPageCompanyView extends Div {
 
         Grid.Column<UserDTO> stellenIdColumn = grid
                 .addColumn(UserDTO::getStelleId)
-                .setHeader("StelleID")
-                .setWidth("6em").setFlexGrow(0)
+                .setHeader("Stellen-ID")
+                .setWidth("7em").setFlexGrow(0)
                 .setSortable(true);
 
         Grid.Column<UserDTO> vornameColumn = grid
