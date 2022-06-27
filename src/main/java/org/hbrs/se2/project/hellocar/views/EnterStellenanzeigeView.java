@@ -43,7 +43,6 @@ public class EnterStellenanzeigeView extends Div {
 
     private Button cancel = new Button("Abbrechen");
     private Button save = new Button("Speichern");
-    private Button editStellenanzeige = new Button("Stellenanzeige bearbeiten");
 
     private Binder<StellenanzeigeDTOImpl> binder = new Binder(StellenanzeigeDTOImpl.class);
 
