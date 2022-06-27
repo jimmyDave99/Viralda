@@ -42,8 +42,6 @@ public class EnterStellenanzeigeView extends Div {
     private NumberField gehalt = new NumberField("Gehalt");
     private NumberField wochenstunden = new NumberField("Wochenstunden");
 
-    private TextField empty = new TextField("");
-
     private Button cancel = new Button("Abbrechen");
     private Button save = new Button("Speichern");
 
@@ -74,10 +72,18 @@ public class EnterStellenanzeigeView extends Div {
 
         binder.forField(titel)
                 .asRequired("Geben Sie bitte einen Titel ein.")
+                .withValidator(
+                        titel -> Character.isUpperCase(titel.charAt(0)),
+                        "Der Titel muss mit einem Großbuchstaben anfangen."
+                )
                 .bind(StellenanzeigeDTOImpl::getTitel, StellenanzeigeDTOImpl::setTitel);
 
         binder.forField(bereich)
                 .asRequired("Geben Sie bitte einen Bereich ein.")
+                .withValidator(
+                        bereich -> Character.isUpperCase(bereich.charAt(0)),
+                        "Der Bereich muss mit einem Großbuchstaben anfangen."
+                )
                 .bind(StellenanzeigeDTOImpl::getBereich, StellenanzeigeDTOImpl::setBereich);
 
         binder.forField(beschreibung)
@@ -95,7 +101,7 @@ public class EnterStellenanzeigeView extends Div {
                         "Ein negatives Gehalt ist nicht zulässig!"
                 )
                 .withValidator(
-                        gehalt -> 8.50 <= gehalt,
+                        gehalt -> 9.60 <= gehalt,
                         "Gehalt entspricht nicht dem Mindestlohn!"
                 )
                 .bind(StellenanzeigeDTOImpl::getGehalt, StellenanzeigeDTOImpl::setGehalt);
