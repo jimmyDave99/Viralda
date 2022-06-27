@@ -1,7 +1,6 @@
 package org.hbrs.se2.project.hellocar.views;
 
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -21,13 +20,10 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.*;
 import org.apache.commons.lang3.StringUtils;
 import org.hbrs.se2.project.hellocar.control.JobApplicationControl;
-import org.hbrs.se2.project.hellocar.control.JobControl;
-import org.hbrs.se2.project.hellocar.dtos.StellenanzeigeDTO;
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
 import org.hbrs.se2.project.hellocar.util.Globals;
 
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.hbrs.se2.project.hellocar.util.Globals.JobStatus.*;
@@ -289,7 +285,6 @@ public class LandingPageCompanyView extends Div {
                     // Stellenbeschreibung
                     TextArea descriptionJob = new TextArea();
 
-                    // ToDo: Abfrage funktioniert noch nicht richtig
                     if (userDTO.getEmploymentDescription() != null) descriptionJob.setValue(userDTO.getEmploymentDescription());
                     else descriptionJob.setValue("Diese Stellenanzeige besitzt leider keine nähere Beschreibung.");
 

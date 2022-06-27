@@ -6,11 +6,9 @@ import org.hbrs.se2.project.hellocar.services.db.JDBCConnection;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
 import org.hbrs.se2.project.hellocar.util.Globals;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 
 import static org.hbrs.se2.project.hellocar.util.Globals.Errors.PROBLEM;
 import static org.hbrs.se2.project.hellocar.util.Globals.Roles.STUDENT;

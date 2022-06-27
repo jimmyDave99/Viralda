@@ -165,6 +165,8 @@ public class ManageExistingUserControlTest {
             //User lesen
             UserDTO temp = userDAO.findUserByUserEmailAndPassword(student.getEmail(), student.getPassword());
             Assertions.assertNotNull(temp);
+            Assertions.assertEquals(userToUpdate.getEmail(), temp.getEmail());
+            Assertions.assertEquals(userToUpdate.getRole(), temp.getRole());
             Assertions.assertEquals(userToUpdate.getFirstName(), temp.getFirstName());
             Assertions.assertEquals(userToUpdate.getLastName(), temp.getLastName());
             Assertions.assertEquals(userToUpdate.getDescription(), temp.getDescription());
@@ -175,7 +177,7 @@ public class ManageExistingUserControlTest {
             // User wieder aus Datenbank entfernen
             Assertions.assertTrue(existingUserControl.deleteUser(student));
 
-        } catch (DatabaseLayerException | ViewException ignore){}
+        } catch (DatabaseLayerException | ViewException ignore){        }
 
     }
 
