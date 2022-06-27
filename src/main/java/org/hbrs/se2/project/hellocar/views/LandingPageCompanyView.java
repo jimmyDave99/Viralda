@@ -89,7 +89,7 @@ public class LandingPageCompanyView extends Div {
 
         grid.addColumn(UserDTO::getStatus)
                 .setHeader("Status")
-                .setWidth("8em").setFlexGrow(0)
+                .setWidth("12em").setFlexGrow(0)
                 .setSortable(true);
 
         grid.addComponentColumn( job -> {

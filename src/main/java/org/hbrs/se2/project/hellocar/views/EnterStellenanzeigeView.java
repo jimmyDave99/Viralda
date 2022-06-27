@@ -15,6 +15,7 @@ import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.component.notification.Notification;
@@ -38,6 +39,7 @@ public class EnterStellenanzeigeView extends Div {
     private TextField titel = new TextField("Titel");
     private TextField bereich = new TextField("Bereich");
     private TextArea beschreibung = new TextArea("Beschreibung");
+
     private DatePicker einstellungsdatum = new DatePicker("Einstellungsdatum");
     private LocalDate now = LocalDate.now(ZoneId.systemDefault());
     private NumberField gehalt = new NumberField("Gehalt");
@@ -67,6 +69,10 @@ public class EnterStellenanzeigeView extends Div {
         einstellungsdatum.setMax(now.plusDays(180));
 
         beschreibung.setWidthFull();
+        beschreibung.setValueChangeMode(ValueChangeMode.EAGER);
+        beschreibung.addValueChangeListener(event -> {
+            event.getSource().setHelperText("Zeichen: " + event.getValue().length());
+        });
 
         add(createButtonLayout());
         add(createFormLayoutWithoutBeschreibung());
@@ -91,8 +97,8 @@ public class EnterStellenanzeigeView extends Div {
         binder.forField(beschreibung)
                 .asRequired("Geben Sie bitte eine Beschreibung ein.")
                 .withValidator(
-                        beschreibung -> beschreibung.length() >= 50,
-                        "Beschreibung muss mindestens 50 Zeichen haben!"
+                        beschreibung -> beschreibung.length() >= 25,
+                        "Beschreibung muss mindestens 25 Zeichen haben!"
                 )
                 .bind(StellenanzeigeDTOImpl::getBeschreibung, StellenanzeigeDTOImpl::setBeschreibung);
 

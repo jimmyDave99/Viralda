@@ -106,13 +106,14 @@ public class JobApplictionView extends VerticalLayout implements HasUrlParameter
         grid.setDataProvider(dataProvider);
 
         grid.addColumn(StellenanzeigeDTO::getUnternehmenId)
-                        .setHeader("Unternehmen");
+                        .setHeader("Unternehmen")
+                .setWidth("30em");
 
         grid.addColumn(StellenanzeigeDTO::getEinstellungsdatum)
                 .setHeader("Einstellungsdatum");
 
         grid.addColumn(StellenanzeigeDTO::getGehalt)
-                .setHeader("Gehalt");
+                .setHeader("Gehalt (€)");
 
         grid.addColumn(StellenanzeigeDTO::getWochenstunden)
                 .setHeader("Wochenstunden");
@@ -145,7 +146,7 @@ public class JobApplictionView extends VerticalLayout implements HasUrlParameter
     }
 
     private Component createTitle(String title) {
-        return new H2("Bewerbung für die Stelle: " + title);
+        return new H2("Bewerbung auf die Stelle: " + title);
     }
 
     private Component createJobStatus(String status) {
