@@ -42,6 +42,9 @@ public class LandingPageCompanyView extends Div {
 
     UserDTO currentUser = this.getCurrentUser();
 
+    private Button rejectButton;
+    private Button applyButton;
+
     private List<UserDTO> bewerbungslist;
 
     public LandingPageCompanyView(JobApplicationControl jobApplicationControl) throws DatabaseLayerException {
@@ -93,10 +96,9 @@ public class LandingPageCompanyView extends Div {
                 .setSortable(true);
 
         grid.addComponentColumn( job -> {
-            Button saveButton = new Button("Annehmen");
-            saveButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS, ButtonVariant.LUMO_PRIMARY);
-            saveButton.setEnabled(bewerbungslist.get(0).getStatus().equals(BEWORBEN));
-            saveButton.addClickListener(e -> {
+            applyButton = new Button("Annehmen");
+            applyButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS, ButtonVariant.LUMO_PRIMARY);
+            applyButton.addClickListener(e -> {
                 try {
                     jobApplicationControl.updateJobApplicationStatus(job.getStelleId(), job.getStudentId(), ANGENOMMEN);
                 } catch (DatabaseLayerException ex) {
@@ -105,14 +107,13 @@ public class LandingPageCompanyView extends Div {
                 Notification.show("Bewerbung angenommen");
                 UI.getCurrent().getPage().reload();
             });
-            return saveButton;
+            return applyButton;
         }).setWidth("150px").setFlexGrow(0);
 
         grid.addComponentColumn( job -> {
-            Button saveButton = new Button("Ablehnen");
-            saveButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
-            saveButton.setEnabled(bewerbungslist.get(0).getStatus().equals(BEWORBEN) || bewerbungslist.get(0).getStatus().equals(ABGELEHNT));
-            saveButton.addClickListener(e -> {
+            rejectButton = new Button("Ablehnen");
+            rejectButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
+            rejectButton.addClickListener(e -> {
                 try {
                     jobApplicationControl.updateJobApplicationStatus(job.getStelleId(), job.getStudentId(), ABGELEHNT);
                 } catch (DatabaseLayerException ex) {
@@ -121,7 +122,7 @@ public class LandingPageCompanyView extends Div {
                 Notification.show("Bewerbung Abgelehnt");
                 UI.getCurrent().getPage().reload();
             });
-            return saveButton;
+            return rejectButton;
         }).setWidth("150px").setFlexGrow(0);
 
 
