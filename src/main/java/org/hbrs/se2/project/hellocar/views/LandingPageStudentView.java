@@ -82,7 +82,7 @@ public class LandingPageStudentView extends Div {
 
         Grid.Column<StellenanzeigeDTO> dateOfDeploymentColumn = grid
                 .addColumn(StellenanzeigeDTO::getEinstellungsdatum)
-                .setHeader("Einstieg")
+                .setHeader("Einstellungsdatum")
                 .setSortable(true);
 
         Grid.Column<StellenanzeigeDTO> salaryColumn = grid
