@@ -53,26 +53,36 @@ public class LandingPageCompanyView extends Div {
         Grid.Column<UserDTO> stellenIdColumn = grid
                 .addColumn(UserDTO::getStelleId)
                 .setHeader("StelleID")
-                .setWidth("6em").setFlexGrow(0);
+                .setWidth("6em").setFlexGrow(0)
+                .setSortable(true);
 
-        grid.addColumn(UserDTO::getFirstName)
+        Grid.Column<UserDTO> vornameColumn = grid
+                .addColumn(UserDTO::getFirstName)
                 .setHeader("Vorname")
-                .setWidth("12em").setFlexGrow(0);
+                .setWidth("12em").setFlexGrow(0)
+                .setSortable(true);
 
-        grid.addColumn(UserDTO::getLastName)
+        Grid.Column<UserDTO> nachnameColumn = grid
+                .addColumn(UserDTO::getLastName)
                 .setHeader("Nachname")
-                .setWidth("20em").setFlexGrow(0);
+                .setWidth("20em").setFlexGrow(0)
+                .setSortable(true);
 
-        grid.addColumn(UserDTO::getEmail)
-                .setHeader("E-Mail-Adresse");
+        Grid.Column<UserDTO> eMailAdresseColumn = grid
+                .addColumn(UserDTO::getEmail)
+                .setHeader("E-Mail-Adresse")
+                .setSortable(true);
 
-        grid.addColumn(UserDTO::getbewerbungsDatum)
+        Grid.Column<UserDTO> bewerbungsdatumColumn = grid
+                .addColumn(UserDTO::getbewerbungsDatum)
                 .setHeader("Bewerbungsdatum")
-                .setWidth("10em").setFlexGrow(0);
+                .setWidth("10em").setFlexGrow(0)
+                .setSortable(true);
 
         grid.addColumn(UserDTO::getStatus)
                 .setHeader("Status")
-                .setWidth("8em").setFlexGrow(0);
+                .setWidth("8em").setFlexGrow(0)
+                .setSortable(true);
 
         grid.addComponentColumn( job -> {
             Button saveButton = new Button("Annehmen");
@@ -107,7 +117,7 @@ public class LandingPageCompanyView extends Div {
 
         HeaderRow filterRow = grid.appendHeaderRow();
 
-        // filter
+        // stellenId filter
         TextField stellenIdField = new TextField();
         stellenIdField.addValueChangeListener(event -> dataProvider.addFilter(
                 job -> StringUtils.containsIgnoreCase(String.valueOf(job.getStelleId()),
@@ -118,6 +128,55 @@ public class LandingPageCompanyView extends Div {
         filterRow.getCell(stellenIdColumn).setComponent(stellenIdField);
         stellenIdField.setSizeFull();
         stellenIdField.setPlaceholder("Filter");
+
+        // vorname filter
+        TextField vornameField = new TextField();
+        vornameField.addValueChangeListener(event -> dataProvider.addFilter(
+                job -> StringUtils.containsIgnoreCase(String.valueOf(job.getFirstName()),
+                        vornameField.getValue())));
+
+        vornameField.setValueChangeMode(ValueChangeMode.EAGER);
+
+        filterRow.getCell(vornameColumn).setComponent(vornameField);
+        vornameField.setSizeFull();
+        vornameField.setPlaceholder("Filter");
+
+        // nachname filter
+        TextField nachnameField = new TextField();
+        nachnameField.addValueChangeListener(event -> dataProvider.addFilter(
+                job -> StringUtils.containsIgnoreCase(String.valueOf(job.getLastName()),
+                        nachnameField.getValue())));
+
+        nachnameField.setValueChangeMode(ValueChangeMode.EAGER);
+
+        filterRow.getCell(nachnameColumn).setComponent(nachnameField);
+        nachnameField.setSizeFull();
+        nachnameField.setPlaceholder("Filter");
+
+        // emailAdresss filter
+        TextField emailAdresseField = new TextField();
+        emailAdresseField.addValueChangeListener(event -> dataProvider.addFilter(
+                job -> StringUtils.containsIgnoreCase(String.valueOf(job.getEmail()),
+                        emailAdresseField.getValue())));
+
+        emailAdresseField.setValueChangeMode(ValueChangeMode.EAGER);
+
+        filterRow.getCell(eMailAdresseColumn).setComponent(emailAdresseField);
+        emailAdresseField.setSizeFull();
+        emailAdresseField.setPlaceholder("Filter");
+
+        // emailAdresss filter
+        TextField bewerbungsDatumField = new TextField();
+        bewerbungsDatumField.addValueChangeListener(event -> dataProvider.addFilter(
+                job -> StringUtils.containsIgnoreCase(String.valueOf(job.getbewerbungsDatum()),
+                        bewerbungsDatumField.getValue())));
+
+        bewerbungsDatumField.setValueChangeMode(ValueChangeMode.EAGER);
+
+        filterRow.getCell(bewerbungsdatumColumn).setComponent(bewerbungsDatumField);
+        bewerbungsDatumField.setSizeFull();
+        bewerbungsDatumField.setPlaceholder("Filter");
+
 
         grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
