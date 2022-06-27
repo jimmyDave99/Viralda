@@ -71,6 +71,7 @@ public class BewerbungDAO {
                         .withSemester(Integer.parseInt(rs.getString("semester")))
                         .withSpecialization(rs.getString("spezialisierung"))
                         .withDescription(rs.getString("beschreibung"))
+                        // Ende Ergänzung
                         .build();
 
                 list.add(applicant);
