@@ -68,7 +68,7 @@ public class BewerbungDAO {
                         .withStatus(rs.getString("status"))
                         // ToDo: falls Fehler sind
                         .withFaculty(rs.getString("fachbereich"))
-                        .withSemester(Integer.parseInt(rs.getString("semester")))
+                        .withSemester(rs.getInt("semester"))
                         .withSpecialization(rs.getString("spezialisierung"))
                         .withDescription(rs.getString("beschreibungS"))
                         .withTitle(rs.getString("titel"))
