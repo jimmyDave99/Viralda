@@ -273,11 +273,55 @@ public class UserDAO {
 
             //Delete Student or Unternehmen
             if (role.equals(STUDENT)) {
+                //Find Bewerbungen
+                PreparedStatement studentIdStatement = JDBCConnection.getInstance().getPreparedStatement(
+                        "SELECT student_id FROM collathbrs.student WHERE user_id = ?");
+                studentIdStatement.setInt(1, userId);
+                ResultSet set = studentIdStatement.executeQuery();
+                if (set.next()) {
+                    //Delete Bewerbungen
+                    int studentId = set.getInt(1);
+                    PreparedStatement bewerbungStatement = JDBCConnection.getInstance().getPreparedStatement(
+                            "DELETE FROM collathbrs.bewerbung WHERE student_id = ?");
+                    bewerbungStatement.setInt(1, studentId);
+                    bewerbungStatement.executeUpdate();
+                }
+
+                //Delete Student
                 PreparedStatement studentStatement = JDBCConnection.getInstance().getPreparedStatement(
                         "DELETE FROM collathbrs.student WHERE user_id = ?");
                 studentStatement.setInt(1, userId);
                 studentStatement.executeUpdate();
             } else if (role.equals(UNTERNEHMEN)) {
+                //Find Stellenanzeigen
+                PreparedStatement unternehmenIdStatement = JDBCConnection.getInstance().getPreparedStatement(
+                        "SELECT unternehmen_id FROM collathbrs.unternehmen WHERE user_id = ?");
+                unternehmenIdStatement.setInt(1, userId);
+                ResultSet unternhemenSet = unternehmenIdStatement.executeQuery();
+                if (unternhemenSet.next()) {
+                    //Find Bewerbungen
+                    int unternehmenId = unternhemenSet.getInt(1);
+                    PreparedStatement stellenanzeigeStatement = JDBCConnection.getInstance().getPreparedStatement(
+                            "SELECT stellen_id FROM collathbrs.stellenanzeige WHERE unternehmer_id = ?");
+                    stellenanzeigeStatement.setInt(1, unternehmenId);
+                    ResultSet stellenanzeigenSet =  stellenanzeigeStatement.executeQuery();
+                    //Delete Bewerbungen
+                    while (stellenanzeigenSet.next()) {
+                        int stellen_id = stellenanzeigenSet.getInt(1);
+                        PreparedStatement bewerbungStatement = JDBCConnection.getInstance().getPreparedStatement(
+                                "DELETE FROM collathbrs.bewerbung WHERE stellen_id = ?");
+                        bewerbungStatement.setInt(1, stellen_id);
+                        bewerbungStatement.executeUpdate();
+                    }
+
+                    //Delete Stellenanzeigen
+                    PreparedStatement stellenanzeigeDeleteStatement = JDBCConnection.getInstance().getPreparedStatement(
+                            "DELETE FROM collathbrs.stellenanzeige WHERE unternehmer_id = ?");
+                    stellenanzeigeDeleteStatement.setInt(1, unternehmenId);
+                    stellenanzeigeDeleteStatement.executeUpdate();
+                }
+
+                //Delete Unternehmen
                 PreparedStatement unternehmenStatement = JDBCConnection.getInstance().getPreparedStatement(
                         "DELETE FROM collathbrs.unternehmen WHERE user_id = ?");
                 unternehmenStatement.setInt(1, userId);
