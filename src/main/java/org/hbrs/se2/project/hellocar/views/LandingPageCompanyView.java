@@ -9,6 +9,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -56,6 +57,8 @@ public class LandingPageCompanyView extends Div {
         // Befüllen der Tabelle mit den zuvor ausgelesenen Stellen
         ListDataProvider<UserDTO> dataProviderApplication = new ListDataProvider<>(bewerbungslist);
         grid.setDataProvider(dataProviderApplication);
+
+        grid.addComponentColumn(person -> {return VaadinIcon.ANGLE_DOWN.create();}).setWidth("4em").setFlexGrow(0);
 
         Grid.Column<UserDTO> stellenIdColumn = grid
                 .addColumn(UserDTO::getStelleId)

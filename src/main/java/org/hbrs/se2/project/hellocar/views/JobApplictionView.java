@@ -8,6 +8,7 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -104,6 +105,8 @@ public class JobApplictionView extends VerticalLayout implements HasUrlParameter
 
         ListDataProvider<StellenanzeigeDTO> dataProvider = new ListDataProvider<>(currentJob);
         grid.setDataProvider(dataProvider);
+
+        grid.addComponentColumn(person -> {return VaadinIcon.ANGLE_DOWN.create();}).setWidth("4em").setFlexGrow(0);
 
         grid.addColumn(StellenanzeigeDTO::getUnternehmenId)
                         .setHeader("Unternehmen")

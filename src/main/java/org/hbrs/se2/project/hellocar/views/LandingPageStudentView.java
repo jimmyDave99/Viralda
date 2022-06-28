@@ -24,6 +24,7 @@ import org.hbrs.se2.project.hellocar.dtos.StellenanzeigeDTO;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
 import org.hbrs.se2.project.hellocar.util.Globals;
 
+import java.awt.*;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -72,10 +73,7 @@ public class LandingPageStudentView extends Div {
         ListDataProvider<StellenanzeigeDTO> dataProvider = new ListDataProvider<>(jobList);
         grid.setDataProvider(dataProvider);
 
-        grid.addColumn(
-                new ComponentRenderer<>(Label::new, (button, person) -> {
-                    button.setText(VaadinIcon.ANGLE_DOWN);
-                })).setWidth("4em").setFlexGrow(0);
+        grid.addComponentColumn(person -> {return VaadinIcon.ANGLE_DOWN.create();}).setWidth("4em").setFlexGrow(0);
 
         Grid.Column<StellenanzeigeDTO> companyNameColumn = grid
                 .addColumn(StellenanzeigeDTO::getUnternehmenId)

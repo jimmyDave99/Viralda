@@ -12,6 +12,7 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -75,6 +76,8 @@ public class showJobCompanyView extends Div {
 
         ListDataProvider<StellenanzeigeDTO> dataProvider = new ListDataProvider<>(jobList);
         grid.setDataProvider(dataProvider);
+
+        grid.addComponentColumn(person -> {return VaadinIcon.ANGLE_DOWN.create();}).setWidth("4em").setFlexGrow(0);
 
         Grid.Column<StellenanzeigeDTO> idColumn = grid
                 .addColumn(StellenanzeigeDTO::getStellenId)
