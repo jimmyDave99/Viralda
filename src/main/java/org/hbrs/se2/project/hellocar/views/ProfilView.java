@@ -78,7 +78,7 @@ public class ProfilView extends Div {
         lastName = new TextField("Name");
         email = new EmailField("E-Mail-Adresse");
         role = new TextField("Rolle");
-        faculty = new TextField("Fakultät");
+        faculty = new TextField("Fachbereich");
         semester = new IntegerField("Semester");
         semester.setMin(1);
         semester.setMax(30);

@@ -9,6 +9,8 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
@@ -22,6 +24,7 @@ import org.hbrs.se2.project.hellocar.dtos.StellenanzeigeDTO;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
 import org.hbrs.se2.project.hellocar.util.Globals;
 
+import java.awt.*;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -70,11 +73,12 @@ public class LandingPageStudentView extends Div {
         ListDataProvider<StellenanzeigeDTO> dataProvider = new ListDataProvider<>(jobList);
         grid.setDataProvider(dataProvider);
 
-        // ToDo: Unternehmensname über UnternehmensID bekommen
+        grid.addComponentColumn(person -> {return VaadinIcon.ANGLE_DOWN.create();}).setWidth("4em").setFlexGrow(0);
+
         Grid.Column<StellenanzeigeDTO> companyNameColumn = grid
                 .addColumn(StellenanzeigeDTO::getUnternehmenId)
-                .setHeader("Unternehmen")
-                .setWidth("30em").setFlexGrow(0)
+                .setHeader("Unternehmens-ID")
+                .setWidth("12em").setFlexGrow(0)
                 .setSortable(true);
 
         Grid.Column<StellenanzeigeDTO> titleColumn = grid
@@ -189,9 +193,9 @@ public class LandingPageStudentView extends Div {
                     VerticalLayout layout = new VerticalLayout();
 
                     TextArea details = new TextArea();
-                    details.setValue(stellenanzeigeDTO.getBeschreibung());
+                    if ((stellenanzeigeDTO.getBeschreibung() != null) && (!stellenanzeigeDTO.getBeschreibung().equals(""))) details.setValue(stellenanzeigeDTO.getBeschreibung());
+                    else details.setValue("Diese Stellenanzeige besitzt leider keine nähere Beschreibung.");
                     details.setWidthFull();
-                    //details.setEnabled(false);
                     details.setReadOnly(true);
 
                     layout.add(new H5("Stellenbeschreibung:"));

@@ -12,6 +12,7 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -76,6 +77,8 @@ public class showJobCompanyView extends Div {
         ListDataProvider<StellenanzeigeDTO> dataProvider = new ListDataProvider<>(jobList);
         grid.setDataProvider(dataProvider);
 
+        grid.addComponentColumn(person -> {return VaadinIcon.ANGLE_DOWN.create();}).setWidth("4em").setFlexGrow(0);
+
         Grid.Column<StellenanzeigeDTO> idColumn = grid
                 .addColumn(StellenanzeigeDTO::getStellenId)
                 .setHeader("Stellen-ID")
@@ -85,7 +88,13 @@ public class showJobCompanyView extends Div {
         Grid.Column<StellenanzeigeDTO> titleColumn = grid
                 .addColumn(StellenanzeigeDTO::getTitel)
                 .setHeader("Titel")
-                .setWidth("40em").setFlexGrow(0)
+                .setWidth("25em").setFlexGrow(0)
+                .setSortable(true);
+
+        Grid.Column<StellenanzeigeDTO> sectorColumn = grid
+                .addColumn(StellenanzeigeDTO::getBereich)
+                .setHeader("Bereich")
+                .setWidth("25em").setFlexGrow(0)
                 .setSortable(true);
 
         Grid.Column<StellenanzeigeDTO> dateOfDeploymentColumn = grid
@@ -145,6 +154,16 @@ public class showJobCompanyView extends Div {
         titleField.setSizeFull();
         titleField.setPlaceholder("Filter");
 
+        // sector filter
+        TextField sectorField = new TextField();
+        sectorField.addValueChangeListener(event -> dataProvider.addFilter(
+                job -> StringUtils.containsIgnoreCase(job.getBereich(),
+                        sectorField.getValue())));
+
+        filterRow.getCell(sectorColumn).setComponent(sectorField);
+        sectorField.setSizeFull();
+        sectorField.setPlaceholder("Filter");
+
         // dateOfDeploymentColumn filter
         TextField dateOfDeploymentField = new TextField();
         dateOfDeploymentField.addValueChangeListener(event -> dataProvider.addFilter(
@@ -192,7 +211,8 @@ public class showJobCompanyView extends Div {
 
                     TextArea details = new TextArea();
 
-                    details.setValue(stellenanzeigeDTO.getBeschreibung());
+                    if ((stellenanzeigeDTO.getBeschreibung() != null) && (!stellenanzeigeDTO.getBeschreibung().equals(""))) details.setValue(stellenanzeigeDTO.getBeschreibung());
+                    else details.setValue("Diese Stellenanzeige besitzt leider keine nähere Beschreibung.");
                     details.setWidthFull();
                     details.setReadOnly(true);
 
