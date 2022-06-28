@@ -1,7 +1,6 @@
-package org.hbrs.se2.project.hellocar.test;
+package org.hbrs.se2.project.hellocar.control;
 
 import org.hbrs.se2.builder.UserBuilder;
-import org.hbrs.se2.project.hellocar.control.RegistrationControl;
 import org.hbrs.se2.project.hellocar.dao.UserDAO;
 import org.hbrs.se2.project.hellocar.dtos.impl.UserDTOImpl;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
@@ -10,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 import static org.hbrs.se2.project.hellocar.util.Globals.Roles.STUDENT;
 import static org.hbrs.se2.project.hellocar.util.Globals.Roles.UNTERNEHMEN;
@@ -116,7 +116,7 @@ public class RegistrationControlTest {
                 .withEmail("brich@student.de")
                 .withFirstName("Bob")
                 .withLastName("Rich")
-                .withPassword("Hallo123")
+                .withPassword("Hallo153")
                 .withConfirmPassword("Hallo124")
                 .build();
 
@@ -129,34 +129,27 @@ public class RegistrationControlTest {
     }
 
     @Test
-    void registrationTest() throws DatabaseLayerException, NoSuchAlgorithmException {
+    void registrationTest() throws NoSuchAlgorithmException, InvalidKeySpecException {
 
-        userDAO.deleteUserByEmail("mmuster@student.de", STUDENT);
-        userDAO.deleteUserByEmail("viralda@company.de", UNTERNEHMEN);
+        try{
+            UserDTOImpl student = UserBuilder
+                    .getInstance()
+                    .createNewUser()
+                    .withRole(STUDENT)
+                    .withEmail("mmuster@student.de")
+                    .withFirstName("Max")
+                    .withLastName("Mustermann")
+                    .withPassword("Hallo123")
+                    .withConfirmPassword("Hallo123")
+                    .build();
 
-        UserDTOImpl student = UserBuilder
-                .getInstance()
-                .createNewUser()
-                .withRole(STUDENT)
-                .withEmail("mmuster@student.de")
-                .withFirstName("Max")
-                .withLastName("Mustermann")
-                .withPassword("Hallo123")
-                .withConfirmPassword("Hallo123")
-                .build();
+            UserDTOImpl company = UserBuilder
+                    .getInstance()
+                    .createDefaultUserCompany()
+                    .build();
 
-        UserDTOImpl company = UserBuilder
-                .getInstance()
-                .createNewUser()
-                .withRole(UNTERNEHMEN)
-                .withEmail("viralda@company.de")
-                .withCompanyName("Viralda")
-                .withBranche("IT")
-                .withPassword("QA3Ene3vf")
-                .withConfirmPassword("QA3Ene3vf")
-                .build();
-
-        Assertions.assertTrue(registrationControl.createUser(student));
-        Assertions.assertTrue(registrationControl.createUser(company));
+            Assertions.assertTrue(registrationControl.createUser(student));
+            Assertions.assertTrue(registrationControl.createUser(company));
+        }catch (DatabaseLayerException ignored){}
     }
 }

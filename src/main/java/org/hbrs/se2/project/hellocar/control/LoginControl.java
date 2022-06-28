@@ -7,9 +7,8 @@ import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerExcepti
 import org.hbrs.se2.project.hellocar.util.Globals;
 import org.springframework.stereotype.Component;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 
 @Component
@@ -17,7 +16,7 @@ public class LoginControl {
 
     private UserDTO userDTO = null;
 
-    public boolean authentificate(String username, String password ) throws DatabaseUserException, NoSuchAlgorithmException {
+    public boolean authentificate(String username, String password ) throws DatabaseUserException, NoSuchAlgorithmException, InvalidKeySpecException {
 
         // Alternative: Auslesen des Users mit JDBC (Was sind die Vorteile bzw. Nachteile?)
         UserDTO tmpUser = this.getUserWithJDBC( username , RegistrationControl.hashPassword(password) );
@@ -47,8 +46,7 @@ public class LoginControl {
             String reason = e.getReason();
 
             if (reason.equals(Globals.Errors.NOUSERFOUND)) {
-                return userDTO = null;
-                // throw new DatabaseUserException("No User could be found! Please check your credentials!");
+                throw new DatabaseUserException("No User could be found! Please check your credentials!");
             }
             else if ( reason.equals((Globals.Errors.SQLERROR))) {
                 throw new DatabaseUserException("There were problems with the SQL code. Please contact the developer!");

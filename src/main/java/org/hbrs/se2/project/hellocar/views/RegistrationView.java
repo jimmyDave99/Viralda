@@ -25,6 +25,7 @@ import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerExcepti
 import org.hbrs.se2.project.hellocar.util.Globals;
 
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 import static org.hbrs.se2.project.hellocar.util.Globals.Roles.STUDENT;
 import static org.hbrs.se2.project.hellocar.util.Globals.Roles.UNTERNEHMEN;
@@ -35,7 +36,6 @@ import static org.hbrs.se2.project.hellocar.util.Globals.Roles.UNTERNEHMEN;
 public class RegistrationView extends VerticalLayout {
 
     private RadioButtonGroup<String> userGroup = new RadioButtonGroup<>();
-
     private EmailField email = new EmailField("E-Mail");
     private PasswordField password = new PasswordField("Passwort");
     private PasswordField confirmPassword = new PasswordField("Passwort bestätigen");
@@ -85,7 +85,7 @@ public class RegistrationView extends VerticalLayout {
                 .bind(UserDTOImpl::getPassword, UserDTOImpl::setPassword);
 
         binder.forField(confirmPassword)
-                .asRequired("passwort bestätigen")
+                .asRequired("Passwort bestätigen")
                 .bind(UserDTOImpl::getConfirmPassword, UserDTOImpl::setConfirmPassword);
 
         binder.forField(firstName)
@@ -134,7 +134,7 @@ public class RegistrationView extends VerticalLayout {
                 registrationService.createUser(binder.getBean());
                 navigateToLoginPage();
                 Notification.show("Sie haben sich erfolgreich registriert.");
-            } catch (DatabaseLayerException | NoSuchAlgorithmException ex) {
+            } catch (DatabaseLayerException | NoSuchAlgorithmException | InvalidKeySpecException ex) {
                 ex.printStackTrace();
             }
         });
@@ -201,15 +201,13 @@ public class RegistrationView extends VerticalLayout {
         register.addClickShortcut(Key.ENTER);
         cancel.addClickShortcut(Key.ESCAPE);
         buttonLayout.add(register);
+        register.addThemeVariants(ButtonVariant.LUMO_SUCCESS, ButtonVariant.LUMO_PRIMARY);
         buttonLayout.add(cancel);
+        cancel.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
         return buttonLayout;
     }
 
     private void navigateToLoginPage() {
-        // Navigation zur Login-Seite.
         UI.getCurrent().navigate(Globals.Pages.LOGIN_VIEW);
-
     }
-
-
 }

@@ -5,7 +5,6 @@ import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
@@ -24,9 +23,7 @@ import org.hbrs.se2.project.hellocar.control.AuthorizationControl;
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 import org.hbrs.se2.project.hellocar.util.Globals;
 import org.hbrs.se2.project.hellocar.util.Utils;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 /**
@@ -51,18 +48,6 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
             setUpUI();
         }
     }
-
-    /*
-    private void addDependencies() {
-        UI.getCurrent().getPage()
-                .addJavaScript("/js/script.js");
-        UI.getCurrent().getPage()
-                .addHtmlImport("/html/htmlimport.html");
-        // external JavaScript module
-        UI.getCurrent().getPage()
-                .addJsModule("https://unpkg.com/lodash@4.17.15");
-    }
-     */
 
     public void setUpUI() {
         // Anzeige des Toggles über den Drawer
@@ -115,16 +100,6 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
         // Der Name des Users wird später reingesetzt, falls die Navigation stattfindet
         helloUser = new H1();
         topRightPanel.add(helloUser);
-
-        //Hinzufügen des Profilbuttons als Profilbild
-        /*
-        ToDO: (vielleicht) Abfrage, ob User ein Profilbild hochgeladen hat
-        if (Profilbildabfrage positiv) {
-
-        } else {
-
-        }
-         */
 
         // Profil-Button am rechten oberen Rand.
         MenuBar bar = new MenuBar();
@@ -205,14 +180,15 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
 
         //Falls User ein Stundent ist soll die LandingPageStundentView angezeigt werden
         if (this.authorizationControl.isUserInRole(this.getCurrentUser(), Globals.Roles.STUDENT)) {
-            tabs = Utils.append(tabs, createTab("Startseite", LandingPageStudentView.class));
+            tabs = Utils.append(tabs, createTab("Verfügbare Stellenazeigen", LandingPageStudentView.class));
             System.out.println("User is a Student!");
         }
 
         //Falls User ein Arbeitgeber ist soll die LandingPageCompanyView angezeigt werden
         if (this.authorizationControl.isUserInRole(this.getCurrentUser(), Globals.Roles.UNTERNEHMEN)) {
-            tabs = Utils.append(tabs, createTab("Startseite", LandingPageCompanyView.class));
+            tabs = Utils.append(tabs, createTab("Bewerbungen einsehen", LandingPageCompanyView.class));
             tabs = Utils.append(tabs, createTab("Stellenanzeige erstellen", EnterStellenanzeigeView.class));
+            tabs = Utils.append(tabs, createTab("Stellenanzeigen des eigenen Unternehmens", showJobCompanyView.class));
             System.out.println("User is a Company!");
         }
 
@@ -239,7 +215,6 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
         // Setzen des aktuellen Names des Tabs
         viewTitle.setText(getCurrentPageTitle());
 
-        //ToDO: anpassen
         // Setzen des Vornamens von dem aktuell eingeloggten Benutzer, wenn der User einen Vornamen hat
         if (this.getCurrentNameOfUser() != null) {
             helloUser.setText("Willkommen "  + this.getCurrentNameOfUser() + " auf der HBRS@Collab Seite!");

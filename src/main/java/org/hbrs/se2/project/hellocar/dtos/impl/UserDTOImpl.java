@@ -3,6 +3,8 @@ package org.hbrs.se2.project.hellocar.dtos.impl;
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 
 import java.awt.image.BufferedImage;
+import java.time.LocalDate;
+import java.util.Date;
 
 public class UserDTOImpl implements UserDTO {
 
@@ -13,24 +15,38 @@ public class UserDTOImpl implements UserDTO {
     private String password;
     private String confirmPassword;
     private BufferedImage profilePicture;
+    private String faculty;
+    private int semester;
+    private String specialization;
 
     //Useranschrift
     private int plz;
     private String land;
     private String stadt;
     private String strasse;
-    private int nummer;
+    private int hausnummer;
 
     //Student
     private int studentId;
     private String firstName;
     private String lastName;
+    private LocalDate dateOfBirth;
 
     //Unternehmen
     private int unternehmenId;
     private String companyName;
     private String branche;
     private String description;
+
+    //Stelle
+    private String status;
+    private int stelleId;
+    private Date bewerbungsdatum;
+    private String title;
+    private Date dateOfDeployment;
+    private int salary;
+    private int hoursPerWeek;
+    private String employmentDescription;
 
     //Setter
     @Override
@@ -42,6 +58,21 @@ public class UserDTOImpl implements UserDTO {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    @Override
+    public void setStatus(String status) {
+        this.status = status;
+    }
+    @Override
+    public void setStelleId(int stelleId) {
+        this.stelleId = stelleId;
+    }
+
+    @Override
+    public void setBewerbungsdatum(Date bewerbungsdatum) {
+        this.bewerbungsdatum = bewerbungsdatum;
+    }
+
 
     @Override
     public void setRole(String role) {
@@ -58,6 +89,18 @@ public class UserDTOImpl implements UserDTO {
     public void setProfilePicture(BufferedImage profilePicture) {
         this.profilePicture = profilePicture;
     }
+
+    @Override
+    public void setDateOfBirth(LocalDate dateOfBirth) { this.dateOfBirth = dateOfBirth; }
+
+    @Override
+    public void setFaculty(String faculty){ this.faculty = faculty; }
+
+    @Override
+    public void setSemester(int semester) { this.semester = semester; }
+
+    @Override
+    public void setSpecialization(String specialization){ this.specialization = specialization; }
 
     @Override
     public void setPlz(int plz) {
@@ -80,8 +123,8 @@ public class UserDTOImpl implements UserDTO {
     }
 
     @Override
-    public void setNummer(int nummer) {
-        this.nummer = nummer;
+    public void setHausnummer(int hausnummer) {
+        this.hausnummer = hausnummer;
     }
 
     @Override
@@ -119,6 +162,26 @@ public class UserDTOImpl implements UserDTO {
         this.description = description;
     }
 
+
+    // Setter details application
+    @Override
+    public void setTitle(String title) { this.title = title; }
+
+    @Override
+    public void setDateOfDeployment(Date dateOfDeployment) { this.dateOfDeployment = dateOfDeployment; }
+
+    @Override
+    public void setSalary(int salary) { this.salary = salary; }
+
+    @Override
+    public void setHoursPerWeek(int hoursPerWeek) { this.hoursPerWeek = hoursPerWeek; }
+
+    @Override
+    public void setEmploymentDescription(String employmentDescription) { this.employmentDescription = employmentDescription; }
+
+
+
+
     //Getter
     @Override
     public int getUserId() {
@@ -128,6 +191,21 @@ public class UserDTOImpl implements UserDTO {
     @Override
     public String getEmail() {
         return email;
+    }
+
+    @Override
+    public String getStatus() {
+        return status;
+    }
+
+    @Override
+    public int getStelleId() {
+        return stelleId;
+    }
+
+    @Override
+    public Date getbewerbungsDatum() {
+        return bewerbungsdatum;
     }
 
     @Override
@@ -145,6 +223,18 @@ public class UserDTOImpl implements UserDTO {
     public BufferedImage getProfilePicture() {
         return profilePicture;
     }
+
+    @Override
+    public LocalDate getDateOfBirth() { return dateOfBirth; }
+
+    @Override
+    public String getFaculty() {return faculty;}
+
+    @Override
+    public int getSemester(){return semester;}
+
+    @Override
+    public String getSpecialization(){return specialization;}
 
     @Override
     public int getPlz() {
@@ -167,8 +257,8 @@ public class UserDTOImpl implements UserDTO {
     }
 
     @Override
-    public int getNummer() {
-        return nummer;
+    public int getHausnummer() {
+        return hausnummer;
     }
 
     @Override
@@ -206,10 +296,30 @@ public class UserDTOImpl implements UserDTO {
         return description;
     }
 
+    // Getter details application
+    @Override
+    public String getTitle() {return  title;}
+
+    @Override
+    public Date getDateOfDeployment() { return dateOfDeployment; }
+
+    @Override
+    public int getSalary() { return salary; }
+
+    @Override
+    public int getHoursPerWeek() { return hoursPerWeek; }
+
+    @Override
+    public String getEmploymentDescription() { return employmentDescription; };
+
     @Override
     public String toString() {
-        return "UserId: " + userId +
+        return "StelleID: " + stelleId +
+                "UserId: " + userId +
                 ", FirstName: " + firstName +
-                ", LastName: " + lastName;
+                ", LastName: " + lastName +
+                ", email: " + email +
+                ", bewerbungsdatum: " + bewerbungsdatum +
+                ", status: " + status;
     }
 }

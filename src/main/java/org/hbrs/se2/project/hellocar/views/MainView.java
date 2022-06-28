@@ -5,7 +5,6 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.login.LoginForm;
-import com.vaadin.flow.component.login.LoginOverlay;
 import com.vaadin.flow.component.login.LoginI18n;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
@@ -14,10 +13,10 @@ import org.hbrs.se2.project.hellocar.control.LoginControl;
 import org.hbrs.se2.project.hellocar.control.exception.DatabaseUserException;
 import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 import org.hbrs.se2.project.hellocar.util.Globals;
-import org.hbrs.se2.project.hellocar.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 
 /**
@@ -48,7 +47,7 @@ public class MainView extends VerticalLayout {
                 dialog.setWidth("400px");
                 dialog.setHeight("150px");
                 dialog.open();
-            } catch (NoSuchAlgorithmException ex) {
+            } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
                 ex.printStackTrace();
             }
             if (isAuthenticated) {
@@ -64,7 +63,6 @@ public class MainView extends VerticalLayout {
         Button registration = new Button("Registrieren");
         registration.addClickListener( event -> navigateToRegistrationPage());
         add(loginForm, registration);
-        //loginOverlay.setOpened(true);
         this.setAlignItems( Alignment.CENTER );
     }
 
@@ -88,11 +86,7 @@ public class MainView extends VerticalLayout {
         i18nErrorMessage.setTitle("Überprüfen Sie ihre Emailadresse oder ihr Passwort!");
         i18nErrorMessage.setMessage("Versuchen Sie Ihre Anmeldedaten nochmals einzugeben.");
         i18n.setErrorMessage(i18nErrorMessage);
-
         i18n.setAdditionalInformation("Sie haben noch keinen Account? Hier geht's zur Registrierung.");
-
-        //LoginOverlay loginOverlay = new LoginOverlay();
-        //loginOverlay.setI18n(i18n);
 
         return i18n;
     }

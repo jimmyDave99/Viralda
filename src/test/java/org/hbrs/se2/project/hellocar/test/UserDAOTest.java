@@ -1,21 +1,13 @@
 package org.hbrs.se2.project.hellocar.test;
 
-import org.hbrs.se2.project.hellocar.services.db.JDBCConnection;
+import org.hbrs.se2.project.hellocar.dao.UserDAO;
+import org.hbrs.se2.project.hellocar.dtos.UserDTO;
+import org.hbrs.se2.project.hellocar.dtos.impl.UserDTOImpl;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
-import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.hbrs.se2.project.hellocar.dao.UserDAO;
-import org.hbrs.se2.project.hellocar.dtos.UserDTO;
-import org.hbrs.se2.project.hellocar.dtos.impl.UserDTOImpl;
-
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class UserDAOTest {
@@ -51,7 +43,8 @@ class UserDAOTest {
         });
 
         // search user in database
-        UserDTO user = null;
+        UserDTO user = new UserDTOImpl();
+        user.setEmail("hp@test.de");
         try {
             user = userDAO.findUserByUserEmailAndPassword("hp@test.de", "test");
         } catch (DatabaseLayerException e) {

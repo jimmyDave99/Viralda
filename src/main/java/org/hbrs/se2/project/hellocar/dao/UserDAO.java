@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import static org.hbrs.se2.project.hellocar.util.Globals.Errors.PROBLEM;
 import static org.hbrs.se2.project.hellocar.util.Globals.Roles.STUDENT;
 import static org.hbrs.se2.project.hellocar.util.Globals.Roles.UNTERNEHMEN;
 
@@ -45,6 +46,7 @@ public class UserDAO {
                 userDTO.setEmail(set.getString(2));
                 userDTO.setPassword(set.getString(3));
                 userDTO.setRole(set.getString(4));
+                userDTO.setDescription(set.getString(6));
 
                 if (userDTO.getRole().equals(STUDENT)) {
                     //Get Student
@@ -58,6 +60,9 @@ public class UserDAO {
                         userDTO.setStudentId(set.getInt(1));
                         userDTO.setFirstName(set.getString(3));
                         userDTO.setLastName(set.getString(4));
+                        userDTO.setFaculty(set.getString(5));
+                        userDTO.setSemester(set.getInt(6));
+                        userDTO.setSpecialization(set.getString(7));
                     }
                 } else if (userDTO.getRole().equals(UNTERNEHMEN)) {
                     //Get Unternehmen
@@ -77,7 +82,6 @@ public class UserDAO {
                 throw new DatabaseLayerException("Kein User mit dieser Email und diesem Passwort gefunden");
             }
         } catch (SQLException ex) {
-            System.out.println("test");
             DatabaseLayerException e = new DatabaseLayerException("Fehler im SQL-Befehl!");
             e.setReason(Globals.Errors.SQLERROR);
             throw e;
@@ -100,11 +104,7 @@ public class UserDAO {
      * @throws DatabaseLayerException
      */
     public void insertUser(UserDTO userDTO, String password) throws DatabaseLayerException {
-        System.out.println("--------------------");
-        System.out.println(userDTO.toString());
-        System.out.println("--------------------");
 
-        // Exception für UserDTO leer fehlt noch oder kommt das in RegistrationControl?
 
         try {
             PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement("INSERT " +
@@ -139,7 +139,7 @@ public class UserDAO {
             }
 
         } catch (SQLException ex) {
-            DatabaseLayerException e = new DatabaseLayerException("Probleme mit der Datenbank");
+            DatabaseLayerException e = new DatabaseLayerException(PROBLEM);
             e.setReason(Globals.Errors.DATABASE);
             throw e;
         }
@@ -166,7 +166,7 @@ public class UserDAO {
             return userId;
 
         } catch (SQLException ex) {
-            DatabaseLayerException e = new DatabaseLayerException("Probleme mit der Datenbank");
+            DatabaseLayerException e = new DatabaseLayerException(PROBLEM);
             e.setReason(Globals.Errors.DATABASE);
             throw e;
         }
@@ -187,10 +187,10 @@ public class UserDAO {
             PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement(
                     "UPDATE collathbrs.user " +
                             "SET email = ? " +
-                            ", passwort = ? " +
+                            ", beschreibung = ? " +
                             "WHERE id = ?");
             statement.setString(1, userDTO.getEmail());
-            statement.setString(2, userDTO.getPassword());
+            statement.setString(2, userDTO.getDescription());
             statement.setInt(3, userId);
             statement.executeUpdate();
 
@@ -200,10 +200,16 @@ public class UserDAO {
                         "UPDATE collathbrs.student " +
                                 "SET vorname = ? " +
                                 ", nachname = ? " +
+                                ", fachbereich = ? " +
+                                ", semester = ? " +
+                                ", spezialisierung = ? " +
                                 "WHERE user_id = ?");
                 studentStatement.setString(1, userDTO.getFirstName());
                 studentStatement.setString(2, userDTO.getLastName());
-                studentStatement.setInt(3, userId);
+                studentStatement.setString(3, userDTO.getFaculty());
+                studentStatement.setInt(4, userDTO.getSemester());
+                studentStatement.setString(5, userDTO.getSpecialization());
+                studentStatement.setInt(6, userId);
                 studentStatement.executeUpdate();
             } else if (userDTO.getRole().equals(UNTERNEHMEN)) {
                 PreparedStatement unternehmenStatement = JDBCConnection.getInstance().getPreparedStatement(
@@ -216,8 +222,39 @@ public class UserDAO {
                 unternehmenStatement.setInt(3, userId);
                 unternehmenStatement.executeUpdate();
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException ex) {
+            DatabaseLayerException e = new DatabaseLayerException(PROBLEM);
+            e.setReason(Globals.Errors.DATABASE);
+            throw e;
+        }
+    }
+
+    /**
+     * Method for updating Users
+     *
+     * @param email, password
+     * @return
+     * @throws DatabaseLayerException
+     */
+    public void updateUserPasswordByEmail(String email, String password) throws DatabaseLayerException {
+        try {
+            UserDTO userDTO = new UserDTOImpl();
+            userDTO.setEmail(email);
+            int userId = getUserIdByEmail(userDTO);
+
+            //Update User
+            PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement(
+                    "UPDATE collathbrs.user " +
+                            "SET passwort = ? " +
+                            "WHERE id = ?");
+            statement.setString(1, password);
+            statement.setInt(2, userId);
+            statement.executeUpdate();
+
+        } catch (SQLException ex) {
+            DatabaseLayerException e = new DatabaseLayerException(PROBLEM);
+            e.setReason(Globals.Errors.DATABASE);
+            throw e;
         }
     }
 
@@ -236,11 +273,55 @@ public class UserDAO {
 
             //Delete Student or Unternehmen
             if (role.equals(STUDENT)) {
+                //Find Bewerbungen
+                PreparedStatement studentIdStatement = JDBCConnection.getInstance().getPreparedStatement(
+                        "SELECT student_id FROM collathbrs.student WHERE user_id = ?");
+                studentIdStatement.setInt(1, userId);
+                ResultSet set = studentIdStatement.executeQuery();
+                if (set.next()) {
+                    //Delete Bewerbungen
+                    int studentId = set.getInt(1);
+                    PreparedStatement bewerbungStatement = JDBCConnection.getInstance().getPreparedStatement(
+                            "DELETE FROM collathbrs.bewerbung WHERE student_id = ?");
+                    bewerbungStatement.setInt(1, studentId);
+                    bewerbungStatement.executeUpdate();
+                }
+
+                //Delete Student
                 PreparedStatement studentStatement = JDBCConnection.getInstance().getPreparedStatement(
                         "DELETE FROM collathbrs.student WHERE user_id = ?");
                 studentStatement.setInt(1, userId);
                 studentStatement.executeUpdate();
             } else if (role.equals(UNTERNEHMEN)) {
+                //Find Stellenanzeigen
+                PreparedStatement unternehmenIdStatement = JDBCConnection.getInstance().getPreparedStatement(
+                        "SELECT unternehmen_id FROM collathbrs.unternehmen WHERE user_id = ?");
+                unternehmenIdStatement.setInt(1, userId);
+                ResultSet unternhemenSet = unternehmenIdStatement.executeQuery();
+                if (unternhemenSet.next()) {
+                    //Find Bewerbungen
+                    int unternehmenId = unternhemenSet.getInt(1);
+                    PreparedStatement stellenanzeigeStatement = JDBCConnection.getInstance().getPreparedStatement(
+                            "SELECT stellen_id FROM collathbrs.stellenanzeige WHERE unternehmer_id = ?");
+                    stellenanzeigeStatement.setInt(1, unternehmenId);
+                    ResultSet stellenanzeigenSet =  stellenanzeigeStatement.executeQuery();
+                    //Delete Bewerbungen
+                    while (stellenanzeigenSet.next()) {
+                        int stellen_id = stellenanzeigenSet.getInt(1);
+                        PreparedStatement bewerbungStatement = JDBCConnection.getInstance().getPreparedStatement(
+                                "DELETE FROM collathbrs.bewerbung WHERE stellen_id = ?");
+                        bewerbungStatement.setInt(1, stellen_id);
+                        bewerbungStatement.executeUpdate();
+                    }
+
+                    //Delete Stellenanzeigen
+                    PreparedStatement stellenanzeigeDeleteStatement = JDBCConnection.getInstance().getPreparedStatement(
+                            "DELETE FROM collathbrs.stellenanzeige WHERE unternehmer_id = ?");
+                    stellenanzeigeDeleteStatement.setInt(1, unternehmenId);
+                    stellenanzeigeDeleteStatement.executeUpdate();
+                }
+
+                //Delete Unternehmen
                 PreparedStatement unternehmenStatement = JDBCConnection.getInstance().getPreparedStatement(
                         "DELETE FROM collathbrs.unternehmen WHERE user_id = ?");
                 unternehmenStatement.setInt(1, userId);
@@ -252,8 +333,10 @@ public class UserDAO {
                     "DELETE FROM collathbrs.user WHERE id = ?");
             statement.setInt(1, userId);
             statement.executeUpdate();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException ex) {
+            DatabaseLayerException e = new DatabaseLayerException(PROBLEM);
+            e.setReason(Globals.Errors.DATABASE);
+            throw e;
         }
     }
 
