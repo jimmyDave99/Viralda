@@ -201,7 +201,7 @@ public class LandingPageCompanyView extends Div {
                     // Semester
                     TextField semester = new TextField("Semester");
 
-                    if (userDTO.getSemester() == 0) semester.setValue(String.valueOf(userDTO.getSemester()));
+                    if (userDTO.getSemester() != 0) semester.setValue(String.valueOf(userDTO.getSemester()));
                     else semester.setValue("nicht eingetragen");
 
                     semester.setWidth("10em");
