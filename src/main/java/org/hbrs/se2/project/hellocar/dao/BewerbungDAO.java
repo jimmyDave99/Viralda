@@ -185,4 +185,16 @@ public class BewerbungDAO {
             throw e;
         }
     }
+
+    public void deleteJobApplication(StellenanzeigeDTO stellenanzeigeDTO, UserDTO userDTO) throws DatabaseLayerException {
+        try {
+            PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement(
+                "DELETE FROM collathbrs.bewerbung WHERE stellen_id = ? AND student_id = ?");
+            statement.setInt(1, stellenanzeigeDTO.getStellenId());
+            statement.setInt(2, userDTO.getStudentId());
+            statement.executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
 }

@@ -84,6 +84,39 @@ public class StellenAnzeigeDAO {
         }
     }
 
+    public List<StellenanzeigeDTO> findJobWithUnternehmenId(int unternehmenId) throws DatabaseLayerException {
+
+        try {
+            List<StellenanzeigeDTO> list = new ArrayList<>();
+            PreparedStatement statement = JDBCConnection.getInstance().getPreparedStatement("SELECT * " +
+                    "FROM collathbrs.stellenanzeige WHERE unternehmer_id = ?");
+            statement.setInt(1, unternehmenId);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()){
+                StellenanzeigeDTOImpl currentJob = JobBuilder
+                        .getInstance()
+                        .createNewJob()
+                        .withStellenID(rs.getInt("stellen_id"))
+                        .withTitle(rs.getString("titel"))
+                        .withBranche(rs.getString("bereich"))
+                        .withDescription(rs.getString("beschreibung"))
+                        .withStartDate(rs.getDate("einstellungsdatum").toLocalDate())
+                        .withSalary(rs.getDouble("gehalt"))
+                        .withWeeklyHours(rs.getDouble("wochenstunden"))
+                        .withStatus(rs.getString("status"))
+                        .withUnternehmenID(rs.getInt("unternehmer_id"))
+                        .build();
+                list.add(currentJob);
+            }
+
+            return list;
+        } catch (SQLException ex) {
+            DatabaseLayerException e = new DatabaseLayerException(PROBLEM);
+            e.setReason(Globals.Errors.DATABASE);
+            throw e;
+        }
+    }
+
 
     /**
      * Method to insert Stellenanzeige
