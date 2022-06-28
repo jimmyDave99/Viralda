@@ -9,6 +9,8 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
@@ -70,7 +72,11 @@ public class LandingPageStudentView extends Div {
         ListDataProvider<StellenanzeigeDTO> dataProvider = new ListDataProvider<>(jobList);
         grid.setDataProvider(dataProvider);
 
-        // ToDo: Unternehmensname über UnternehmensID bekommen
+        grid.addColumn(
+                new ComponentRenderer<>(Label::new, (button, person) -> {
+                    button.setText(VaadinIcon.ANGLE_DOWN);
+                })).setWidth("4em").setFlexGrow(0);
+
         Grid.Column<StellenanzeigeDTO> companyNameColumn = grid
                 .addColumn(StellenanzeigeDTO::getUnternehmenId)
                 .setHeader("Unternehmens-ID")
