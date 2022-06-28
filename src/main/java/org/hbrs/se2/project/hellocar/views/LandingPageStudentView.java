@@ -73,8 +73,8 @@ public class LandingPageStudentView extends Div {
         // ToDo: Unternehmensname über UnternehmensID bekommen
         Grid.Column<StellenanzeigeDTO> companyNameColumn = grid
                 .addColumn(StellenanzeigeDTO::getUnternehmenId)
-                .setHeader("Unternehmen")
-                .setWidth("30em").setFlexGrow(0)
+                .setHeader("Unternehmens-ID")
+                .setWidth("12em").setFlexGrow(0)
                 .setSortable(true);
 
         Grid.Column<StellenanzeigeDTO> titleColumn = grid
@@ -189,9 +189,9 @@ public class LandingPageStudentView extends Div {
                     VerticalLayout layout = new VerticalLayout();
 
                     TextArea details = new TextArea();
-                    details.setValue(stellenanzeigeDTO.getBeschreibung());
+                    if ((stellenanzeigeDTO.getBeschreibung() != null) && (!stellenanzeigeDTO.getBeschreibung().equals(""))) details.setValue(stellenanzeigeDTO.getBeschreibung());
+                    else details.setValue("Diese Stellenanzeige besitzt leider keine nähere Beschreibung.");
                     details.setWidthFull();
-                    //details.setEnabled(false);
                     details.setReadOnly(true);
 
                     layout.add(new H5("Stellenbeschreibung:"));

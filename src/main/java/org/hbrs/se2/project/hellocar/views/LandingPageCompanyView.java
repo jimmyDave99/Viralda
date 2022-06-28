@@ -192,7 +192,7 @@ public class LandingPageCompanyView extends Div {
                     // Fachbereich
                     TextField department = new TextField("Fachbereich");
 
-                    if (userDTO.getFaculty() != null) department.setValue(userDTO.getFaculty());
+                    if ((userDTO.getFaculty() != null) && (!userDTO.getFaculty().equals(""))) department.setValue(userDTO.getFaculty());
                     else department.setValue("nicht eingetragen");
 
                     department.setWidth("40em");
@@ -210,7 +210,7 @@ public class LandingPageCompanyView extends Div {
                     // Spezialisierung
                     TextField specialization = new TextField("Spezialisierung");
 
-                    if (userDTO.getSpecialization() != null) specialization.setValue(userDTO.getSpecialization());
+                    if ((userDTO.getSpecialization() != null) && (!userDTO.getSpecialization().equals(""))) specialization.setValue(userDTO.getSpecialization());
                     else specialization.setValue("nicht eingetragen");
 
                     specialization.setWidth("40em");
@@ -224,7 +224,7 @@ public class LandingPageCompanyView extends Div {
                     // Beschreibung Student
                     TextArea descriptionStudent = new TextArea();
 
-                    if (userDTO.getDescription() != null) descriptionStudent.setValue(userDTO.getDescription());
+                    if ((userDTO.getDescription() != null) && (!userDTO.getDescription().equals(""))) descriptionStudent.setValue(userDTO.getDescription());
                     else descriptionStudent.setValue("Dieser Student besitzt leider keine nähere Beschreibung zu seiner Person.");
 
                     descriptionStudent.setWidthFull();
@@ -239,7 +239,7 @@ public class LandingPageCompanyView extends Div {
                     // Titel
                     TextField title = new TextField("Titel");
 
-                    if (userDTO.getTitle() != null) title.setValue(userDTO.getTitle());
+                    if ((userDTO.getTitle() != null) && (!userDTO.getTitle().equals(""))) title.setValue(userDTO.getTitle());
                     else title.setValue("nicht eingetragen");
 
                     title.setWidth("40em");
@@ -285,7 +285,7 @@ public class LandingPageCompanyView extends Div {
                     // Stellenbeschreibung
                     TextArea descriptionJob = new TextArea();
 
-                    if (userDTO.getEmploymentDescription() != null) descriptionJob.setValue(userDTO.getEmploymentDescription());
+                    if ((userDTO.getEmploymentDescription() != null) && (!userDTO.getEmploymentDescription().equals(""))) descriptionJob.setValue(userDTO.getEmploymentDescription());
                     else descriptionJob.setValue("Diese Stellenanzeige besitzt leider keine nähere Beschreibung.");
 
                     descriptionJob.setWidthFull();

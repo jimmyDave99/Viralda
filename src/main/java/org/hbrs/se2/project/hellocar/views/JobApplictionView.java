@@ -131,7 +131,8 @@ public class JobApplictionView extends VerticalLayout implements HasUrlParameter
 
                     TextArea details = new TextArea();
 
-                    details.setValue(stellenanzeigeDTO.getBeschreibung());
+                    if ((stellenanzeigeDTO.getBeschreibung() != null) && (!stellenanzeigeDTO.getBeschreibung().equals(""))) details.setValue(stellenanzeigeDTO.getBeschreibung());
+                    else details.setValue("Diese Stellenanzeige besitzt leider keine nähere Beschreibung.");
                     details.setWidthFull();
                     details.setReadOnly(true);
 

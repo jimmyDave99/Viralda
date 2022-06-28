@@ -22,6 +22,7 @@ import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.*;
 import org.hbrs.se2.project.hellocar.control.JobControl;
 import org.hbrs.se2.project.hellocar.dtos.StellenanzeigeDTO;
@@ -165,10 +166,15 @@ public class JobCompanyView extends VerticalLayout implements HasUrlParameter<St
 
         TextArea descriptionField = new TextArea();
         descriptionField.setWidthFull();
+        descriptionField.setValueChangeMode(ValueChangeMode.EAGER);
+        descriptionField.addValueChangeListener(event -> {
+                    event.getSource().setHelperText("Zeichen: " + event.getValue().length());
+                });
+
         binder1.forField(descriptionField).asRequired("Beschreibung eingeben")
                 .withValidator(
-                        description -> description.length() >= 50,
-                        "Beschreibung muss mindestens 50 Zeichen haben!"
+                        description -> description.length() >= 25,
+                        "Beschreibung muss mindestens 25 Zeichen haben!"
                 )
                 .bind(StellenanzeigeDTO::getBeschreibung, StellenanzeigeDTO::setBeschreibung);
         detailsColumn.setEditorComponent(descriptionField);
