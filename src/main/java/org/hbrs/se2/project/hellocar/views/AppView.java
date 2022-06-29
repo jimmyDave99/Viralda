@@ -101,12 +101,10 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
         helloUser = new H1();
         topRightPanel.add(helloUser);
 
-        // Profil-Button am rechten oberen Rand.
+        // Profil-Button und Logout-Button am rechten oberen Rand.
         MenuBar bar = new MenuBar();
-        MenuItem item_profil = bar.addItem("Profil", e -> goToProfil() );
-
-        // Logout-Button am rechts-oberen Rand.
-        MenuItem item_logout = bar.addItem("Logout" , e -> logoutUser());
+        bar.addItem("Profil", e -> goToProfil() );
+        bar.addItem("Logout" , e -> logoutUser());
 
         topRightPanel.add(bar);
 

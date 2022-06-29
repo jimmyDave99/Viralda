@@ -1,8 +1,6 @@
 package org.hbrs.se2.project.hellocar.views;
 
-import com.sun.xml.bind.v2.runtime.unmarshaller.TextLoader;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -12,13 +10,12 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.html.*;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
-import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -29,8 +26,6 @@ import org.hbrs.se2.project.hellocar.dtos.UserDTO;
 import org.hbrs.se2.project.hellocar.services.db.exceptions.DatabaseLayerException;
 import org.hbrs.se2.project.hellocar.util.Globals;
 
-import javax.security.auth.callback.TextOutputCallback;
-import java.awt.font.TextLayout;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -76,6 +71,8 @@ public class showJobCompanyView extends Div {
         ListDataProvider<StellenanzeigeDTO> dataProvider = new ListDataProvider<>(jobList);
         grid.setDataProvider(dataProvider);
 
+        grid.addComponentColumn(person -> {return VaadinIcon.ANGLE_DOWN.create();}).setWidth("4em").setFlexGrow(0);
+
         Grid.Column<StellenanzeigeDTO> idColumn = grid
                 .addColumn(StellenanzeigeDTO::getStellenId)
                 .setHeader("Stellen-ID")
@@ -85,7 +82,13 @@ public class showJobCompanyView extends Div {
         Grid.Column<StellenanzeigeDTO> titleColumn = grid
                 .addColumn(StellenanzeigeDTO::getTitel)
                 .setHeader("Titel")
-                .setWidth("40em").setFlexGrow(0)
+                .setWidth("25em").setFlexGrow(0)
+                .setSortable(true);
+
+        Grid.Column<StellenanzeigeDTO> sectorColumn = grid
+                .addColumn(StellenanzeigeDTO::getBereich)
+                .setHeader("Bereich")
+                .setWidth("25em").setFlexGrow(0)
                 .setSortable(true);
 
         Grid.Column<StellenanzeigeDTO> dateOfDeploymentColumn = grid
@@ -145,6 +148,16 @@ public class showJobCompanyView extends Div {
         titleField.setSizeFull();
         titleField.setPlaceholder("Filter");
 
+        // sector filter
+        TextField sectorField = new TextField();
+        sectorField.addValueChangeListener(event -> dataProvider.addFilter(
+                job -> StringUtils.containsIgnoreCase(job.getBereich(),
+                        sectorField.getValue())));
+
+        filterRow.getCell(sectorColumn).setComponent(sectorField);
+        sectorField.setSizeFull();
+        sectorField.setPlaceholder("Filter");
+
         // dateOfDeploymentColumn filter
         TextField dateOfDeploymentField = new TextField();
         dateOfDeploymentField.addValueChangeListener(event -> dataProvider.addFilter(
@@ -192,7 +205,8 @@ public class showJobCompanyView extends Div {
 
                     TextArea details = new TextArea();
 
-                    details.setValue(stellenanzeigeDTO.getBeschreibung());
+                    if ((stellenanzeigeDTO.getBeschreibung() != null) && (!stellenanzeigeDTO.getBeschreibung().equals(""))) details.setValue(stellenanzeigeDTO.getBeschreibung());
+                    else details.setValue("Diese Stellenanzeige besitzt leider keine nähere Beschreibung.");
                     details.setWidthFull();
                     details.setReadOnly(true);
 
