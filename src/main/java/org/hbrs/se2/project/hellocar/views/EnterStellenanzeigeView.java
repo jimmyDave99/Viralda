@@ -84,7 +84,7 @@ public class EnterStellenanzeigeView extends Div {
                 .withValidator(
                         titel -> Character.isUpperCase(titel.charAt(0)),
                         "Der Titel muss mit einem Großbuchstaben anfangen."
-                ).withValidator(title -> title.length() >= 30, "Maximal 30 Zeichen lang.")
+                ).withValidator(title -> title.length() <= 30, "Maximal 30 Zeichen lang.")
                 .bind(StellenanzeigeDTOImpl::getTitel, StellenanzeigeDTOImpl::setTitel);
 
         binder.forField(bereich)
@@ -92,7 +92,8 @@ public class EnterStellenanzeigeView extends Div {
                 .withValidator(
                         bereich -> Character.isUpperCase(bereich.charAt(0)),
                         "Der Bereich muss mit einem Großbuchstaben anfangen."
-                ).withValidator(bereich -> bereich.length() >= 30, "Maximal 30 Zeichen lang.")
+                )
+                .withValidator(bereich -> bereich.length() <= 30, "Maximal 30 Zeichen lang.")
                 .bind(StellenanzeigeDTOImpl::getBereich, StellenanzeigeDTOImpl::setBereich);
 
         binder.forField(beschreibung)
