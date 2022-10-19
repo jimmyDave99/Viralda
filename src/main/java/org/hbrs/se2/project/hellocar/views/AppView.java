@@ -111,7 +111,6 @@ public class AppView extends AppLayout implements BeforeEnterObserver {
         layout.add( topRightPanel );
         return layout;
     }
-
     private void logoutUser() {
         UI ui = this.getUI().get();
         ui.getSession().close();

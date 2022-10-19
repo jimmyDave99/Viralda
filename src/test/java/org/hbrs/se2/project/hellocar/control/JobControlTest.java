@@ -80,9 +80,7 @@ class JobControlTest {
                  .withStellenID(91)
                 .build();
 
-        stellenanzeigeUpdated = JobBuilder
-                .getInstance()
-                .createNewJob()
+        stellenanzeigeUpdated = new JobBuilder()
                 .withTitle(NEW_TITLE)
                 .withBranche(NEW_BRANCHE)
                 .withDescription(NEW_DESCRIPTION)
